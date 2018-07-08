@@ -1,0 +1,20 @@
+.title {
+    font-family: 'Dosis', sans-serif;
+    font-size: 76px;
+    font-weight: lighter;
+    line-height: 80px;
+}
+
+.skeleton-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pt-skeleton.title {
+    font-size: 60px;
+    width: 75%;
+    height: 70px;
+    margin-top: 20px;
+    display: inline;
+}

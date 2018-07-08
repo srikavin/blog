@@ -1,0 +1,55 @@
+@media screen {
+    .authTabs {
+        padding: 20px 35px 35px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        background: rgba(0, 0, 0, 0.01);
+        border-radius: 1px;
+    }
+
+    .container {
+        margin-top: 15px;
+        width: 50%;
+        margin-left: 25%;
+        margin-right: 25%;
+    }
+
+    .errorAlert {
+        width: 75%;
+        margin-right: 12.5%;
+        margin-left: 12.5%;
+        margin-bottom: 15px;
+    }
+
+    .authContainer {
+        justify-content: space-around;
+        display: flex;
+        height: 100%;
+        width: 100%;
+    }
+
+    @media screen and (max-width: 600px) {
+        .authTabs {
+            width: 90%;
+            margin-left: 10%;
+            margin-right: 10%;
+        }
+
+        input {
+            width: 100%;
+        }
+
+        .container {
+            margin-top: 15px;
+            width: 100%;
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .errorAlert {
+            width: 100%;
+            margin-right: 0;
+            margin-left: 0;
+            margin-bottom: 15px;
+        }
+    }
+}
