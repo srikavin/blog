@@ -4,8 +4,9 @@ export const userSchema = new Schema({
     title: 'User',
     type: 'object',
     properties: {
-        _id: {type: 'string'},
+        id: {type: 'string'},
         username: {type: 'string'},
         email: {type: 'string'},
     }
 });
+

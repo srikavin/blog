@@ -1,0 +1,22 @@
+.post-tag-item {
+    margin-left: 4px;
+}
+
+.post-tag-description-container.pt-skeleton {
+    padding: 5px 150px;
+}
+
+.post-tag-description-container {
+    max-width: 15vw;
+    padding: 15px;
+    font-size: 16px;
+}
+
+@media screen and (max-width: 1200px) {
+    .post-tag-description-container {
+        max-width: 60vw;
+        padding: 15px;
+        font-size: 16px;
+    }
+}
+

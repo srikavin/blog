@@ -3,7 +3,6 @@ import axios from 'axios';
 
 export default class AuthService {
     static instance = null;
-    getInfo;
 
     constructor(domain) {
         this.domain = 'http://localhost:4000/api/v1';
@@ -70,19 +69,26 @@ export default class AuthService {
         })
     }
 
-    isLoggedIn() {
-        const token = AuthService.getToken();
-        return !!token && !this.isTokenExpired(token);
-    }
-
-    isTokenExpired(token) {
+    static isTokenExpired(token) {
         try {
+            console.log('Checking expiry');
             const decoded = decode(token);
-            return decoded.exp < Date.now() / 1000;
+            let b = decoded.exp < Date.now() / 1000;
+            console.log('Expired: ' + b);
+            return b;
         }
         catch (err) {
+            console.log('Error occurred');
+            console.error(err);
             return false;
         }
+    }
+
+    isLoggedIn() {
+        const token = AuthService.getToken();
+        let b = !!token && !AuthService.isTokenExpired(token);
+        console.log('Logged in: ' + b);
+        return b;
     }
 
     getUserID() {

@@ -1,6 +1,18 @@
 import React from 'react';
-import {Alignment, Navbar, NavbarDivider, NavbarGroup, NavbarHeading} from '@blueprintjs/core';
-import NavLink from "./NavLink/NavLink";
+import {
+    Alignment,
+    Button,
+    Menu,
+    MenuItem,
+    Navbar,
+    NavbarDivider,
+    NavbarGroup,
+    NavbarHeading,
+    Popover,
+    Position
+} from '@blueprintjs/core';
+import NavLink from './NavLink/NavLink';
+import AuthController from '../../util/AuthController';
 
 class Navigation extends React.Component {
     render() {
@@ -13,10 +25,18 @@ class Navigation extends React.Component {
                         </NavbarHeading>
                         <NavbarDivider/>
                         <NavLink to="/" icon="home" label="Home"/>
-                        <NavLink to="/login" icon="user" label="Login"/>
                     </NavbarGroup>
                     <NavbarGroup align={Alignment.RIGHT}>
-                        <NavLink to="/login" icon="user" label="Login"/>
+                        {AuthController.getInstance().isLoggedIn() ? (
+                            <Popover content={<Menu>
+                                <MenuItem text="Profile" icon="user"/>
+                                <MenuItem text="Logout" icon="log-out"/>
+                            </Menu>} position={Position.BOTTOM}>
+                                <Button icon="user" text="Username should be here"/>
+                            </Popover>
+                        ) : (
+                            <NavLink to="/login" icon="log-in" label="Login"/>
+                        )}
                     </NavbarGroup>
                 </Navbar>
             </nav>

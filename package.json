@@ -4,29 +4,40 @@
   "private": true,
   "dependencies": {
     "@blueprintjs/core": "^2.3.1",
-    "@matejmazur/react-mathjax": "^0.1.8",
     "axios": "^0.18.0",
+    "js-data": "^3.0.2",
+    "js-data-http": "^3.0.0",
     "jwt-decode": "^2.2.0",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
+    "react-document-title": "^2.0.3",
     "react-dom": "^16.4.1",
-    "react-katex": "^2.0.2",
+    "react-loadable": "^5.4.0",
     "react-markdown": "^3.3.4",
     "react-mathjax": "^1.0.1",
-    "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "1.1.4",
+    "react-scripts": "react-scripts@2.0.0-next.b2fd8db8",
     "react-transition-group": "^2.4.0",
-    "redux": "^4.0.0",
     "remark-math": "^1.0.4",
-    "remark-parse": "^5.0.0",
-    "js-data": "^3.0.2",
-    "js-data-http": "^3.0.0"
+    "remark-parse": "^5.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "development": [
+      "last 2 chrome versions",
+      "last 2 firefox versions",
+      "last 2 edge versions"
+    ],
+    "production": [
+      ">1%",
+      "last 4 versions",
+      "Firefox ESR",
+      "not ie < 11"
+    ]
   }
 }

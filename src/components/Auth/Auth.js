@@ -5,7 +5,7 @@ import Login from './Login/Login';
 import {Callout, Intent, Spinner, Tab, Tabs} from '@blueprintjs/core';
 
 import './Auth.css'
-import Register from "./Register/Register";
+import Register from './Register/Register';
 
 class Auth extends Component {
     constructor(props) {
@@ -27,7 +27,7 @@ class Auth extends Component {
         this.setState({selectedTab: newTab});
     };
 
-    onSuccess(res) {
+    onSuccess() {
         this.setState({
             redirectToReferrer: true,
             loading: false
@@ -63,7 +63,7 @@ class Auth extends Component {
     }
 
     render() {
-        const {from} = this.props.from || {from: {pathname: "/post"}};
+        const {from} = this.props.location.state || {from: {pathname: '/'}};
 
         console.log(this.state);
 

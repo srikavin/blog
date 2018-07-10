@@ -1,6 +1,7 @@
-import React from "react";
+import React from 'react';
 
 import './PostHeader.css'
+import PostTags from './PostTags/PostTags';
 
 class PostHeader extends React.Component {
     getTitleBlock() {
@@ -11,11 +12,16 @@ class PostHeader extends React.Component {
                 </div>
             );
         }
-        return <h1 className={"title " + this.props.className}>{this.props.title}</h1>
+        return <h1 className="title">{this.props.title}</h1>
     }
 
     render() {
-        return this.getTitleBlock();
+        return (
+            <div className={this.props.className}>
+                {this.getTitleBlock()}
+                <PostTags className="post-tags" tags={this.props.tags}/>
+            </div>
+        )
     }
 }
 

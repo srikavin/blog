@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactMarkdown from 'react-markdown';
-import MathJax from '@matejmazur/react-mathjax';
+import MathJax from 'react-mathjax';
 import RemarkMathPlugin from 'remark-math';
 
 class MarkdownRender extends React.Component {
@@ -25,9 +25,9 @@ class MarkdownRender extends React.Component {
         };
 
         return (
-            <MathJax.Context input="tex">
+            <MathJax.Provider didFinishTypeset={this.props.onRenderFinish} input="tex">
                 <ReactMarkdown {...newProps} />
-            </MathJax.Context>
+            </MathJax.Provider>
         );
     }
 }

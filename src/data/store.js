@@ -1,11 +1,11 @@
-import {DataStore, utils} from 'js-data'
+import {DataStore} from 'js-data'
 import {HttpAdapter} from 'js-data-http'
 import {userSchema} from './model/user'
+import {tagRelations, tagSchema} from './model/tag';
 import {postRelations, postSchema} from './model/post';
 
 export const adapter = new HttpAdapter({
     basePath: 'http://localhost:4000/api/v1',
-    debug: true,
     useFetch: true
 });
 
@@ -19,27 +19,18 @@ store.defineMapper('user', {
     schema: userSchema
 });
 
-store.find('user', '5b416147fc0cac3da2474db5').then((user) => {
-    console.log(user);
+// The Tag Resource
+store.defineMapper('tag', {
+    endpoint: 'tags',
+    schema: tagSchema,
+    relations: tagRelations
 });
+
 
 // The Post Resource
 store.defineMapper('post', {
+    debug: true,
     endpoint: 'posts',
     schema: postSchema,
-    relations: postRelations,
+    relations: postRelations
 });
-
-store.find('post', '5b416258e445f242f6c3ce28').then((post) => {
-    console.log(post);
-    store.get('user', post.author._id).then(user => {
-        console.log(user);
-    })
-});
-
-// store.defineMapper('tag', {
-//     Our API endpoints use plural form in the path
-// endpoint: 'comments',
-// schema: tag,
-// relations: relations.comment
-// })
