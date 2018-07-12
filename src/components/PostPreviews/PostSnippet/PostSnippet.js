@@ -1,33 +1,22 @@
 import React from 'react';
 
 import './PostSnippet.css'
-import PostTags from '../../Post/PostHeader/PostTags/PostTags.js';
-import MathRenderer from '../../Post/PostContent/MathRenderer/MathRenderer';
-import {Link} from 'react-router-dom'
 import {Text} from '@blueprintjs/core';
 
-class PostSnippet extends React.Component {
-    getTitleBlock() {
-        if (!this.props.post.title) {
-            return (
-                <div className={'skeleton-container'}>
-                    <h1 className={'pt-skeleton title'}>Lorem ipsum dolor sit amet</h1>
-                </div>
-            );
-        }
-        return <Link to={'/posts/' + this.props.post.slug}><h1 className="title">{this.props.post.title}</h1></Link>
-    }
+import PostHeader from '../../Post/PostHeader/PostHeader';
+import {Link} from 'react-router-dom';
 
+class PostSnippet extends React.Component {
     getContentBlock() {
-        if (!this.props.post.contents) {
-            return (<Text className={'pt-skeleton'}>
+        if (!this.props.post.overview) {
+            return (<Text className={'bp3-skeleton'}>
                 {'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ac pharetra est, quis venenatis dui.' +
                 ' Etiam eros purus, accumsan sed risus eget, pulvinar lobortis odio. Integer mattis a sem vel molestie. Quisque'}
             </Text>)
         }
         return (
             <Text>
-                <MathRenderer source={this.props.post.overview}/>
+                {this.props.post.overview}
             </Text>
         );
     }
@@ -35,8 +24,9 @@ class PostSnippet extends React.Component {
     render() {
         return (
             <div className={'snippet-container ' + this.props.className ? this.props.className : ''}>
-                {this.getTitleBlock()}
-                <PostTags className="post-tags" tags={this.props.post.tags}/>
+                <Link to={'/posts/' + this.props.post.slug}>
+                    <PostHeader tags={this.props.post.tags} title={this.props.post.title}/>
+                </Link>
                 {this.getContentBlock()}
             </div>
         )

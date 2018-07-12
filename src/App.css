@@ -5,3 +5,10 @@
 .pt-skeleton {
     display: inline;
 }
+
+.footer {
+    margin-top: 30px;
+    font-family: 'Dosis', sans-serif;
+    width: 100%;
+    text-align: center;
+}

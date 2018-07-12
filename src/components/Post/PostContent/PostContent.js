@@ -1,6 +1,7 @@
 import React from 'react';
 
 import './PostContent.css'
+import {Classes} from '@blueprintjs/core'
 import MathRenderer from './MathRenderer/MathRenderer';
 
 const loremIpsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ac pharetra est, quis venenatis dui.' +
@@ -24,18 +25,18 @@ class PostContent extends React.Component {
     genLoremIpsum() {
         let paragraphs = [];
         for (let i = 0; i < 10; i++) {
-            paragraphs.push(<p key={i} className={'pt-skeleton'}>{loremIpsum + loremIpsum}<br/></p>);
+            paragraphs.push(<p key={i} className={Classes.SKELETON}>{loremIpsum + loremIpsum}<br/></p>);
         }
         return paragraphs.map(e => e);
     }
 
     getContentBlock(input) {
-        if (this.state.loading && !input) {
+        if (this.state.loading || !input) {
             return this.genLoremIpsum();
 
         }
         return (
-            <span className={this.state.loading ? 'pt-skeleton' : ''}>
+            <span className={this.state.loading ? Classes.SKELETON : Classes.RUNNING_TEXT}>
                 {this.state.loading ? this.genLoremIpsum() : ''}
                 <MathRenderer onRenderFinish={this.onRenderFinish} source={input}/>
             </span>

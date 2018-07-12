@@ -5,7 +5,7 @@ import './PostTags.css'
 class PostTags extends React.Component {
     genTagsBlock() {
         if (!this.props.tags) {
-            return <div className={'post-tag-description-container pt-skeleton'}/>
+            return <div className={'post-tag-description-container bp3-skeleton'}/>
         }
         return this.props.tags && this.props.tags.map(e => (
             <Popover hoverCloseDelay={0} hoverOpenDelay={150} position={Position.BOTTOM}

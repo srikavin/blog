@@ -4,7 +4,7 @@ import axios from 'axios';
 export default class AuthService {
     static instance = null;
 
-    constructor(domain) {
+    constructor() {
         this.domain = 'http://localhost:4000/api/v1';
         this.fetch = this.fetch.bind(this);
         this.login = this.login.bind(this);

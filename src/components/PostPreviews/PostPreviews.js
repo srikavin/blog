@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {store} from '../../data/store';
 import PostSnippet from './PostSnippet/PostSnippet';
 
-
 class PostPreviews extends Component {
     constructor(props) {
         super(props);

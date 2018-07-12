@@ -2,8 +2,11 @@
     margin-left: 4px;
 }
 
-.post-tag-description-container.pt-skeleton {
+.post-tag-description-container.bp3-skeleton {
     padding: 5px 150px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 15px;
 }
 
 .post-tag-description-container {

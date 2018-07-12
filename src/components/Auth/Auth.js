@@ -65,8 +65,6 @@ class Auth extends Component {
     render() {
         const {from} = this.props.location.state || {from: {pathname: '/'}};
 
-        console.log(this.state);
-
         if (this.state.redirectToReferrer) {
             return (
                 <Redirect to={from}/>

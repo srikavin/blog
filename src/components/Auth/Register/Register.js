@@ -3,7 +3,7 @@ import {Redirect} from 'react-router-dom'
 import PropTypes from 'prop-types';
 
 import AuthController from '../../../util/AuthController';
-import {Button, Label} from "@blueprintjs/core";
+import {Button, FormGroup} from '@blueprintjs/core';
 
 class Register extends Component {
     constructor(props) {
@@ -57,15 +57,15 @@ class Register extends Component {
 
         return (
             <form onSubmit={this.onSubmit}>
-                <Label text={"Username"} helperText={"(required)"}>
-                    <input className="pt-input" onChange={this.onUsernameChange} value={this.state.username}/>
-                </Label>
-                <Label text={"Email"} helperText={"(required)"}>
-                    <input className="pt-input" onChange={this.onEmailChange} value={this.state.email}/>
-                </Label>
-                <Label text={"Password"} helperText={"(required)"}>
-                    <input className="pt-input" onChange={this.onPasswordChange} value={this.state.password}/>
-                </Label>
+                <FormGroup label={'Username'} labelInfo={'(required)'}>
+                    <input className="bp3-input" onChange={this.onUsernameChange} value={this.state.username}/>
+                </FormGroup>
+                <FormGroup label={'Email'} labelInfo={'(required)'}>
+                    <input className="bp3-input" onChange={this.onEmailChange} value={this.state.email}/>
+                </FormGroup>
+                <FormGroup label={'Password'} labelInfo={'(required)'}>
+                    <input className="bp3-input" onChange={this.onPasswordChange} value={this.state.password}/>
+                </FormGroup>
                 <Button text="Register" type="submit"/>
             </form>
         )

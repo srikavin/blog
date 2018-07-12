@@ -8,7 +8,7 @@ class PostHeader extends React.Component {
         if (!this.props.title) {
             return (
                 <div className={"skeleton-container"}>
-                    <h1 className={"pt-skeleton title " + this.props.className}>Lorem ipsum dolor sit amet</h1>
+                    <h1 className={'bp3-skeleton title ' + this.props.className}>Lorem ipsum dolor sit amet</h1>
                 </div>
             );
         }

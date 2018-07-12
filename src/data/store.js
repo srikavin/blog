@@ -3,10 +3,15 @@ import {HttpAdapter} from 'js-data-http'
 import {userSchema} from './model/user'
 import {tagRelations, tagSchema} from './model/tag';
 import {postRelations, postSchema} from './model/post';
+import auth from '../util/AuthController';
 
 export const adapter = new HttpAdapter({
     basePath: 'http://localhost:4000/api/v1',
-    useFetch: true
+    beforeHTTP(config, opts) {
+        config.headers || (config.headers = {});
+        config.headers['x-access-token'] = auth.getToken();
+        return HttpAdapter.prototype.beforeHTTP.call(this, config, opts);
+    }
 });
 
 export const store = new DataStore();
