@@ -20,7 +20,7 @@ class MarkdownRender extends React.Component {
             ],
             renderers: {
                 ...this.props.renderers,
-                paragraph: (props) => <div>{props.children} {console.log(props)}</div>,
+                paragraph: (props) => <div>{props.children}</div>,
                 link: (props) => <a target={'blank'} href={props.href}>{props.children}</a>,
                 inlineCode: (props) => <HighlightedCode {...props}/>,
                 code: (props) => <HighlightedCode {...props}/>,

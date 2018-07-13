@@ -16,13 +16,13 @@ export const postRelations = {
     belongsTo: {
         user: {
             localField: 'author',
-            foreignKey: 'userId'
+            foreignKey: 'author_id'
         }
     },
     hasMany: {
         tag: {
-            localField: 'tagId',
-            foreignKeys: 'tags'
+            localField: 'tags',
+            localKeys: 'tagIds'
         }
     }
 };

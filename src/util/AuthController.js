@@ -71,14 +71,10 @@ export default class AuthService {
 
     static isTokenExpired(token) {
         try {
-            console.log('Checking expiry');
             const decoded = decode(token);
-            let b = decoded.exp < Date.now() / 1000;
-            console.log('Expired: ' + b);
-            return b;
+            return decoded.exp < Date.now() / 1000;
         }
         catch (err) {
-            console.log('Error occurred');
             console.error(err);
             return false;
         }
@@ -86,9 +82,7 @@ export default class AuthService {
 
     isLoggedIn() {
         const token = AuthService.getToken();
-        let b = !!token && !AuthService.isTokenExpired(token);
-        console.log('Logged in: ' + b);
-        return b;
+        return !!token && !AuthService.isTokenExpired(token);
     }
 
     getUserID() {

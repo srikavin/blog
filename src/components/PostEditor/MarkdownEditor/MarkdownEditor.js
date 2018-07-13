@@ -5,6 +5,8 @@ import ReactMde from 'react-mde';
 import 'react-mde/lib/styles/css/react-mde-all.css';
 import MathRenderer from '../../Post/PostContent/MathRenderer/MathRenderer';
 import SplitPane from 'react-split-pane';
+import isEqual from 'react-fast-compare';
+
 
 class MarkdownEditor extends React.Component {
     constructor(props) {
@@ -14,30 +16,33 @@ class MarkdownEditor extends React.Component {
                 markdown: props.value
             }
         };
-        this.markdownHtml = React.createRef();
         this.handleValueChange = this.handleValueChange.bind(this);
     }
 
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        return this.props.value !== this.state.mdeState.markdown || !isEqual(this.state.mdeState, nextState.mdeState);
+    }
+
     handleValueChange(mdeState) {
-        this.setState({mdeState})
+        this.setState({mdeState});
+        this.props.onChange(mdeState.markdown);
     };
 
     render() {
         return (
-            <div>
-                <SplitPane className={css(styles.container)} split="vertical" minSize={250} defaultSize="50%">
-                    <div className={css(styles.scrollable)}>
-                        <ReactMde
-                            layout="noPreview"
-                            onChange={this.handleValueChange}
-                            editorState={this.state.mdeState}
-                        />
-                    </div>
-                    <div className={css(styles.scrollable)}>
-                        <MathRenderer source={this.state.mdeState.markdown}/>
-                    </div>
-                </SplitPane>
-            </div>
+            <SplitPane className={css(styles.container)} split="vertical" minSize={250} defaultSize="50%"
+                       primary="second">
+                <div className={css(styles.scrollable)}>
+                    <ReactMde
+                        layout="noPreview"
+                        onChange={this.handleValueChange}
+                        editorState={this.state.mdeState}
+                    />
+                </div>
+                <div className={css(styles.scrollable)}>
+                    <MathRenderer source={this.state.mdeState.markdown}/>
+                </div>
+            </SplitPane>
         );
     }
 }

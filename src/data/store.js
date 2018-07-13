@@ -1,6 +1,6 @@
 import {DataStore} from 'js-data'
 import {HttpAdapter} from 'js-data-http'
-import {userSchema} from './model/user'
+import {userRelations, userSchema} from './model/user'
 import {tagRelations, tagSchema} from './model/tag';
 import {postRelations, postSchema} from './model/post';
 import auth from '../util/AuthController';
@@ -14,6 +14,8 @@ export const adapter = new HttpAdapter({
     }
 });
 
+console.log('loaded');
+
 export const store = new DataStore();
 
 store.registerAdapter('http', adapter, {default: true});
@@ -21,7 +23,8 @@ store.registerAdapter('http', adapter, {default: true});
 // The User Resource
 store.defineMapper('user', {
     endpoint: 'users',
-    schema: userSchema
+    schema: userSchema,
+    relations: userRelations
 });
 
 // The Tag Resource
@@ -34,7 +37,6 @@ store.defineMapper('tag', {
 
 // The Post Resource
 store.defineMapper('post', {
-    debug: true,
     endpoint: 'posts',
     schema: postSchema,
     relations: postRelations

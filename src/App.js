@@ -18,8 +18,13 @@ const Post = Loadable({
     loading: DynamicLoading
 });
 
-const PostEditor = Loadable({
-    loader: () => import('./components/PostEditor/PostEditor'),
+const Editor = Loadable({
+    loader: () => import('./components/PostEditor/Editor/Editor'),
+    loading: DynamicLoading
+});
+
+const Creator = Loadable({
+    loader: () => import('./components/PostEditor/Creator/Creator'),
     loading: DynamicLoading
 });
 
@@ -41,7 +46,8 @@ class App extends React.Component {
                     <Route path="/login" component={Auth}/>
                     <Route exact path="/" component={Home}/>
                     <Route exact path="/posts/:slug" component={Post}/>
-                    <Route exact path="/edit/:id" component={PostEditor}/>
+                    <Route exact path="/edit/:id" component={Editor}/>
+                    <Route exact path="/edit/new" component={Creator}/>
                 </Switch>
             </div>
         );

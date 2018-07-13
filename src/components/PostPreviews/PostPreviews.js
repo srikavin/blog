@@ -12,6 +12,7 @@ class PostPreviews extends Component {
 
     componentDidMount() {
         store.findAll('post').then(e => {
+            console.log(e);
             this.setState({
                 posts: e
             })

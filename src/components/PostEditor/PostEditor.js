@@ -1,92 +1,164 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import {css, StyleSheet} from 'aphrodite';
-import {store} from '../../data/store';
 import MarkdownEditor from './MarkdownEditor/MarkdownEditor';
-import {EditableText, NonIdealState, Spinner} from '@blueprintjs/core';
-import {IconNames} from '@blueprintjs/icons'
+import {Button, ButtonGroup, EditableText, H1, NonIdealState} from '@blueprintjs/core';
+import {IconNames} from '@blueprintjs/icons';
+import TagEditor from './TagEditor/TagEditor';
+
+import './PostEditor.css'
+import {Intent} from '@blueprintjs/core/lib/cjs/common/intent';
 
 class PostEditor extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            loading: true
-        }
+        this.onTitleChange = this.onTitleChange.bind(this);
+        this.onTagChange = this.onTagChange.bind(this);
+        this.submitButton = this.submitButton.bind(this);
+        this.onContentsChange = this.onContentsChange.bind(this);
+        this.callSubmitCallback = this.callSubmitCallback.bind(this);
+
+        this.state = {};
+        this._setStateFromProps(props);
     }
 
-    componentDidMount() {
-        store.find('post', this.props.match.params.id)
-            .then((e) => {
-                this.setState({
-                    post: e,
-                    loading: false
-                })
-            })
-            .catch((err) => {
-                console.error(err);
-                this.setState({
-                    error: true,
-                    loading: false
-                })
-            });
+    componentWillReceiveProps(nextProps, nextContext) {
+        console.log(nextProps);
+        this._setStateFromProps(nextProps);
     }
 
-    update() {
-        store.update('post', this.props.match.params.id, {
-            ...this.state.post
-        }).then(e => {
-            this.setState({
-                post: e
-            })
-        }).catch(() => {
-            this.setState({
-                error: true
-            })
+    _setStateFromProps(props) {
+        this.setState({
+            title: props.post.title,
+            tags: props.post.tags,
+            contents: props.post.contents,
+            author: props.post.author,
+            slug: props.post.slug,
+            ...props.post
         });
     }
 
+    onTitleChange(e) {
+        if (this.state.title !== e) {
+            this.setState({
+                title: e
+            });
+        }
+    };
+
+    onContentsChange(e) {
+        this.setState({
+            contents: e
+        });
+    };
+
+    onTagChange(e) {
+        this.setState({
+            tags: e
+        });
+    };
+
     render() {
-        if (this.state.error) {
+        console.log(this.state);
+        if (this.props.error) {
             return <NonIdealState className={css(styles.errorBody)} title={'Unable to edit this post'}
                                   description={'An error occurred while loading the post editor'}
                                   icon={IconNames.ERROR}
             />
         }
 
-        if (this.state.loading || !this.state.post) {
-            return <Spinner className={css(styles.loader)}/>
+        if (this.props.loading || !this.props.post) {
+            return 'Loading...';
         }
 
         return (
             <div className={css(styles.editorContainer)}>
-                <EditableText className={css(styles.title)} value={this.state.post.title} selectAllOnFocus={true}/>
-                <MarkdownEditor value={this.state.post.contents}/>
+                <ButtonGroup minimal={true} className={css(styles.submitButton)}>
+                    {this.submitButton()}
+                    <Button onClick={this.callSubmitCallback} icon={IconNames.DOCUMENT} intent={Intent.SUCCESS}>
+                        Create Draft
+                    </Button>
+                </ButtonGroup>
+                <H1 className={css(styles.titleContainer, styles.title)}>
+                    <EditableText
+                        value={this.state.title}
+                        onChange={this.onTitleChange}
+                        selectAllOnFocus={true} placeholder={'Title'}/>
+                </H1>
+                <div className={css(styles.tagEditorContainer)}>
+                    <TagEditor className={css(styles.tagEditor) + 'tagEditor'} tags={this.state.tags}
+                               onSelectedChange={this.onTagChange}/>
+                </div>
+                <MarkdownEditor onChange={this.onContentsChange} value={this.state.contents}/>
             </div>
         )
+    }
+
+    callSubmitCallback() {
+        let post = {
+            ...this.state
+        };
+        this.props.onSubmit(post);
+    }
+
+    submitButton() {
+        if (this.props.type === 'update') {
+            return (
+                <Button icon={IconNames.ADD} onClick={this.callSubmitCallback} intent={Intent.PRIMARY}>Update
+                    Post</Button>
+            );
+        }
+        if (this.props.type === 'create') {
+            return (
+                <Button icon={IconNames.EDIT} onClick={this.callSubmitCallback} intent={Intent.PRIMARY}>Create
+                    Post</Button>
+            )
+        }
+
+        throw new Error('Invalid type, ' + this.props.type + ', given as a prop to PostEditor');
     }
 }
 
 const styles = StyleSheet.create({
-    editorContainer: {},
-    errorBody: {
-        marginTop: '20px'
+    editorContainer: {
+        position: 'relative',
+        marginTop: '20px',
+        height: '100%'
+    },
+    submitButton: {
+        position: 'absolute',
+        top: '5px',
+        right: '5px'
+    },
+    errorBody: {},
+    titleContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     title: {
-        marginTop: '5px',
-        left: '50%',
-        transform: 'translateX(-50%)',
+        marginBottom: '15px',
         fontFamily: 'Dosis, sans-serif',
         fontSize: '76px',
-        fontWeight: 'lighter',
-        lineHeight: '80px'
+        fontWeight: 'lighter'
     },
-    loader: {
-        marginTop: '20px',
-        width: '20vw',
-        height: '20vh',
-        marginLeft: '40vw',
-        marginRight: '40vw'
+    tagEditor: {},
+    tagEditorContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: '25px'
     }
 });
+
+PostEditor.propTypes = {
+    type: PropTypes.oneOf(['update', 'create']).isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    post: PropTypes.object.isRequired,
+    onSubmitDraft: PropTypes.func,
+    loading: PropTypes.bool,
+    error: PropTypes.bool
+};
 
 export default PostEditor;

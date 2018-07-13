@@ -11,10 +11,10 @@ export const tagSchema = new Schema({
 });
 
 export const tagRelations = {
-    belongsTo: {
+    hasMany: {
         post: {
-            localField: 'id',
-            foreignKey: 'tags'
+            localField: 'posts',
+            foreignKeys: 'tagIds'
         }
     }
 };

@@ -17,10 +17,18 @@
     resize-observer-polyfill "^1.5.0"
     tslib "^1.9.0"
 
-"@blueprintjs/icons@^3.0.0", "@blueprintjs/icons@latest":
+"@blueprintjs/icons@^3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@blueprintjs/icons/-/icons-3.0.0.tgz#2eed041dd52c9feed2758ca526f4505911813a31"
   dependencies:
+    classnames "^2.2"
+    tslib "^1.9.0"
+
+"@blueprintjs/select@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/select/-/select-3.0.0.tgz#736051be2b65d93a62927e403d13cd16beb3b73f"
+  dependencies:
+    "@blueprintjs/core" "^3.0.0"
     classnames "^2.2"
     tslib "^1.9.0"
 
@@ -7009,6 +7017,10 @@ react-dom@^16.4.1:
 react-error-overlay@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-4.0.0.tgz#d198408a85b4070937a98667f500c832f86bd5d4"
+
+react-fast-compare@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-2.0.1.tgz#92c91ac4814aa8cfcfb04780ad1bfff2bbe3a3c6"
 
 react-hot-loader@^4.3.3:
   version "4.3.3"
