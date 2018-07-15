@@ -33,7 +33,6 @@ const Home = Loadable({
     loading: DynamicLoading
 });
 
-
 class App extends React.Component {
     render() {
         return (

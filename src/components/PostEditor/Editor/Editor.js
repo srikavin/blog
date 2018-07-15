@@ -1,11 +1,10 @@
 import React from 'react';
 
-import {store} from '../../../data/store';
 import {css, StyleSheet} from 'aphrodite';
-
 import PostEditor from '../PostEditor';
 import RequireAuth from '../../Auth/RequireAuth/RequireAuth';
 import {Redirect} from 'react-router-dom';
+import {PostStore} from '../../../data/resource/post';
 
 
 class Editor extends React.Component {
@@ -21,7 +20,8 @@ class Editor extends React.Component {
     }
 
     componentDidMount() {
-        store.find('post', this.props.match.params.id)
+        console.log(this.props.match.params.id);
+        PostStore.getById(this.props.match.params.id)
             .then((e) => {
                 console.log(e);
                 this.setState({
@@ -41,22 +41,9 @@ class Editor extends React.Component {
     }
 
     onSubmit(postObj) {
-        postObj.tags = [];
-        postObj.tagIds = [];
-        console.log(postObj);
-        store.update('post', this.props.match.params.id, postObj)
-            .then(e => {
-                this.setState({
-                    post: e,
-                    redirect: '/post/' + e.slug
-                })
-            })
-            .catch((e) => {
-                console.error(e);
-                this.setState({
-                    error: true
-                })
-            });
+        PostStore.updatePost(this.state.post.id, {
+            ...postObj
+        });
     }
 
     onSubmitDraft() {

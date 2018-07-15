@@ -24,7 +24,6 @@ class PostEditor extends React.Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log(nextProps);
         this._setStateFromProps(nextProps);
     }
 
@@ -60,7 +59,6 @@ class PostEditor extends React.Component {
     };
 
     render() {
-        console.log(this.state);
         if (this.props.error) {
             return <NonIdealState className={css(styles.errorBody)} title={'Unable to edit this post'}
                                   description={'An error occurred while loading the post editor'}
@@ -99,6 +97,12 @@ class PostEditor extends React.Component {
         let post = {
             ...this.state
         };
+
+        let tagObjs = post.tags;
+        post.tags = [];
+        delete post.author;
+        tagObjs.forEach((e) => post.tags.push(e.id));
+
         this.props.onSubmit(post);
     }
 

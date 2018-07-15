@@ -1,6 +1,5 @@
 import React from 'react';
 import PostHeader from './PostHeader/PostHeader'
-import {store} from '../../data/store';
 import PostContent from './PostContent/PostContent';
 import {Link} from 'react-router-dom';
 import DocumentTitle from 'react-document-title';
@@ -9,6 +8,7 @@ import {NonIdealState} from '@blueprintjs/core';
 import {IconNames} from '@blueprintjs/icons';
 
 import './Post.css'
+import {PostStore} from '../../data/resource/post';
 
 
 class Post extends React.Component {
@@ -23,6 +23,7 @@ class Post extends React.Component {
     }
 
     onPostChange(post) {
+        console.log(post);
         if (post.length === 0) {
             this.setState({
                 error: true
@@ -34,9 +35,10 @@ class Post extends React.Component {
     }
 
     componentDidMount() {
-        store.findAll('post', {slug: this.props.match.params.slug})
+        PostStore.getBySlug(this.props.match.params.slug)
             .then(this.onPostChange)
-            .catch(() => {
+            .catch((e) => {
+                console.error(e);
                 this.setState({
                     error: true
                 })

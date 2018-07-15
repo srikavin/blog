@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {store} from '../../data/store';
 import PostSnippet from './PostSnippet/PostSnippet';
+import {PostStore} from '../../data/resource/post';
 
 class PostPreviews extends Component {
     constructor(props) {
@@ -11,12 +11,11 @@ class PostPreviews extends Component {
     }
 
     componentDidMount() {
-        store.findAll('post').then(e => {
-            console.log(e);
+        PostStore.getAll().then(e => {
             this.setState({
                 posts: e
-            })
-        })
+            });
+        }).catch(console.error);
     }
 
     render() {

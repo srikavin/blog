@@ -11,8 +11,6 @@
     "axios": "^0.18.0",
     "draft-js": "^0.10.5",
     "highlight.js": "^9.12.0",
-    "js-data": "^3.0.2",
-    "js-data-http": "^3.0.0",
     "jwt-decode": "^2.2.0",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
@@ -51,6 +49,7 @@
     ]
   },
   "devDependencies": {
+    "flow-bin": "^0.76.0",
     "react-app-rewire-hot-loader": "^1.0.1",
     "react-app-rewired": "^1.5.2"
   }

@@ -3,12 +3,14 @@ import {MultiSelect} from '@blueprintjs/select';
 import {Button, MenuItem} from '@blueprintjs/core';
 import {css, StyleSheet} from 'aphrodite';
 import PropTypes from 'prop-types';
+import {TagStore} from '../../../data/resource/tag'
 
 class TagEditor extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            selected: props.tags
+            selected: props.tags,
+            tags: []
         };
         this._onItemSelect = this._onItemSelect.bind(this);
         this._isTagSelected = this._isTagSelected.bind(this);
@@ -19,6 +21,32 @@ class TagEditor extends React.PureComponent {
         this._callUpdateCallback = this._callUpdateCallback.bind(this);
     }
 
+    componentDidMount() {
+        TagStore.getAll().then((e) => {
+            e = e.map((item) => {
+                return {id: item.id, name: item.name, description: item.description}
+            });
+            let toAdd = [];
+            e = e.filter(item => {
+                let result = true;
+                this.state.selected.forEach((stateItem) => {
+                    console.log(stateItem, item);
+                    if (item.id === stateItem.id) {
+                        console.log('removing item');
+                        result = false;
+                        toAdd.push(stateItem);
+                    }
+                });
+                return result;
+            });
+            e.push(...toAdd);
+            console.log(e, this.props.tags);
+            this.setState({
+                tags: e
+            });
+        });
+    }
+
     render() {
         const clearButton = this.state.selected.length > 0 ?
             <Button icon="cross" minimal={true} onClick={this._handleClear}/> : null;
@@ -26,7 +54,7 @@ class TagEditor extends React.PureComponent {
         return (
             <MultiSelect
                 className={css(styles.input) + ' ' + this.props.className}
-                items={this.props.tags}
+                items={this.state.tags}
                 itemRenderer={this._itemRenderer}
                 itemPredicate={this._itemPredicate}
                 onItemSelect={this._onItemSelect}
@@ -59,7 +87,7 @@ class TagEditor extends React.PureComponent {
         return (
             <MenuItem
                 active={modifiers.active}
-                key={tag.name}
+                key={tag.id}
                 label={tag.name}
                 onClick={handleClick}
                 icon={this._isTagSelected(tag) ? 'tick' : 'blank'}
@@ -108,10 +136,7 @@ class TagEditor extends React.PureComponent {
 }
 
 const styles = StyleSheet.create({
-    input: {
-        pointerEvents: 'none',
-        opacity: 0.6
-    }
+    input: {}
 });
 
 TagEditor.propTypes = {
