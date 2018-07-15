@@ -3,6 +3,7 @@ import axios, {_v} from './_common';
 import {Identifier} from './identifier'
 
 export type TagSchema = {
+    id: Identifier;
     name: string;
     description: string;
 }

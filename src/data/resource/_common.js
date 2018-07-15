@@ -1,6 +1,6 @@
 // @flow
 import axios, {AxiosInstance} from 'axios';
-import authService from '../../util/AuthController';
+import {Auth} from './auth.js'
 import type {Identifier} from './identifier';
 
 console.log(process.env.NODE_ENV);
@@ -24,7 +24,7 @@ export function _v(url: string, vars: any): string {
 }
 
 export function auth(axios: AxiosInstance) {
-    axios.defaults.headers['x-access-token'] = authService.getToken();
+    axios.defaults.headers['x-access-token'] = Auth.getToken();
     return axios;
 }
 

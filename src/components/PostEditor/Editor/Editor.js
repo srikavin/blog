@@ -29,7 +29,6 @@ class Editor extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props.match.params.id);
         PostStore.getById(this.props.match.params.id)
             .then((e) => {
                 this.setState({
@@ -40,6 +39,7 @@ class Editor extends React.Component {
                 })
             })
             .catch((err) => {
+                console.error(err);
                 this.setState({
                     error: true,
                     loading: false

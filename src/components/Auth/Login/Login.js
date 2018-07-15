@@ -3,12 +3,11 @@ import {Redirect} from 'react-router-dom'
 import PropTypes from 'prop-types';
 import {Button, FormGroup} from '@blueprintjs/core'
 
-import AuthController from '../../../util/AuthController';
+import {Auth} from '../../../data/resource/auth';
 
 class Login extends Component {
     constructor(props) {
         super(props);
-        this.auth = AuthController.getInstance();
         this.state = {
             redirectToReferrer: false,
             email: '',
@@ -34,7 +33,7 @@ class Login extends Component {
     onSubmit(event) {
         this.props.onSubmit();
         event.preventDefault();
-        this.auth.login(this.state.email, this.state.password)
+        Auth.login(this.state.email, this.state.password)
             .then(res => this.props.callback(res))
             .catch(this.props.onError);
     }

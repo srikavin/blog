@@ -39,11 +39,9 @@ class PostEditor extends React.Component {
     }
 
     onTitleChange(e) {
-        if (this.state.title !== e) {
-            this.setState({
-                title: e
-            });
-        }
+        this.setState({
+            title: e
+        });
     };
 
     onContentsChange(e) {
@@ -97,11 +95,6 @@ class PostEditor extends React.Component {
         let post = {
             ...this.state
         };
-
-        let tagObjs = post.tags;
-        post.tags = [];
-        delete post.author;
-        tagObjs.forEach((e) => post.tags.push(e.id));
 
         this.props.onSubmit(post);
     }

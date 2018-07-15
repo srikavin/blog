@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Auth from '../../../util/AuthController';
+import {Auth} from '../../../data/resource/auth';
 import {Redirect} from 'react-router-dom';
 
 class RequireAuth extends React.Component {
@@ -9,11 +9,8 @@ class RequireAuth extends React.Component {
         this.state = {};
     }
 
-    componentDidMount() {
-    }
-
     render() {
-        if (Auth.getInstance().isLoggedIn()) {
+        if (Auth.isLoggedIn()) {
             return null;
         }
         return <Redirect to={{pathname: '/login', state: {from: this.props.from}}}/>

@@ -2,13 +2,12 @@ import React, {Component} from 'react';
 import {Redirect} from 'react-router-dom'
 import PropTypes from 'prop-types';
 
-import AuthController from '../../../util/AuthController';
+import {Auth} from '../../../data/resource/auth';
 import {Button, FormGroup} from '@blueprintjs/core';
 
 class Register extends Component {
     constructor(props) {
         super(props);
-        this.auth = AuthController.getInstance();
         this.onEmailChange = this.onEmailChange.bind(this);
         this.onPasswordChange = this.onPasswordChange.bind(this);
         this.onUsernameChange = this.onUsernameChange.bind(this);
@@ -41,7 +40,7 @@ class Register extends Component {
     onSubmit(event) {
         this.props.onSubmit();
         event.preventDefault();
-        this.auth.register(this.state.username, this.state.email, this.state.password)
+        Auth.register(this.state.username, this.state.email, this.state.password)
             .then(res => this.props.callback(res))
             .catch(this.props.onError);
     }

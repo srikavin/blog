@@ -44,9 +44,9 @@ class App extends React.Component {
                 <Switch>
                     <Route path="/login" component={Auth}/>
                     <Route exact path="/" component={Home}/>
-                    <Route exact path="/posts/:slug" component={Post}/>
                     <Route exact path="/edit/:id" component={Editor}/>
-                    <Route exact path="/edit/new" component={Creator}/>
+                    <Route exact path="/posts/new" component={Creator}/>
+                    <Route exact path="/posts/:slug" component={Post}/>
                 </Switch>
             </div>
         );
