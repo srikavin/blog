@@ -35,12 +35,19 @@ class AuthFetcher implements AuthService {
 
     _setToken;
     callOnChange;
+    logout;
+    login;
+    register;
+
     _onChangeFunc = (user) => {
     };
 
     constructor() {
         this._setToken = this._setToken.bind(this);
         this.callOnChange = this.callOnChange.bind(this);
+        this.logout = this.logout.bind(this);
+        this.login = this.login.bind(this);
+        this.register = this.register.bind(this);
     }
 
     login(email, password) {
@@ -88,6 +95,7 @@ class AuthFetcher implements AuthService {
         if (this.isLoggedIn()) {
             return this.userPromise;
         }
+        return Promise.resolve({});
     }
 
     getToken() {
@@ -124,7 +132,9 @@ if (token !== null) {
 }
 
 window.addEventListener('storage', function (e) {
-    console.log(e);
+    if (e.newValue === undefined || e.newValue === null) {
+        return;
+    }
     if (e.key === 'jwt_token' && (e.oldValue !== e.newValue)) {
         AuthInstance.checkLogin(e.newValue);
     }

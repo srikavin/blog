@@ -26,9 +26,11 @@ class Navigation extends React.Component {
 
     componentDidMount() {
         Auth.onChange(this.updateUser);
-        this.setState({
-            user: Auth.getUser()
-        })
+        Auth.getUser().then(e => {
+            this.setState({
+                user: e
+            });
+        });
     }
 
     updateUser(user) {
