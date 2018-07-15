@@ -7,7 +7,7 @@ const baseURL = process.env.NODE_ENV === 'production' ? 'http://ssh.sharath.pro:
 
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: baseURL,
-    timeout: 3500
+    timeout: 30000
 });
 
 export function _v(url: string, vars: any): string {
