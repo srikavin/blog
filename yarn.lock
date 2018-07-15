@@ -32,6 +32,12 @@
     classnames "^2.2"
     tslib "^1.9.0"
 
+"@ibrahima/remark-math@^1.1.0-alpha.2":
+  version "1.1.0-alpha.2"
+  resolved "https://registry.yarnpkg.com/@ibrahima/remark-math/-/remark-math-1.1.0-alpha.2.tgz#a6b2d6039bb69dce6ed253f52875d0152afd3652"
+  dependencies:
+    trim-trailing-lines "^1.1.0"
+
 "@types/dom4@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@types/dom4/-/dom4-2.0.0.tgz#00dc42fed6b36a7a6dabb8f7a9c9e678ee644e05"
@@ -7262,12 +7268,6 @@ regjsparser@^0.1.4:
 relateurl@0.2.x:
   version "0.2.7"
   resolved "https://registry.yarnpkg.com/relateurl/-/relateurl-0.2.7.tgz#54dbf377e51440aca90a4cd274600d3ff2d888a9"
-
-remark-math@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/remark-math/-/remark-math-1.0.4.tgz#ced46473075ff99e4678a154a1a3d0dde403a9f2"
-  dependencies:
-    trim-trailing-lines "^1.1.0"
 
 remark-parse@^5.0.0:
   version "5.0.0"

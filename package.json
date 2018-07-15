@@ -26,7 +26,7 @@
     "react-scripts": "^1.1.4",
     "react-split-pane": "^0.1.82",
     "react-syntax-highlighter": "^8.0.1",
-    "remark-math": "^1.0.4",
+    "@ibrahima/remark-math": "^1.1.0-alpha.2",
     "remark-parse": "^5.0.0"
   },
   "scripts": {

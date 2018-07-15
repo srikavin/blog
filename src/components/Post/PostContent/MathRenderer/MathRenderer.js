@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactMarkdown from 'react-markdown';
-import RemarkMathPlugin from 'remark-math';
+import RemarkMathPlugin from '@ibrahima/remark-math';
 import MathJax from 'react-mathjax';
 import PropTypes from 'prop-types';
 import HighlightedCode from './HighlightedCode/HighlightedCode';
