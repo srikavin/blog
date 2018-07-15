@@ -83,8 +83,7 @@ class PostEditor extends React.Component {
                         selectAllOnFocus={true} placeholder={'Title'}/>
                 </H1>
                 <div className={css(styles.tagEditorContainer)}>
-                    <TagEditor className={css(styles.tagEditor) + 'tagEditor'} tags={this.state.tags}
-                               onSelectedChange={this.onTagChange}/>
+                    <TagEditor tags={this.state.tags} onSelectedChange={this.onTagChange}/>
                 </div>
                 <MarkdownEditor onChange={this.onContentsChange} value={this.state.contents}/>
             </div>
@@ -140,7 +139,6 @@ const styles = StyleSheet.create({
         fontSize: '76px',
         fontWeight: 'lighter'
     },
-    tagEditor: {},
     tagEditorContainer: {
         display: 'flex',
         justifyContent: 'center',

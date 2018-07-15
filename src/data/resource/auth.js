@@ -26,7 +26,7 @@ type TokenSchema = {
     id: Identifier;
 }
 
-let onChange = () => {
+let onChange = (user) => {
 };
 
 let AuthFetcher: AuthService = {
@@ -55,6 +55,7 @@ let AuthFetcher: AuthService = {
     logout() {
         localStorage.removeItem('jwt_token');
         token = undefined;
+        onChange({});
     },
     getUser() {
         return user;
@@ -70,10 +71,21 @@ if (token !== null) {
     AuthFetcher.checkLogin(token);
 }
 
+window.addEventListener('storage', function (e) {
+    console.log(e);
+    if (e.key === 'jwt_token' && (e.oldValue !== e.newValue)) {
+        AuthFetcher.checkLogin(e.newValue);
+    }
+});
+
 let user: UserSchema | any = {};
 
 function _setToken(_token) {
     token = _token;
+    if (_token === null || _token === undefined) {
+        AuthFetcher.logout();
+        return;
+    }
     localStorage.setItem('jwt_token', _token);
     let data: TokenSchema = decode(token);
     UserStore

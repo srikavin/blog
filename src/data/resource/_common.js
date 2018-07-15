@@ -3,8 +3,6 @@ import axios, {AxiosInstance} from 'axios';
 import {Auth} from './auth.js'
 import type {Identifier} from './identifier';
 
-console.log(process.env.NODE_ENV);
-
 const baseURL = process.env.NODE_ENV === 'production' ? 'http://ssh.sharath.pro:2087/api/v1' : 'http://localhost:4000/api/v1';
 
 const axiosInstance: AxiosInstance = axios.create({
@@ -13,8 +11,7 @@ const axiosInstance: AxiosInstance = axios.create({
 });
 
 export function _v(url: string, vars: any): string {
-    console.log(url, vars);
-    url.split('\/').forEach((e) => {
+    url.split('/').forEach((e) => {
         if (e.startsWith(':')) {
             url = url.replace(e, vars[e.substring(1)]);
         }

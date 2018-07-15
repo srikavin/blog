@@ -4,32 +4,24 @@ import DocumentTitle from 'react-document-title';
 import {hot} from 'react-hot-loader'
 
 import './App.css';
-import Navigation from './components/Navigation/Navigation';
 import {DynamicLoading} from './components/DynamicLoading/DynamicLoading';
 import Loadable from 'react-loadable';
+import Navigation from './components/Navigation/Navigation';
+import Post from './components/Post/Post';
+import Home from './components/Home/Home';
 
 const Auth = Loadable({
-    loader: () => import('./components/Auth/Auth'),
-    loading: DynamicLoading
-});
-
-const Post = Loadable({
-    loader: () => import('./components/Post/Post'),
+    loader: () => import(/* webpackChunkName: "auth" */'./components/Auth/Auth'),
     loading: DynamicLoading
 });
 
 const Editor = Loadable({
-    loader: () => import('./components/PostEditor/Editor/Editor'),
+    loader: () => import(/* webpackChunkName: "editor" */'./components/PostEditor/Editor/Editor'),
     loading: DynamicLoading
 });
 
 const Creator = Loadable({
-    loader: () => import('./components/PostEditor/Creator/Creator'),
-    loading: DynamicLoading
-});
-
-const Home = Loadable({
-    loader: () => import('./components/Home/Home'),
+    loader: () => import(/* webpackChunkName: "creator" */'./components/PostEditor/Creator/Creator'),
     loading: DynamicLoading
 });
 

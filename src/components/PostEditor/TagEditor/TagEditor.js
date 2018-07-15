@@ -5,7 +5,7 @@ import {css, StyleSheet} from 'aphrodite';
 import PropTypes from 'prop-types';
 import {TagStore} from '../../../data/resource/tag'
 
-class TagEditor extends React.PureComponent {
+class TagEditor extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -30,9 +30,7 @@ class TagEditor extends React.PureComponent {
             e = e.filter(item => {
                 let result = true;
                 this.state.selected.forEach((stateItem) => {
-                    console.log(stateItem, item);
                     if (item.id === stateItem.id) {
-                        console.log('removing item');
                         result = false;
                         toAdd.push(stateItem);
                     }
@@ -40,7 +38,6 @@ class TagEditor extends React.PureComponent {
                 return result;
             });
             e.push(...toAdd);
-            console.log(e, this.props.tags);
             this.setState({
                 tags: e
             });
@@ -59,17 +56,15 @@ class TagEditor extends React.PureComponent {
                 itemPredicate={this._itemPredicate}
                 onItemSelect={this._onItemSelect}
                 tagRenderer={this._tagRenderer}
-                popOverProps={{
-                    className: this.props.className,
-                    targetClassName: this.props.className,
-                    popoverClassName: this.props.className
+                popoverProps={{
+                    minimal: true
                 }}
                 tagInputProps={{
-                    tagProps: {minimal: true},
                     onRemove: this._handleTagRemove,
                     rightElement: clearButton,
                     fill: true
                 }}
+                resetOnSelect={true}
                 noResults={<MenuItem disabled={true} text="No results."/>}
                 selectedItems={this.state.selected}
             />

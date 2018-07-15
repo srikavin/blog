@@ -50,11 +50,16 @@ class Editor extends React.Component {
     onSubmit(postObj) {
         PostStore.updatePost(this.state.post.id, {
             ...postObj
-        }).then(() => {
+        }).then((e) => {
             EditorToaster.show({
                 message: 'Updated successfully',
                 intent: Intent.SUCCESS,
-                icon: IconNames.TICK
+                icon: IconNames.TICK,
+                action: {
+                    target: '_blank',
+                    href: `/posts/${e.slug}`,
+                    text: 'View Post'
+                }
             })
         }).catch(err => {
             EditorToaster.show({

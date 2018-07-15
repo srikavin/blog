@@ -7,6 +7,7 @@
     "@blueprintjs/core": "^3.0.0",
     "@blueprintjs/icons": "^3.0.0",
     "@blueprintjs/select": "^3.0.0",
+    "@ibrahima/remark-math": "^1.1.0-alpha.2",
     "aphrodite": "^2.2.2",
     "axios": "^0.18.0",
     "draft-js": "^0.10.5",
@@ -26,7 +27,6 @@
     "react-scripts": "^1.1.4",
     "react-split-pane": "^0.1.82",
     "react-syntax-highlighter": "^8.0.1",
-    "@ibrahima/remark-math": "^1.1.0-alpha.2",
     "remark-parse": "^5.0.0"
   },
   "scripts": {

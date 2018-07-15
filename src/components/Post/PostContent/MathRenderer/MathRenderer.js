@@ -6,11 +6,6 @@ import PropTypes from 'prop-types';
 import HighlightedCode from './HighlightedCode/HighlightedCode';
 
 class MarkdownRender extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-
     render() {
         const newProps = {
             ...this.props.options,
@@ -21,7 +16,7 @@ class MarkdownRender extends React.Component {
             renderers: {
                 ...this.props.renderers,
                 paragraph: (props) => <div>{props.children}</div>,
-                link: (props) => <a target={'blank'} href={props.href}>{props.children}</a>,
+                link: (props) => <a target={'_blank'} href={props.href}>{props.children}</a>,
                 inlineCode: (props) => <HighlightedCode {...props}/>,
                 code: (props) => <HighlightedCode {...props}/>,
                 math: (props) =>

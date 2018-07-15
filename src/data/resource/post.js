@@ -99,6 +99,7 @@ let PostFetcher: PostResource = {
             .then(normalizePostArray);
     },
     updatePost(id: Identifier, post: PostSchema) {
+        restorePost(post);
         auth(axios);
         return axios.put(_v('/posts/:id', {id: id}), post)
             .then((e) => e.data)
