@@ -3,7 +3,9 @@ import axios, {AxiosInstance} from 'axios';
 import authService from '../../util/AuthController';
 import type {Identifier} from './identifier';
 
-const baseURL = 'http://localhost:4000/api/v1';
+console.log(process.env.NODE_ENV);
+
+const baseURL = process.env.NODE_ENV === 'production' ? 'http://ssh.sharath.pro:4000/api/v1' : 'http://localhost:4000/api/v1';
 
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: baseURL,

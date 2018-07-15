@@ -5,15 +5,24 @@ import PostEditor from '../PostEditor';
 import RequireAuth from '../../Auth/RequireAuth/RequireAuth';
 import {Redirect} from 'react-router-dom';
 import {PostStore} from '../../../data/resource/post';
+import {Intent, Position, Toast, Toaster} from '@blueprintjs/core';
+import {IconNames} from '@blueprintjs/icons';
 
+const EditorToaster = Toaster.create({
+    className: 'recipe-toaster',
+    position: Position.TOP
+});
 
 class Editor extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            loading: true
+            loading: true,
+            toasts: []
         };
+
+        this.toaster = React.createRef();
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onSubmitDraft = this.onSubmitDraft.bind(this)
@@ -23,7 +32,6 @@ class Editor extends React.Component {
         console.log(this.props.match.params.id);
         PostStore.getById(this.props.match.params.id)
             .then((e) => {
-                console.log(e);
                 this.setState({
                     post: e
                 });
@@ -32,7 +40,6 @@ class Editor extends React.Component {
                 })
             })
             .catch((err) => {
-                console.error(err);
                 this.setState({
                     error: true,
                     loading: false
@@ -43,30 +50,35 @@ class Editor extends React.Component {
     onSubmit(postObj) {
         PostStore.updatePost(this.state.post.id, {
             ...postObj
-        });
+        }).then(() => {
+            EditorToaster.show({
+                message: 'Updated successfully',
+                intent: Intent.SUCCESS,
+                icon: IconNames.TICK
+            })
+        }).catch(err => {
+            EditorToaster.show({
+                message: 'Failed to update. Error was logged to console.',
+                intent: Intent.DANGER,
+                icon: IconNames.CROSS
+            });
+            console.error(err);
+
+        })
     }
 
     onSubmitDraft() {
-        store.update('post', this.props.match.params.id, {
-            ...this.state.post
-        }).then(e => {
-            this.setState({
-                post: e
-            })
-        }).catch(() => {
-            this.setState({
-                error: true
-            })
-        });
     }
 
     render() {
-        console.log(this.state);
         if (!this.state.post) {
             return 'Loading...';
         }
         return (
             <div className={css(styles.container)}>
+                <Toaster position={Position.TOP_RIGHT} ref={this.toaster}>
+                    {this.state.toasts.map(toast => <Toast {...toast} />)}
+                </Toaster>
                 <RequireAuth from={this.props.match.url}/>
                 {this.state.redirect ? <Redirect to={this.state.redirect}/> : ''}
                 <PostEditor
