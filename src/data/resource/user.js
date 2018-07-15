@@ -16,7 +16,8 @@ interface UserResource {
 
 let UserFetcher: UserResource = {
     getById(id: Identifier): Promise<AxiosResponse<UserSchema>> {
-        return axios.get(_v('/users/:id', {id: id}));
+        return axios.get(_v('/users/:id', {id: id}))
+            .then(e => e.data);
     }
 };
 

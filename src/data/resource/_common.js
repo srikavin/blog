@@ -5,7 +5,7 @@ import type {Identifier} from './identifier';
 
 console.log(process.env.NODE_ENV);
 
-const baseURL = process.env.NODE_ENV === 'production' ? 'http://ssh.sharath.pro:4000/api/v1' : 'http://localhost:4000/api/v1';
+const baseURL = process.env.NODE_ENV === 'production' ? 'http://ssh.sharath.pro:2087/api/v1' : 'http://localhost:4000/api/v1';
 
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: baseURL,

@@ -105,6 +105,7 @@ let PostFetcher: PostResource = {
             .then(normalizePost);
     },
     createPost(post: PostSchema) {
+        restorePost(post);
         auth(axios);
         return axios.post('/posts', post)
             .then((e) => e.data)

@@ -34,7 +34,8 @@ class Auth extends Component {
         });
     }
 
-    onError() {
+    onError(err) {
+        console.error(err);
         clearTimeout(this.state.timeout);
         let timeout = setTimeout(() => {
             this.setState({error: false});

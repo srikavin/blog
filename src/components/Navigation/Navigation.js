@@ -18,8 +18,22 @@ class Navigation extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            auth: Auth
+            auth: Auth,
+            user: {}
         };
+        this.updateUser = this.updateUser.bind(this);
+    }
+
+    componentDidMount() {
+        Auth.onChange(this.updateUser);
+        this.setState({
+            user: Auth.getUser()
+        })
+    }
+
+    updateUser(user) {
+        console.log(user);
+        this.setState({user});
     }
 
     render() {
@@ -41,7 +55,7 @@ class Navigation extends React.Component {
                                     <MenuItem text="Profile" icon="user"/>
                                     <MenuItem onClick={this.state.auth.logout} text="Logout" icon="log-out"/>
                                 </Menu>} position={Position.BOTTOM}>
-                                    <Button icon="user" text="Username should be here"/>
+                                    <Button icon="user" text={this.state.user.username}/>
                                 </Popover>
                             </div>
                         ) : (

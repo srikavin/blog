@@ -15,22 +15,19 @@ interface AuthService {
 
     logout(): void;
 
-    getUser(): Promise<UserSchema>;
+    getUser(): UserSchema | any;
 
     getToken(): string | void;
+
+    checkLogin(token: string): string;
 }
 
 type TokenSchema = {
     id: Identifier;
 }
 
-let token: (string | void) = localStorage.getItem('jwt_token');
-
-function _setToken(_token) {
-    token = _token;
-    localStorage.setItem('jwt_token', _token);
-    return _token;
-}
+let onChange = () => {
+};
 
 let AuthFetcher: AuthService = {
     login(email, password) {
@@ -44,26 +41,50 @@ let AuthFetcher: AuthService = {
             .then(_setToken);
     },
     isLoggedIn() {
-        return token !== undefined;
+        return token !== undefined && token !== null;
+    },
+    onChange(f) {
+        onChange = f;
+    },
+    checkLogin(token) {
+        axios.defaults.headers['x-access-token'] = token;
+        return axios.get('/auth/me')
+            .then((e) => e.data.token)
+            .then(_setToken);
     },
     logout() {
         localStorage.removeItem('jwt_token');
         token = undefined;
     },
     getUser() {
-        return new Promise((resolve, reject) => {
-            if (!this.isLoggedIn()) {
-                reject('Not logged in');
-            }
-
-            let data: TokenSchema = decode(token);
-
-            UserStore.getById(data.id).then(resolve);
-        });
+        return user;
     },
     getToken() {
         return token;
     }
 };
+
+
+let token: (string | any) = localStorage.getItem('jwt_token');
+if (token !== null) {
+    AuthFetcher.checkLogin(token);
+}
+
+let user: UserSchema | any = {};
+
+function _setToken(_token) {
+    token = _token;
+    localStorage.setItem('jwt_token', _token);
+    let data: TokenSchema = decode(token);
+    UserStore
+        .getById(data.id)
+        .then(e => {
+            user = e;
+            return user;
+        })
+        .then(onChange);
+
+    return _token;
+}
 
 export const Auth: AuthService = AuthFetcher;
