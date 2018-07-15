@@ -25,6 +25,8 @@ interface PostResource {
     getBySlug(slug: string): Promise<Array<PostSchema>>;
 
     updatePost(id: Identifier, post: PostSchema): Promise<PostSchema>;
+
+    createPost(post: PostSchema): Promise<PostSchema>;
 }
 
 function normalizePost(post: PostSchema): Promise<PostSchema> {
@@ -74,10 +76,14 @@ function normalizePostArray(posts: Array<PostSchema>): Promise<PostSchema[]> {
 }
 
 function restorePost(post: PostSchema) {
-    let tagObjs = post.tags;
-    post.tags = [];
-    delete post.author;
-    tagObjs.forEach((e) => post.tags.push(e.id));
+    if (Array.isArray(post.tags)) {
+        let tagObjs = post.tags;
+        post.tags = [];
+        tagObjs.forEach((e) => post.tags.push(e.id));
+    }
+    if (typeof post.author === 'object') {
+        post.author = post.author.id;
+    }
 }
 
 let PostFetcher: PostResource = {

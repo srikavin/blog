@@ -5,6 +5,7 @@ import PostEditor from '../PostEditor';
 import RequireAuth from '../../Auth/RequireAuth/RequireAuth';
 import {Redirect} from 'react-router-dom';
 import {PostStore} from '../../../data/resource/post';
+import {Auth} from '../../../data/resource/auth';
 import {Intent, Position, Toast, Toaster} from '@blueprintjs/core';
 import {IconNames} from '@blueprintjs/icons';
 
@@ -19,7 +20,14 @@ class Editor extends React.Component {
 
         this.state = {
             loading: true,
-            toasts: []
+            toasts: [],
+            post: {
+                id: '',
+                title: '',
+                contents: '',
+                slug: '',
+                tags: []
+            }
         };
 
         this.toaster = React.createRef();
@@ -29,30 +37,31 @@ class Editor extends React.Component {
     }
 
     componentDidMount() {
-
-        this.setState({
-            post: {
-                id: '',
-                title: '',
-                contents: '',
-                tags: []
-            },
-            loading: false
-        })
+        Auth.getUser().then(user => {
+            this.setState({
+                loading: false,
+                post: {
+                    ...this.state.post,
+                    author: user
+                }
+            });
+        });
     }
 
     onSubmit(postObj) {
-        PostStore.createPost(this.state.post.id, {
+        PostStore.createPost({
             ...postObj
         }).then((e) => {
             EditorToaster.show({
                 message: 'Updated successfully',
                 intent: Intent.SUCCESS,
-                icon: IconNames.TICK
+                icon: IconNames.TICK,
+                action: {
+                    target: '_blank',
+                    href: `/posts/${e.slug}`,
+                    text: 'View Post'
+                }
             });
-            this.setState({
-                redirect: `/posts/${e.id}`
-            })
         }).catch(err => {
             EditorToaster.show({
                 message: 'Failed to update. Error was logged to console.',
@@ -60,7 +69,6 @@ class Editor extends React.Component {
                 icon: IconNames.CROSS
             });
             console.error(err);
-
         })
     }
 
@@ -71,6 +79,7 @@ class Editor extends React.Component {
         if (!this.state.post) {
             return 'Loading...';
         }
+        console.log(this.state.post);
         return (
             <div className={css(styles.container)}>
                 <RequireAuth from={this.props.match.url}/>

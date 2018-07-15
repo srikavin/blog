@@ -20,83 +20,114 @@ interface AuthService {
     getToken(): string | void;
 
     checkLogin(token: string): string;
+
+    onChange(f: (user: UserSchema) => void): void;
 }
 
 type TokenSchema = {
     id: Identifier;
 }
 
-let onChange = (user) => {
-};
 
-let AuthFetcher: AuthService = {
+class AuthFetcher implements AuthService {
+    user: ?UserSchema;
+    userPromise = Promise.resolve({});
+
+    _setToken;
+    callOnChange;
+    _onChangeFunc = (user) => {
+    };
+
+    constructor() {
+        this._setToken = this._setToken.bind(this);
+        this.callOnChange = this.callOnChange.bind(this);
+    }
+
     login(email, password) {
         return axios.post('/auth/login', {email, password})
             .then((e) => e.data.token)
-            .then(_setToken);
-    },
+            .then(this._setToken);
+    }
+
     register(email, password, username) {
         return axios.post('/auth/register', {email, username, password})
             .then((e) => e.data.token)
-            .then(_setToken);
-    },
+            .then(this._setToken);
+    }
+
     isLoggedIn() {
         return token !== undefined && token !== null;
-    },
+    }
+
+    callOnChange(user) {
+        this._onChangeFunc(user || {});
+        return user;
+    }
+
     onChange(f) {
-        onChange = f;
-    },
+        this._onChangeFunc = f;
+    }
+
     checkLogin(token) {
         axios.defaults.headers['x-access-token'] = token;
         return axios.get('/auth/me')
             .then((e) => e.data.token)
-            .then(_setToken);
-    },
+            .then(this._setToken);
+    }
+
     logout() {
         localStorage.removeItem('jwt_token');
         token = undefined;
-        onChange({});
-    },
+        this.callOnChange({});
+    }
+
     getUser() {
-        return user;
-    },
+        if (this.user) {
+            return Promise.resolve(this.user);
+        }
+        if (this.isLoggedIn()) {
+            return this.userPromise;
+        }
+    }
+
     getToken() {
         return token;
     }
-};
+
+    _setToken(_token) {
+        token = _token;
+        localStorage.setItem('jwt_token', _token);
+        if (_token === null || _token === undefined) {
+            this.logout();
+            return;
+        }
+
+        let data: TokenSchema = decode(token);
+
+        this.userPromise = UserStore.getById(data.id)
+            .then(e => {
+                this.user = e;
+                return this.user;
+            })
+            .then(this.callOnChange);
+
+        return _token;
+    }
+}
+
+let AuthInstance = new AuthFetcher();
 
 
 let token: (string | any) = localStorage.getItem('jwt_token');
 if (token !== null) {
-    AuthFetcher.checkLogin(token);
+    AuthInstance.checkLogin(token);
 }
 
 window.addEventListener('storage', function (e) {
     console.log(e);
     if (e.key === 'jwt_token' && (e.oldValue !== e.newValue)) {
-        AuthFetcher.checkLogin(e.newValue);
+        AuthInstance.checkLogin(e.newValue);
     }
 });
 
-let user: UserSchema | any = {};
-
-function _setToken(_token) {
-    token = _token;
-    if (_token === null || _token === undefined) {
-        AuthFetcher.logout();
-        return;
-    }
-    localStorage.setItem('jwt_token', _token);
-    let data: TokenSchema = decode(token);
-    UserStore
-        .getById(data.id)
-        .then(e => {
-            user = e;
-            return user;
-        })
-        .then(onChange);
-
-    return _token;
-}
-
-export const Auth: AuthService = AuthFetcher;
+export const Auth: AuthService = AuthInstance;
