@@ -76,10 +76,6 @@ class Editor extends React.Component {
     }
 
     render() {
-        if (!this.state.post) {
-            return 'Loading...';
-        }
-        console.log(this.state.post);
         return (
             <div className={css(styles.container)}>
                 <RequireAuth from={this.props.match.url}/>

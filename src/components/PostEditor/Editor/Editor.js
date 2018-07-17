@@ -76,9 +76,6 @@ class Editor extends React.Component {
     }
 
     render() {
-        if (!this.state.post) {
-            return 'Loading...';
-        }
         return (
             <div className={css(styles.container)}>
                 <Toaster position={Position.TOP_RIGHT} ref={this.toaster}>

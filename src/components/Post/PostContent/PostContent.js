@@ -36,7 +36,7 @@ class PostContent extends React.Component {
 
         }
         return (
-            <span className={this.state.loading ? Classes.SKELETON : Classes.RUNNING_TEXT}>
+            <span className={this.state.loading ? Classes.SKELETON : ''}>
                 {this.state.loading ? this.genLoremIpsum() : ''}
                 <MathRenderer onRenderFinish={this.onRenderFinish} source={input}/>
             </span>

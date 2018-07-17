@@ -18,6 +18,7 @@ class Post extends React.Component {
 
         this.state = {
             error: false,
+            loading: true,
             post: {}
         }
     }
@@ -30,7 +31,8 @@ class Post extends React.Component {
             })
         }
         this.setState({
-            post: post[0] || {}
+            post: post[0] || {},
+            loading: false
         });
     }
 
@@ -58,8 +60,15 @@ class Post extends React.Component {
         }
         return (
             <div>
-                {this.state.post.title ? <DocumentTitle title={this.state.post.title}/> : ''}
-                <PostHeader className="header" title={this.state.post.title} tags={this.state.post.tags}/>
+                {!this.state.loading ? <DocumentTitle title={this.state.post.title}/> : ''}
+                <PostHeader loading={this.state.loading}
+                            className="header"
+                            author={this.state.post.author}
+                            title={this.state.post.title}
+                            tags={this.state.post.tags}
+                            createdTime={this.state.post.createdAt}
+                            modifiedTime={this.state.post.updatedAt}
+                />
                 <PostContent content={this.state.post.contents}/>
             </div>
         )

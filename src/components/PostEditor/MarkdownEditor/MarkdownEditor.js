@@ -12,19 +12,17 @@ class MarkdownEditor extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            mdeState: {
-                markdown: props.value
-            }
+            markdown: props.value
         };
         this.handleValueChange = this.handleValueChange.bind(this);
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        return this.props.value !== this.state.mdeState.markdown || !isEqual(this.state.mdeState, nextState.mdeState);
+        return this.props.value !== this.state.markdown || !isEqual(this.state, nextState);
     }
 
     handleValueChange(mdeState) {
-        this.setState({mdeState});
+        this.setState(mdeState);
         this.props.onChange(mdeState.markdown);
     };
 
@@ -36,11 +34,11 @@ class MarkdownEditor extends React.Component {
                     <ReactMde
                         layout="noPreview"
                         onChange={this.handleValueChange}
-                        editorState={this.state.mdeState}
+                        editorState={this.state}
                     />
                 </div>
                 <div className={css(styles.scrollable)}>
-                    <MathRenderer source={this.state.mdeState.markdown}/>
+                    <MathRenderer source={this.state.markdown}/>
                 </div>
             </SplitPane>
         );

@@ -4,6 +4,7 @@ import {Button, MenuItem} from '@blueprintjs/core';
 import {css, StyleSheet} from 'aphrodite';
 import PropTypes from 'prop-types';
 import {TagStore} from '../../../data/resource/tag'
+import isEqual from 'react-fast-compare';
 
 class TagEditor extends React.Component {
     constructor(props) {
@@ -19,6 +20,12 @@ class TagEditor extends React.Component {
         this._handleTagRemove = this._handleTagRemove.bind(this);
         this._handleClear = this._handleClear.bind(this);
         this._callUpdateCallback = this._callUpdateCallback.bind(this);
+    }
+
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        return nextState.selected !== this.state.selected ||
+            nextState !== this.state ||
+            !isEqual(this.props, nextProps);
     }
 
     componentDidMount() {

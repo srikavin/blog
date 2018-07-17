@@ -10,6 +10,7 @@
     "@ibrahima/remark-math": "^1.1.0-alpha.2",
     "aphrodite": "^2.2.2",
     "axios": "^0.18.0",
+    "dayjs": "^1.7.4",
     "draft-js": "^0.10.5",
     "highlight.js": "^9.12.0",
     "jwt-decode": "^2.2.0",

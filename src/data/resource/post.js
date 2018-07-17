@@ -15,6 +15,8 @@ export type PostSchema = {
     overview: string;
     tags: Array<TagSchema>;
     slug: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 interface PostResource {
@@ -56,6 +58,14 @@ function normalizePost(post: PostSchema): Promise<PostSchema> {
         authorPromise = UserStore.getById(post.author);
     }
 
+    if (typeof post.createdAt === 'string') {
+        post.createdAt = new Date(post.createdAt);
+    }
+
+    if (typeof post.updatedAt === 'string') {
+        post.updatedAt = new Date(post.updatedAt);
+    }
+
     return Promise.all([tagPromise, authorPromise]).then(([tags, author]) => {
         tags.forEach(({index, value}) => {
             post.tags[index] = value;
@@ -84,6 +94,8 @@ function restorePost(post: PostSchema) {
     if (typeof post.author === 'object') {
         post.author = post.author.id;
     }
+    delete post.createdAt;
+    delete post.updatedAt;
 }
 
 let PostFetcher: PostResource = {

@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 
 import {css, StyleSheet} from 'aphrodite';
 import MarkdownEditor from './MarkdownEditor/MarkdownEditor';
-import {Button, ButtonGroup, EditableText, H1, NonIdealState} from '@blueprintjs/core';
+import {Button, ButtonGroup, NonIdealState} from '@blueprintjs/core';
 import {IconNames} from '@blueprintjs/icons';
 import TagEditor from './TagEditor/TagEditor';
+import TitleEditor from './TitleEditor/TitleEditor';
 
 import './PostEditor.css'
 import {Intent} from '@blueprintjs/core/lib/cjs/common/intent';
@@ -23,11 +24,14 @@ class PostEditor extends React.Component {
         this._setStateFromProps(props);
     }
 
-    componentWillReceiveProps(nextProps, nextContext) {
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         this._setStateFromProps(nextProps);
     }
 
     _setStateFromProps(props) {
+        if (!props.post) {
+            return;
+        }
         this.setState({
             title: props.post.title,
             tags: props.post.tags,
@@ -58,7 +62,7 @@ class PostEditor extends React.Component {
 
     render() {
         if (this.props.error) {
-            return <NonIdealState className={css(styles.errorBody)} title={'Unable to edit this post'}
+            return <NonIdealState title={'Unable to edit this post'}
                                   description={'An error occurred while loading the post editor'}
                                   icon={IconNames.ERROR}
             />
@@ -76,12 +80,7 @@ class PostEditor extends React.Component {
                         Create Draft
                     </Button>
                 </ButtonGroup>
-                <H1 className={css(styles.titleContainer, styles.title)}>
-                    <EditableText
-                        value={this.state.title}
-                        onChange={this.onTitleChange}
-                        selectAllOnFocus={true} placeholder={'Title'}/>
-                </H1>
+                <TitleEditor title={this.state.title} onTitleChange={this.onTitleChange}/>
                 <div className={css(styles.tagEditorContainer)}>
                     <TagEditor tags={this.state.tags} onSelectedChange={this.onTagChange}/>
                 </div>
@@ -126,18 +125,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: '5px',
         right: '5px'
-    },
-    errorBody: {},
-    titleContainer: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    title: {
-        marginBottom: '15px',
-        fontFamily: 'Dosis, sans-serif',
-        fontSize: '76px',
-        fontWeight: 'lighter'
     },
     tagEditorContainer: {
         display: 'flex',
