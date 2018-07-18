@@ -40,7 +40,7 @@ class Register extends Component {
     onSubmit(event) {
         this.props.onSubmit();
         event.preventDefault();
-        Auth.register(this.state.username, this.state.email, this.state.password)
+        Auth.register(this.state.email, this.state.password, this.state.username)
             .then(res => this.props.callback(res))
             .catch(this.props.onError);
     }
