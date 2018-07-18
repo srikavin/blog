@@ -15,7 +15,7 @@ import NavLink from './NavLink/NavLink';
 import {Auth} from '../../data/resource/auth';
 import Link from 'react-router-dom/es/Link';
 import {IconNames} from '@blueprintjs/icons';
-import {SocialIcon} from 'react-social-icons'
+import {FaGithub, FaLinkedinSquare, FaSpotify, FaSteam, FaYoutube} from 'react-icons/lib/fa/';
 
 class Navigation extends React.Component {
     constructor(props) {
@@ -39,6 +39,14 @@ class Navigation extends React.Component {
     updateUser(user) {
         console.log(user);
         this.setState({user});
+    }
+
+    redirect(url) {
+        return () => {
+            window.open(url, '_blank')
+        }
+
+
     }
 
     render() {
@@ -66,12 +74,13 @@ class Navigation extends React.Component {
                             </div>
                         ) : (
                             <div>
-                                <SocialIcon url="https://linkedin.com/in/htarahs" style={{ height: 25, width: 25 }}/>&nbsp;
-                                <SocialIcon url="https://github.com/sharath" style={{ height: 25, width: 25 }}/>&nbsp;
-                                <SocialIcon url="https://www.youtube.com/channel/UCAokuXJuHLmg1iS2yJuokjQ" style={{ height: 25, width: 25 }}/>&nbsp;
-                                <SocialIcon url="https://open.spotify.com/user/qzvrwxce" style={{ height: 25, width: 25 }}/>&nbsp;
+                                <FaLinkedinSquare onClick={this.redirect("https://linkedin.com/in/htarahs")} size={25}/>&nbsp;
+                                <FaGithub onClick={this.redirect("https://github.com/sharath")} size={25}/>&nbsp;
+                                <FaYoutube onClick={this.redirect("https://www.youtube.com/channel/UCAokuXJuHLmg1iS2yJuokjQ")} size={25}/>&nbsp;
+                                <FaSpotify onClick={this.redirect("https://open.spotify.com/user/qzvrwxce")} size={25}/>&nbsp;
+                                <FaSteam onClick={this.redirect("https://steamcommunity.com/id/hdplus/")} size={25}/>&nbsp;
                             </div>
-                            )
+                        )
                         }
                     </NavbarGroup>
                 </Navbar>
