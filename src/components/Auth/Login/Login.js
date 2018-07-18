@@ -53,7 +53,7 @@ class Login extends Component {
                     <input className="bp3-input" onChange={this.onEmailChange} value={this.state.email}/>
                 </FormGroup>
                 <FormGroup label={'Password'} labelInfo={'(required)'}>
-                    <input className="bp3-input" onChange={this.onPasswordChange} value={this.state.password}/>
+                    <input type={'password'} className="bp3-input" onChange={this.onPasswordChange} value={this.state.password}/>
                 </FormGroup>
                 <Button text="Login" type="submit"/>
             </form>

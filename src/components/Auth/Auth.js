@@ -94,9 +94,6 @@ class Auth extends Component {
                         <Tab id={"Login"} title={"Login"} panel={
                             <Login callback={this.onSuccess} onError={this.onError} onSubmit={this.onSubmit}/>
                         }/>
-                        <Tab id={"Register"} title={"Register"} panel={
-                            <Register callback={this.onSuccess} onError={this.onError} onSubmit={this.onSubmit}/>
-                        }/>
                     </Tabs>
                 </div>
             </div>
