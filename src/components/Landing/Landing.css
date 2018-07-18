@@ -1,8 +1,5 @@
-
-.test {
-    color: blue;
+.landingContainer {
+    width: 800px;
     margin-left: auto;
     margin-right: auto;
-    width: 25%;
-    max-width: 200px;
 }
