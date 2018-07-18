@@ -1,0 +1,8 @@
+
+.test {
+    color: blue;
+    margin-left: auto;
+    margin-right: auto;
+    width: 25%;
+    max-width: 200px;
+}

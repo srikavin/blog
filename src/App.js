@@ -6,6 +6,7 @@ import {hot} from 'react-hot-loader'
 import './App.css';
 import {DynamicLoading} from './components/DynamicLoading/DynamicLoading';
 import Loadable from 'react-loadable';
+import Landing from './components/Landing/Landing'
 import Navigation from './components/Navigation/Navigation';
 import Post from './components/Post/Post';
 import Home from './components/Home/Home';
@@ -35,7 +36,8 @@ class App extends React.Component {
                 </header>
                 <Switch>
                     <Route path="/login" component={Auth}/>
-                    <Route exact path="/" component={Home}/>
+                    <Route exact path="/" component={Landing}/>
+                    <Route exact path="/blog" component={Home}/>
                     <Route exact path="/edit/:id" component={Editor}/>
                     <Route exact path="/posts/new" component={Creator}/>
                     <Route exact path="/posts/:slug" component={Post}/>
