@@ -1,17 +1,18 @@
 //@flow
-import axios, {_v} from './_common';
+import axios, {_v, auth} from './_common';
 import {Identifier} from './identifier'
 
 export type TagSchema = {
-    id: Identifier;
+    id?: Identifier;
     name: string;
-    description: string;
 }
 
 interface TagResource {
     getById(id: Identifier): Promise<TagSchema>;
 
-    getAll(): Promise<TagSchema[]>
+    getAll(): Promise<TagSchema[]>;
+
+    add(tag: TagSchema): Promise<TagSchema>;
 }
 
 
@@ -23,6 +24,12 @@ let TagFetcher: TagResource = {
 
     getAll() {
         return axios.get('/tags/')
+            .then((e) => e.data);
+    },
+
+    add(tag: TagSchema) {
+        auth(axios);
+        return axios.post('/tags', tag)
             .then((e) => e.data);
     }
 };

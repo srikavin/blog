@@ -85,7 +85,7 @@ function normalizePostArray(posts: Array<PostSchema>): Promise<PostSchema[]> {
     return Promise.all(normalized);
 }
 
-function restorePost(post: PostSchema) {
+function restorePost(post: any) {
     if (Array.isArray(post.tags)) {
         let tagObjs = post.tags;
         post.tags = [];

@@ -6,7 +6,7 @@ import RequireAuth from '../../Auth/RequireAuth/RequireAuth';
 import {Redirect} from 'react-router-dom';
 import {PostStore} from '../../../data/resource/post';
 import {Auth} from '../../../data/resource/auth';
-import {Intent, Position, Toast, Toaster} from '@blueprintjs/core';
+import {Intent, Position, Toaster} from '@blueprintjs/core';
 import {IconNames} from '@blueprintjs/icons';
 
 const EditorToaster = Toaster.create({
@@ -14,7 +14,7 @@ const EditorToaster = Toaster.create({
     position: Position.TOP
 });
 
-class Editor extends React.Component {
+class Creator extends React.Component {
     constructor(props) {
         super(props);
 
@@ -29,8 +29,6 @@ class Editor extends React.Component {
                 tags: []
             }
         };
-
-        this.toaster = React.createRef();
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onSubmitDraft = this.onSubmitDraft.bind(this)
@@ -79,9 +77,6 @@ class Editor extends React.Component {
         return (
             <div className={css(styles.container)}>
                 <RequireAuth from={this.props.match.url}/>
-                <Toaster position={Position.TOP_RIGHT} ref={this.toaster}>
-                    {this.state.toasts.map(toast => <Toast {...toast} />)}
-                </Toaster>
                 {this.state.redirect ? <Redirect to={this.state.redirect}/> : ''}
                 <PostEditor
                     post={this.state.post} error={this.state.error}
@@ -100,4 +95,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Editor;
+export default Creator;
