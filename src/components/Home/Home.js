@@ -1,10 +1,16 @@
 import React, {Component} from 'react';
 import PostPreviews from '../PostPreviews/PostPreviews';
-
+import DocumentTitle from 'react-document-title'
 
 class Home extends Component {
     render() {
-        return <PostPreviews/>;
+
+        return (
+            <div>
+                <DocumentTitle title='sharath.pro | Blog'/>
+                <PostPreviews/>
+            </div>
+        );
     }
 }
 
