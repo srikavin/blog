@@ -16,6 +16,7 @@ import {Auth} from '../../data/resource/auth';
 import Link from 'react-router-dom/es/Link';
 import {IconNames} from '@blueprintjs/icons';
 import {FaGithub, FaLinkedinSquare, FaSpotify, FaSteam, FaYoutube} from 'react-icons/lib/fa/';
+import './Navigation.css'
 
 class Navigation extends React.Component {
     constructor(props) {
@@ -45,8 +46,6 @@ class Navigation extends React.Component {
         return () => {
             window.open(url, '_blank')
         }
-
-
     }
 
     render() {
@@ -74,11 +73,11 @@ class Navigation extends React.Component {
                             </div>
                         ) : (
                             <div>
-                                <FaLinkedinSquare onClick={this.redirect("https://linkedin.com/in/htarahs")} size={25}/>&nbsp;
-                                <FaGithub onClick={this.redirect("https://github.com/sharath")} size={25}/>&nbsp;
-                                <FaYoutube onClick={this.redirect("https://www.youtube.com/channel/UCAokuXJuHLmg1iS2yJuokjQ")} size={25}/>&nbsp;
-                                <FaSpotify onClick={this.redirect("https://open.spotify.com/user/qzvrwxce")} size={25}/>&nbsp;
-                                <FaSteam onClick={this.redirect("https://steamcommunity.com/id/hdplus/")} size={25}/>&nbsp;
+                                <FaLinkedinSquare className={'navExternIconLink'} onClick={this.redirect("https://linkedin.com/in/htarahs")} size={25}/>&nbsp;
+                                <FaGithub className={'navExternIconLink'} onClick={this.redirect("https://github.com/sharath")} size={25}/>&nbsp;
+                                <FaYoutube className={'navExternIconLink'} onClick={this.redirect("https://www.youtube.com/channel/UCAokuXJuHLmg1iS2yJuokjQ")} size={25}/>&nbsp;
+                                <FaSpotify className={'navExternIconLink'} onClick={this.redirect("https://open.spotify.com/user/qzvrwxce")} size={25}/>&nbsp;
+                                <FaSteam className={'navExternIconLink'} onClick={this.redirect("https://steamcommunity.com/id/hdplus/")} size={25}/>&nbsp;
                             </div>
                         )
                         }
