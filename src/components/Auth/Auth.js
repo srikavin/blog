@@ -19,7 +19,8 @@ class Auth extends Component {
             loading: false,
             error: false,
             timeout: -1,
-            selectedTab: 'Login'
+            selectedTab: 'Login',
+            errorMessage: undefined
         };
     }
 
@@ -36,10 +37,20 @@ class Auth extends Component {
 
     onError(err) {
         console.error(err);
+        if (err.response.data.error === 'Registration disabled') {
+            this.setState({
+                error: true,
+                loading: false,
+                errorMessage: 'Registration is disabled.'
+            });
+            return;
+        }
+
         clearTimeout(this.state.timeout);
         let timeout = setTimeout(() => {
             this.setState({error: false});
         }, 5000);
+
         this.setState({
             error: true,
             loading: false,
@@ -56,8 +67,8 @@ class Auth extends Component {
     handleError() {
         if (this.state.error) {
             return (
-                <Callout className={"errorAlert"} intent={Intent.DANGER} title={"Invalid Login"}>
-                    An incorrect username or password was entered.
+                <Callout className={'errorAlert'} intent={Intent.DANGER} title={'Invalid Login'}>
+                    {this.state.errorMessage ? this.state.errorMessage : 'An incorrect username or password was entered.'}
                 </Callout>
             );
         }
@@ -74,9 +85,9 @@ class Auth extends Component {
 
         if (this.state.loading) {
             return (
-                <div className={"container"}>
-                    <div className={"authContainer"}>
-                        <div className={"authTabs"}>
+                <div className={'container'}>
+                    <div className={'authContainer'}>
+                        <div className={'authTabs'}>
                             <Spinner large/>
                         </div>
                     </div>
@@ -85,14 +96,17 @@ class Auth extends Component {
         }
 
         return (
-            <div className={"container"}>
+            <div className={'container'}>
                 {this.handleError()}
-                <div className={"authContainer"}>
-                    <Tabs id={"AuthSelect"} className={"authTabs"}
+                <div className={'authContainer'}>
+                    <Tabs id={'AuthSelect'} className={'authTabs'}
                           onChange={this.onTabChange} selectedTabId={this.state.selectedTab}>
 
-                        <Tab id={"Login"} title={"Login"} panel={
+                        <Tab id={'Login'} title={'Login'} panel={
                             <Login callback={this.onSuccess} onError={this.onError} onSubmit={this.onSubmit}/>
+                        }/>
+                        <Tab id={'Register'} title={'Register'} panel={
+                            <Register callback={this.onSuccess} onError={this.onError} onSubmit={this.onSubmit}/>
                         }/>
                     </Tabs>
                 </div>
