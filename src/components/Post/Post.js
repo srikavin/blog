@@ -60,7 +60,7 @@ class Post extends React.Component {
         }
         return (
             <div>
-                {!this.state.loading ? <DocumentTitle title={'sharath.pro | ' + this.state.post.title}/> : 'sharath.pro | Blog'}
+                {!this.state.loading ? <DocumentTitle title={'sharath.pro | ' + this.state.post.title}/> : null}
                 <PostHeader loading={this.state.loading}
                             className="header"
                             author={this.state.post.author}
