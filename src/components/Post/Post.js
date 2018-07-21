@@ -7,9 +7,8 @@ import DocumentTitle from 'react-document-title';
 import {NonIdealState} from '@blueprintjs/core';
 import {IconNames} from '@blueprintjs/icons';
 
-import './Post.css'
 import {PostStore} from '../../data/resource/post';
-
+import './Post.css'
 
 class Post extends React.Component {
     constructor(props) {
@@ -24,7 +23,6 @@ class Post extends React.Component {
     }
 
     onPostChange(post) {
-        console.log(post);
         if (post.length === 0) {
             this.setState({
                 error: true

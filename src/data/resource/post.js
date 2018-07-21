@@ -100,8 +100,6 @@ function restorePost(post: any) {
 
 let PostFetcher: PostResource = {
     getById(id: Identifier) {
-        console.log(id);
-        console.log(_v('/posts/:id', {id: id}));
         return axios.get(_v('/posts/:id', {id: id}))
             .then((e) => e.data)
             .then(normalizePost);
