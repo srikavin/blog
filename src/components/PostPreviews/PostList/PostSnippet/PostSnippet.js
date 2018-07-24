@@ -87,6 +87,4 @@ const styles = StyleSheet.create({
     }
 });
 
-console.log(styles);
-
 export default PostSnippet;
