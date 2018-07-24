@@ -1,5 +1,8 @@
 .snippetText * {
     display: inline;
+    font-size: 16px;
+    font-weight: normal;
+    padding-right: 0.2em;
 }
 
 .snippetText {

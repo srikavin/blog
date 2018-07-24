@@ -19,6 +19,12 @@ export type PostSchema = {
     updatedAt: Date;
 }
 
+interface PostQuery {
+    slug?: string,
+    author?: string,
+    tags?: any
+}
+
 interface PostResource {
     getById(id: Identifier): Promise<PostSchema>;
 
@@ -29,6 +35,8 @@ interface PostResource {
     updatePost(id: Identifier, post: PostSchema): Promise<PostSchema>;
 
     createPost(post: PostSchema): Promise<PostSchema>;
+
+    query(query: PostQuery): Promise<Array<PostSchema>>;
 }
 
 function normalizePost(post: PostSchema): Promise<PostSchema> {
@@ -111,6 +119,11 @@ let PostFetcher: PostResource = {
     },
     getAll() {
         return axios.get('/posts/')
+            .then((e) => e.data)
+            .then(normalizePostArray);
+    },
+    query(query: PostQuery) {
+        return axios.get('/posts', {params: query})
             .then((e) => e.data)
             .then(normalizePostArray);
     },

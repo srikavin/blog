@@ -87,8 +87,9 @@ class TagEditor extends React.Component {
                         fill: true
                     }}
                     resetOnSelect={true}
-                    noResults={<MenuItem shouldDismissPopover={false} onClick={this._addTag}
-                                         text={`No results. Add ${this.state.query}?`}/>}
+                    noResults={<MenuItem shouldDismissPopover={false}
+                                         onClick={this.props.addTags ? this._addTag : undefined}
+                                         text={`No results. ${this.props.addTags ? `Add ${this.state.query}?` : ''}`}/>}
                     selectedItems={this.state.selected}
                 />
                 {this._getAlert()}
@@ -217,7 +218,8 @@ const styles = StyleSheet.create({
 TagEditor.propTypes = {
     onSelectedChange: PropTypes.func.isRequired,
     tags: PropTypes.array.isRequired,
-    className: PropTypes.string
+    className: PropTypes.string,
+    addTags: PropTypes.bool
 };
 
 export default TagEditor;
