@@ -7,6 +7,7 @@ import MathRenderer from '../../Post/PostContent/MathRenderer/MathRenderer';
 import SplitPane from 'react-split-pane';
 import isEqual from 'react-fast-compare';
 
+import './MarkdownEditor.css'
 
 class MarkdownEditor extends React.Component {
     constructor(props) {
