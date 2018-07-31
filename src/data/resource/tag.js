@@ -1,6 +1,7 @@
 //@flow
 import axios, {_v, auth} from './_common';
 import {Identifier} from './identifier'
+import {MemoryCache} from '../cache';
 
 export type TagSchema = {
     id?: Identifier;
@@ -15,11 +16,20 @@ interface TagResource {
     add(tag: TagSchema): Promise<TagSchema>;
 }
 
+let TagCache: MemoryCache<Identifier, TagSchema> = new MemoryCache();
 
 let TagFetcher: TagResource = {
     getById(id: Identifier): Promise<TagSchema> {
+        let val = TagCache.get(id);
+        if (val) {
+            return Promise.resolve(val);
+        }
         return axios.get(_v('/tags/:id', {id: id}))
-            .then((e) => e.data);
+            .then((e) => e.data)
+            .then((e) => {
+                TagCache.set(id, e);
+                return e;
+            });
     },
 
     getAll() {

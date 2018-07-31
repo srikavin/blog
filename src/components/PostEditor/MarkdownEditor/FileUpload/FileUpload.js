@@ -47,6 +47,9 @@ class FileUpload extends React.Component {
         });
     };
     handleFile = (file) => {
+        if (!file) {
+            return;
+        }
         if (!file.type.startsWith('image')) {
             this.setState({
                 alert: 'mimetype',
@@ -184,6 +187,8 @@ class FileUpload extends React.Component {
                     intent={Intent.SUCCESS}>
                     <H5 className={styles['alert-text']}>
                         Success! The image markdown is: <InputGroup className={styles['alert-text']}
+                                                                    onChange={() => {
+                                                                    }}
                                                                     value={this.state.imageMarkdown}
                                                                     inputRef={(e) => this.inputRef = e}/>
                     </H5>

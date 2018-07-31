@@ -67,10 +67,26 @@ class Creator extends React.Component {
                 icon: IconNames.CROSS
             });
             console.error(err);
-        })
+        });
     }
 
-    onSubmitDraft() {
+    onSubmitDraft(postObj) {
+        PostStore.createDraft({
+            ...postObj
+        }).then((e) => {
+            EditorToaster.show({
+                message: 'Updated successfully',
+                intent: Intent.SUCCESS,
+                icon: IconNames.TICK
+            });
+        }).catch(err => {
+            EditorToaster.show({
+                message: 'Failed to update. Error was logged to console.',
+                intent: Intent.DANGER,
+                icon: IconNames.CROSS
+            });
+            console.error(err);
+        });
     }
 
     render() {

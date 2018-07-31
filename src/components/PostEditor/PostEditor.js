@@ -19,6 +19,7 @@ class PostEditor extends React.Component {
         this.submitButton = this.submitButton.bind(this);
         this.onContentsChange = this.onContentsChange.bind(this);
         this.callSubmitCallback = this.callSubmitCallback.bind(this);
+        this.callSubmitDraftCallback = this.callSubmitDraftCallback.bind(this);
 
         this.state = {};
         this._setStateFromProps(props);
@@ -76,7 +77,7 @@ class PostEditor extends React.Component {
             <div className={css(styles.editorContainer)}>
                 <ButtonGroup minimal={true} className={css(styles.submitButton)}>
                     {this.submitButton()}
-                    <Button onClick={this.callSubmitCallback} icon={IconNames.DOCUMENT} intent={Intent.SUCCESS}>
+                    <Button onClick={this.callSubmitDraftCallback} icon={IconNames.DOCUMENT} intent={Intent.SUCCESS}>
                         Create Draft
                     </Button>
                 </ButtonGroup>
@@ -88,6 +89,15 @@ class PostEditor extends React.Component {
             </div>
         )
     }
+
+    callSubmitDraftCallback() {
+        let post = {
+            ...this.state
+        };
+
+        this.props.onSubmitDraft(post);
+    }
+
 
     callSubmitCallback() {
         let post = {

@@ -3,11 +3,11 @@
     margin-right: auto;
     max-width: 100%;
     height: auto;
-    transition: .5s filter, opacity ease-out;
+    transition: 1.5s filter, opacity ease-out;
 }
 
 .blur {
     transition: 0s;
-    filter: blur(5px);
+    filter: blur(15px);
     opacity: 0.9;
 }

@@ -12,8 +12,9 @@ export type PostSchema = {
     title: string;
     author: UserSchema;
     contents: string;
-    overview: string;
     tags: Array<TagSchema>;
+    draft: boolean;
+    overview: string;
     slug: string;
     createdAt: Date;
     updatedAt: Date;
@@ -29,6 +30,8 @@ interface PostResource {
     updatePost(id: Identifier, post: PostSchema): Promise<PostSchema>;
 
     createPost(post: PostSchema): Promise<PostSchema>;
+
+    createDraft(post: PostSchema): Promise<PostSchema>;
 }
 
 function normalizePost(post: PostSchema): Promise<PostSchema> {
@@ -124,6 +127,15 @@ let PostFetcher: PostResource = {
     createPost(post: PostSchema) {
         restorePost(post);
         auth(axios);
+        post.draft = false;
+        return axios.post('/posts', post)
+            .then((e) => e.data)
+            .then(normalizePost);
+    },
+    createDraft(post: PostSchema) {
+        restorePost(post);
+        auth(axios);
+        post.draft = true;
         return axios.post('/posts', post)
             .then((e) => e.data)
             .then(normalizePost);
