@@ -5,6 +5,7 @@ import MathJax from 'react-mathjax';
 import PropTypes from 'prop-types';
 import {css, StyleSheet} from 'aphrodite';
 import HighlightedCode from './HighlightedCode/HighlightedCode';
+import ImageRenderer from './ImageRenderer/ImageRenderer';
 
 class MarkdownRender extends React.Component {
     render() {
@@ -23,7 +24,8 @@ class MarkdownRender extends React.Component {
                 math: (props) =>
                     <span className={css(styles.mathContainer)}><MathJax.Node formula={props.value}/></span>,
                 inlineMath: (props) =>
-                    <span className={css(styles.mathContainer)}><MathJax.Node inline formula={props.value}/></span>
+                    <span className={css(styles.mathContainer)}><MathJax.Node inline formula={props.value}/></span>,
+                image: ImageRenderer
             }
         };
 

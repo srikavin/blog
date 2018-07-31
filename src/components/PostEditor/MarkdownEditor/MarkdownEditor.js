@@ -8,6 +8,8 @@ import SplitPane from 'react-split-pane';
 import isEqual from 'react-fast-compare';
 
 import './MarkdownEditor.css'
+import FileUpload from './FileUpload/FileUpload';
+import {Prompt} from 'react-router-dom';
 
 class MarkdownEditor extends React.Component {
     constructor(props) {
@@ -29,19 +31,22 @@ class MarkdownEditor extends React.Component {
 
     render() {
         return (
-            <SplitPane className={css(styles.container)} split="vertical" minSize={250} defaultSize="50%"
-                       primary="second">
-                <div className={css(styles.scrollable)}>
-                    <ReactMde
-                        layout="noPreview"
-                        onChange={this.handleValueChange}
-                        editorState={this.state}
-                    />
-                </div>
-                <div className={css(styles.scrollable)}>
-                    <MathRenderer source={this.state.markdown}/>
-                </div>
-            </SplitPane>
+            <FileUpload>
+                <Prompt message="Are you sure you want to leave?"/>
+                <SplitPane className={css(styles.container)} split="vertical" minSize={250} defaultSize="50%"
+                           primary="second">
+                    <div className={css(styles.scrollable)}>
+                        <ReactMde
+                            layout="noPreview"
+                            onChange={this.handleValueChange}
+                            editorState={this.state}
+                        />
+                    </div>
+                    <div className={css(styles.scrollable)}>
+                        <MathRenderer source={this.state.markdown}/>
+                    </div>
+                </SplitPane>
+            </FileUpload>
         );
     }
 }
