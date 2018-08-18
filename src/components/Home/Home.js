@@ -7,7 +7,7 @@ class Home extends Component {
 
         return (
             <div>
-                <DocumentTitle title='sharath.pro | Blog'/>
+                <DocumentTitle title='Blog'/>
                 <PostPreviews/>
             </div>
         );

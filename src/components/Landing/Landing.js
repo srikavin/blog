@@ -9,7 +9,7 @@ class Landing extends React.Component {
     render() {
         return (
             <div className={'landingContainer'}>
-                <DocumentTitle title='sharath.pro | About'/>
+                <DocumentTitle title='About'/>
                 <About/>
                 <Portfolio/>
                 <Resume/>
