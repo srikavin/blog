@@ -4,7 +4,7 @@ import {css, StyleSheet} from 'aphrodite';
 import PostEditor from '../PostEditor';
 import RequireAuth from '../../Auth/RequireAuth/RequireAuth';
 import {Redirect} from 'react-router-dom';
-import {PostStore} from '../../../data/resource/post';
+import {PostStore} from '../../../../data/resource/post';
 import {Intent, Position, Toast, Toaster} from '@blueprintjs/core';
 import {IconNames} from '@blueprintjs/icons';
 
@@ -57,7 +57,7 @@ class Editor extends React.Component {
                 icon: IconNames.TICK,
                 action: {
                     target: '_blank',
-                    href: `/posts/${e.slug}`,
+                    href: `/blog/posts/${e.slug}`,
                     text: 'View Post'
                 }
             })

@@ -14,6 +14,11 @@ interface TagResource {
     getAll(): Promise<TagSchema[]>;
 
     add(tag: TagSchema): Promise<TagSchema>;
+
+    delete(id: Identifier): Promise<void>;
+
+    updateTag(id: Identifier, post: TagSchema): Promise<TagSchema>;
+
 }
 
 let TagCache: MemoryCache<Identifier, TagSchema> = new MemoryCache();
@@ -31,12 +36,20 @@ let TagFetcher: TagResource = {
                 return e;
             });
     },
-
     getAll() {
         return axios.get('/tags/')
             .then((e) => e.data);
     },
-
+    updateTag(id: Identifier, tag: TagSchema) {
+        auth(axios);
+        return axios.put(_v('/tags/:id', {id: id}), tag)
+            .then((e) => e.data);
+    },
+    delete(id: Identifier) {
+        auth(axios);
+        return axios.delete(_v('/tags/:id', {id: id}))
+            .then(e => e.data);
+    },
     add(tag: TagSchema) {
         auth(axios);
         return axios.post('/tags', tag)

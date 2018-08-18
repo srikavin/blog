@@ -7,7 +7,7 @@ import {Alert, FileInput, FormGroup, H5, InputGroup} from '@blueprintjs/core';
 import {IconNames} from '@blueprintjs/icons';
 import {Intent} from '@blueprintjs/core/lib/cjs/common/intent';
 
-import {ImageStore} from '../../../../data/resource/image';
+import {ImageStore} from '../../../../../data/resource/image';
 
 import styles from './FileUpload.module.css'
 

@@ -23,11 +23,15 @@ export type PostSchema = {
 interface PostResource {
     getById(id: Identifier): Promise<PostSchema>;
 
-    getAll(): Promise<Array<PostSchema>>;
+    getAll(contents?: boolean): Promise<Array<PostSchema>>;
+
+    getAllDrafts(): Promise<Array<PostSchema>>;
 
     getBySlug(slug: string): Promise<Array<PostSchema>>;
 
     updatePost(id: Identifier, post: PostSchema): Promise<PostSchema>;
+
+    delete(id: Identifier): Promise<void>;
 
     createPost(post: PostSchema): Promise<PostSchema>;
 
@@ -112,8 +116,14 @@ let PostFetcher: PostResource = {
             .then(e => e.data)
             .then(normalizePostArray);
     },
-    getAll() {
-        return axios.get('/posts/')
+    getAll(contents = false) {
+        return axios.get(contents ? '/posts/?contents=true' : '/posts/')
+            .then((e) => e.data)
+            .then(normalizePostArray);
+    },
+    getAllDrafts() {
+        auth(axios);
+        return axios.get('/posts/drafts')
             .then((e) => e.data)
             .then(normalizePostArray);
     },
@@ -123,6 +133,11 @@ let PostFetcher: PostResource = {
         return axios.put(_v('/posts/:id', {id: id}), post)
             .then((e) => e.data)
             .then(normalizePost);
+    },
+    delete(id: Identifier) {
+        auth(axios);
+        return axios.delete(_v('/posts/:id', {id: id}))
+            .then(e => e.data);
     },
     createPost(post: PostSchema) {
         restorePost(post);

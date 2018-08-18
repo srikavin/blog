@@ -1,0 +1,28 @@
+.item {
+    margin-bottom: 8px;
+}
+
+.container {
+    max-width: 55vw;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.createItem {
+    composes: shadow-elevation-4dp from '../../../../global/elevation.module.css';
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    padding: 15px;
+    color: #03A9F4;
+    border-radius: 150px;
+    background-color: #ecf3fe;
+    cursor: pointer;
+}
+
+.createItem:hover {
+    background-color: #e8ebfe;
+    box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12),
+    0 5px 5px -3px rgba(0, 0, 0, 0.4);
+}

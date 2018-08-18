@@ -1,10 +1,9 @@
 import React from 'react'
-import './PortfolioItem.css'
+import styles from './PortfolioItem.module.css'
 
 class PortfolioItem extends React.Component {
     constructor(props) {
-        super();
-        this.props = props
+        super(props);
     }
 
     redirect(url) {
@@ -15,11 +14,17 @@ class PortfolioItem extends React.Component {
 
     render() {
         return (
-            <div className={'portfolioItem'}>
-                <div className={'portfolioProjectTitle'}>{this.props.name}</div>
-                <div className={'portfolioProjectDescription'}>{this.props.description}</div>
-                {!!this.props.github ? <div className={'portfolioExternalButton'} onClick={this.redirect(this.props.github)}>Github</div> : <div>&nbsp;</div>}
-                {!!this.props.binder ? <div className={'portfolioExternalButton'} onClick={this.redirect(this.props.binder)}>Binder</div> : <div>&nbsp;</div>}
+            <div className={styles.portfolioItem}>
+                <div className={styles.title}>{this.props.name}</div>
+                <div className={styles.description}>{this.props.description}</div>
+                <div className={styles.links}>
+                    {this.props.github ? <div className={styles.github + ' ' + styles.portfolioExternalButton}
+                                              onClick={this.redirect(this.props.github)}>Github</div> :
+                        <div>&nbsp;</div>}
+                    {this.props.binder ? <div className={styles.binder + ' ' + styles.portfolioExternalButton}
+                                              onClick={this.redirect(this.props.binder)}>Binder</div> :
+                        <div>&nbsp;</div>}
+                </div>
             </div>
         );
     }

@@ -1,21 +1,22 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router-dom'
 import PropTypes from 'prop-types';
-import {Button, FormGroup} from '@blueprintjs/core'
 
-import {Auth} from '../../../data/resource/auth';
+import {Auth} from '../../../../data/resource/auth';
+import {Button, FormGroup} from '@blueprintjs/core';
 
-class Login extends Component {
+class Register extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            redirectToReferrer: false,
-            email: '',
-            password: ''
-        };
         this.onEmailChange = this.onEmailChange.bind(this);
         this.onPasswordChange = this.onPasswordChange.bind(this);
+        this.onUsernameChange = this.onUsernameChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.state = {
+            email: "",
+            password: "",
+            username: ""
+        }
     }
 
     onEmailChange(event) {
@@ -30,16 +31,22 @@ class Login extends Component {
         });
     }
 
+    onUsernameChange(event) {
+        this.setState({
+            username: event.target.value
+        });
+    }
+
     onSubmit(event) {
         this.props.onSubmit();
         event.preventDefault();
-        Auth.login(this.state.email, this.state.password)
+        Auth.register(this.state.email, this.state.password, this.state.username)
             .then(res => this.props.callback(res))
             .catch(this.props.onError);
     }
 
     render() {
-        const {from} = this.props.from || {from: {pathname: '/me'}};
+        const {from} = this.props.from || {from: {pathname: "/post"}};
 
         if (this.state.redirectToReferrer) {
             return (
@@ -49,22 +56,25 @@ class Login extends Component {
 
         return (
             <form onSubmit={this.onSubmit}>
+                <FormGroup label={'Username'} labelInfo={'(required)'}>
+                    <input className="bp3-input" onChange={this.onUsernameChange} value={this.state.username}/>
+                </FormGroup>
                 <FormGroup label={'Email'} labelInfo={'(required)'}>
                     <input className="bp3-input" onChange={this.onEmailChange} value={this.state.email}/>
                 </FormGroup>
                 <FormGroup label={'Password'} labelInfo={'(required)'}>
-                    <input type={'password'} className="bp3-input" onChange={this.onPasswordChange} value={this.state.password}/>
+                    <input className="bp3-input" onChange={this.onPasswordChange} value={this.state.password}/>
                 </FormGroup>
-                <Button text="Login" type="submit"/>
+                <Button text="Register" type="submit"/>
             </form>
         )
     }
 }
 
-Login.propTypes = {
+Register.propTypes = {
     callback: PropTypes.func.isRequired,
     onError: PropTypes.func,
     onSubmit: PropTypes.func
 };
 
-export default Login;
+export default Register;

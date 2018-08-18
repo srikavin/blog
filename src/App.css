@@ -17,3 +17,7 @@
     max-width: 100vw;
     width: auto;
 }
+
+.AppContent {
+    padding-left: calc(100vw - 100%);
+}

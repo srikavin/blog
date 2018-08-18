@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import './PostHeader.css'
 import PostTags from './PostTags/PostTags';
@@ -30,5 +31,15 @@ class PostHeader extends React.PureComponent {
         )
     }
 }
+
+PostHeader.propTypes = {
+    loading: PropTypes.bool,
+    title: PropTypes.string,
+    author: PropTypes.any,
+    createdTime: PropTypes.any,
+    modifiedTime: PropTypes.any,
+    tags: PropTypes.array,
+    className: PropTypes.string
+};
 
 export default PostHeader;

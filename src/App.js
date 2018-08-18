@@ -1,7 +1,6 @@
 import React from 'react';
 import {Route, Switch} from 'react-router-dom'
 import DocumentTitle from 'react-document-title';
-import {hot} from 'react-hot-loader'
 
 import './App.css';
 import {DynamicLoading} from './components/DynamicLoading/DynamicLoading';
@@ -12,17 +11,12 @@ import Post from './components/Post/Post';
 import Home from './components/Home/Home';
 
 const Auth = Loadable({
-    loader: () => import(/* webpackChunkName: "auth" */'./components/Auth/Auth'),
+    loader: () => import(/* webpackChunkName: "auth" */'./components/Admin/Auth/Auth'),
     loading: DynamicLoading
 });
 
-const Editor = Loadable({
-    loader: () => import(/* webpackChunkName: "editor" */'./components/PostEditor/Editor/Editor'),
-    loading: DynamicLoading
-});
-
-const Creator = Loadable({
-    loader: () => import(/* webpackChunkName: "creator" */'./components/PostEditor/Creator/Creator'),
+const Admin = Loadable({
+    loader: () => import(/* webpackChunkName: "admin" */'./components/Admin/Admin'),
     loading: DynamicLoading
 });
 
@@ -34,17 +28,18 @@ class App extends React.Component {
                 <header className="App-header">
                     <Navigation/>
                 </header>
-                <Switch>
-                    <Route path="/login" component={Auth}/>
-                    <Route exact path="/" component={Landing}/>
-                    <Route exact path="/blog" component={Home}/>
-                    <Route exact path="/edit/:id" component={Editor}/>
-                    <Route exact path="/posts/new" component={Creator}/>
-                    <Route exact path="/posts/:slug" component={Post}/>
-                </Switch>
+                <div className='AppContent'>
+                    <Switch>
+                        <Route exact path="/login" component={Auth}/>
+                        <Route exact path="/" component={Landing}/>
+                        <Route exact path="/blog" component={Home}/>
+                        <Route exact path="/blog/posts/:slug" component={Post}/>
+                        <Route path="/admin" component={Admin}/>
+                    </Switch>
+                </div>
             </div>
         );
     }
 }
 
-export default hot(module)(App);
+export default App;

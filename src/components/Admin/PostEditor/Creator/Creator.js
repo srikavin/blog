@@ -4,8 +4,8 @@ import {css, StyleSheet} from 'aphrodite';
 import PostEditor from '../PostEditor';
 import RequireAuth from '../../Auth/RequireAuth/RequireAuth';
 import {Redirect} from 'react-router-dom';
-import {PostStore} from '../../../data/resource/post';
-import {Auth} from '../../../data/resource/auth';
+import {PostStore} from '../../../../data/resource/post';
+import {Auth} from '../../../../data/resource/auth';
 import {Intent, Position, Toaster} from '@blueprintjs/core';
 import {IconNames} from '@blueprintjs/icons';
 
@@ -56,7 +56,7 @@ class Creator extends React.Component {
                 icon: IconNames.TICK,
                 action: {
                     target: '_blank',
-                    href: `/posts/${e.slug}`,
+                    href: `/blog/posts/${e.slug}`,
                     text: 'View Post'
                 }
             });

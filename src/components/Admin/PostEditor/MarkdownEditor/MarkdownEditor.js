@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {css, StyleSheet} from 'aphrodite';
 import ReactMde from 'react-mde';
 import 'react-mde/lib/styles/css/react-mde-all.css';
-import MathRenderer from '../../Post/PostContent/MathRenderer/MathRenderer';
+import MathRenderer from '../../../Post/PostContent/MathRenderer/MathRenderer';
 import SplitPane from 'react-split-pane';
 import isEqual from 'react-fast-compare';
 

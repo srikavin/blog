@@ -25,23 +25,24 @@
     padding: 5px 20px;
     margin: auto auto 15px;
     background-color: #FFFFFF;
-    max-width: 60vw;
-    min-width: 50vw;
+    max-width: 1260px;
+    width: 1260px;
 }
 
 @media (max-width: 600px) {
     .preview {
         width: 100vw;
         max-width: 100vw;
-        min-width: 90vw;
+        min-width: 100vw;
         max-height: 320px
     }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1800px) {
     .preview {
-        max-width: 90vw;
+        max-width: 70vw;
         min-width: 70vw;
+        width: 70vw;
         overflow: hidden
     }
 }

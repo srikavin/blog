@@ -8,7 +8,7 @@ class PostTags extends React.Component {
             return <div className={'post-tag-description-container bp3-skeleton'}/>
         }
         return this.props.tags && this.props.tags.map(e => (
-            <Tag interactive={true} className={'post-tag-item'} minimal={true}>{e.name}</Tag>
+            <Tag key={e.id} interactive={true} className={'post-tag-item'} minimal={true}>{e.name}</Tag>
         ));
     }
 

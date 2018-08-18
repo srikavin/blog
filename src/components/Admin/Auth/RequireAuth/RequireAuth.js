@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Auth} from '../../../data/resource/auth';
+import {Auth} from '../../../../data/resource/auth';
 import {Redirect} from 'react-router-dom';
 
 class RequireAuth extends React.Component {

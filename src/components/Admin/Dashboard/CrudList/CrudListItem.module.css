@@ -1,0 +1,21 @@
+.container {
+    cursor: auto !important;
+}
+
+.content {
+
+}
+
+.actions {
+    margin-top: 16px;
+}
+
+.delete {
+    composes: actions;
+    position: absolute;
+    right: 0;
+}
+
+.bodyContainer {
+    position: relative;
+}

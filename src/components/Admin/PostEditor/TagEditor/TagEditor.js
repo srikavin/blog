@@ -3,7 +3,7 @@ import {MultiSelect} from '@blueprintjs/select';
 import {Alert, Button, FormGroup, Input, Intent, MenuItem, Position, Toaster} from '@blueprintjs/core';
 import {css, StyleSheet} from 'aphrodite';
 import PropTypes from 'prop-types';
-import {TagStore} from '../../../data/resource/tag'
+import {TagStore} from '../../../../data/resource/tag'
 import isEqual from 'react-fast-compare';
 import * as IconNames from '@blueprintjs/icons/lib/esm/generated/iconNames';
 
