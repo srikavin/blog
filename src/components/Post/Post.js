@@ -7,7 +7,7 @@ import DocumentTitle from 'react-document-title';
 import {PostStore} from '../../data/resource/post';
 import ErrorState from '../util/ErrorState/ErrorState';
 import {FaExclamationTriangle} from 'react-icons/fa';
-import './Post.css'
+import styles from './Post.module.css'
 
 class Post extends React.Component {
     constructor(props) {
@@ -47,7 +47,7 @@ class Post extends React.Component {
     render() {
         if (this.state.error) {
             return (
-                <div className="post-load-error">
+                <div className={styles['post-load-error']}>
                     <ErrorState className={'header'} title={'This post could not be loaded'}
                                 description={'There was an error attempting to load this post.'}
                                 icon={<FaExclamationTriangle/>}
@@ -59,7 +59,7 @@ class Post extends React.Component {
             <div>
                 {!this.state.loading ? <DocumentTitle title={this.state.post.title}/> : null}
                 <PostHeader loading={this.state.loading}
-                            className="header"
+                            className={styles.header}
                             author={this.state.post.author}
                             title={this.state.post.title}
                             tags={this.state.post.tags}

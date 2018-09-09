@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {NavLink, Redirect, Route, Switch} from 'react-router-dom';
 import DraftList from './DraftList/DraftList';
 import PublishedList from './PublishedList/PublishedList';
@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 class PostManager extends Component {
     render() {
         return (
-            <>
+            <Fragment>
                 <div className={this.props.containerClassName}>
                     <ButtonGroup minimal={true}>
                         <NavLink activeClassName={styles.active} to={`${this.props.match.url}/published`}>
@@ -25,7 +25,7 @@ class PostManager extends Component {
                     <Route path={`${this.props.match.url}/drafts`} component={DraftList}/>
                     <Route render={() => <Redirect to={`${this.props.match.url}/published`}/>}/>
                 </Switch>
-            </>
+            </Fragment>
         );
     }
 }

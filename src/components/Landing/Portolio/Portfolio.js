@@ -1,11 +1,11 @@
 import React from 'react'
-import './Portfolio.css'
+import styles from './Portfolio.module.css'
 
 class Portfolio extends React.Component {
     render() {
         return (
             <div>
-                <div className={'portfolioHeader'}>Projects</div>
+                <div className={styles.portfolioHeader}>Projects</div>
             </div>
         );
     }

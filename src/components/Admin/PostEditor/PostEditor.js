@@ -8,7 +8,7 @@ import {IconNames} from '@blueprintjs/icons';
 import TagEditor from './TagEditor/TagEditor';
 import TitleEditor from './TitleEditor/TitleEditor';
 
-import './PostEditor.css'
+import './PostEditor.module.css'
 import {Intent} from '@blueprintjs/core/lib/cjs/common/intent';
 
 class PostEditor extends React.Component {

@@ -1,10 +1,10 @@
 import React from 'react'
-import './Resume.css'
+import styles from './Resume.module.css'
 
 class Resume extends React.Component {
     render() {
         return (
-            <div className={'landingResumeButton'}> Resume</div>
+            <div className={styles.landingResumeButton}> Resume</div>
         );
     }
 }

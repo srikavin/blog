@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 
 import {NavBar, NavDivider, NavGroup, NavHeader} from './NavBar/';
 import {Button} from '../util/Button/Button';
@@ -51,12 +51,12 @@ class Navigation extends React.Component {
                 </NavGroup>
                 <NavGroup align={'right'}>
                     {this.state.auth.isLoggedIn() ? (
-                        <>
+                        <Fragment>
                             <NavLink icon={<FaTachometerAlt/>} to="/admin" label="Dashboard"/>
                             <NavDivider/>
                             <Button minimal icon={<FaUserAlt/>} text={this.state.user.username}/>
                             <Button minimal onClick={this.state.auth.logout} icon={<FaSignOutAlt/>} text='Logout'/>
-                        </>
+                        </Fragment>
                     ) : (
                         <div className={'externalIcons'}>
                             <FaGithub className={'navExternIconLink'}

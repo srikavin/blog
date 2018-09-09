@@ -2,7 +2,7 @@ import React from 'react';
 import {Route, Switch} from 'react-router-dom'
 import DocumentTitle from 'react-document-title';
 
-import './App.css';
+import './App.module.css';
 import {DynamicLoading} from './components/DynamicLoading/DynamicLoading';
 import Loadable from 'react-loadable';
 import Landing from './components/Landing/Landing'

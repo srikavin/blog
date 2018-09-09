@@ -1,21 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './PostHeader.css'
+import styles from './PostHeader.module.css'
 import PostTags from './PostTags/PostTags';
 import PostMeta from './PostMeta/PostMeta';
 import Skeleton from '../../util/Skeleton/Skeleton';
+
+import classNames from 'classnames'
 
 class PostHeader extends React.PureComponent {
     getTitleBlock() {
         if (this.props.loading) {
             return (
                 <Skeleton align='center'>
-                    <h1 className={'title ' + this.props.className}>Lorem ipsum dolor sit amet</h1>
+                    <h1 className={classNames(styles.title, this.props.className)}>Lorem ipsum dolor sit amet</h1>
                 </Skeleton>
             );
         }
-        return <h1 className="title">{this.props.title}</h1>
+        return <h1 className={styles.title}>{this.props.title}</h1>
     }
 
     render() {
@@ -27,7 +29,7 @@ class PostHeader extends React.PureComponent {
                           author={this.props.author}
                           loading={this.props.loading}
                 />
-                <PostTags className="post-tags" tags={this.props.tags}/>
+                <PostTags tags={this.props.tags}/>
             </div>
         )
     }

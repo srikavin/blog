@@ -1,10 +1,10 @@
 import React from 'react'
-import './About.css'
+import styles from './About.module.css'
 
 class About extends React.Component {
     render() {
         return (
-            <div className={'aboutContainer'}>
+            <div className={styles.aboutContainer}>
             </div>
         );
     }

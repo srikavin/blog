@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {Route, Switch} from 'react-router-dom';
 import Editor from './PostEditor/Editor/Editor';
@@ -11,14 +11,14 @@ import './Admin.css'
 class Admin extends React.Component {
     render() {
         return (
-            <>
+            <Fragment>
                 <RequireAuth from={'/admin/'}/>
                 <Switch>
                     <Route exact path="/admin/edit/:id" component={Editor}/>
                     <Route exact path="/admin/posts/new" component={Creator}/>
                     <Route component={Dashboard}/>
                 </Switch>
-            </>
+            </Fragment>
         )
     }
 }

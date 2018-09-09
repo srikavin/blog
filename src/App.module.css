@@ -1,4 +1,4 @@
-@import "~normalize.css/normalize.css";
+@import "normalize.css/normalize.css";
 
 html {
     -webkit-box-sizing: border-box;
@@ -12,7 +12,7 @@ html {
     box-sizing: inherit;
 }
 
-body {
+:global body {
     text-transform: none;
     line-height: 1.28581;
     letter-spacing: 0;
@@ -22,36 +22,32 @@ body {
     color: #182026;
 }
 
-p {
+:global p {
     margin-top: 0;
     margin-bottom: 10px;
 }
 
-small {
+:global small {
     font-size: 12px;
 }
 
-strong {
+:global strong {
     font-weight: 600;
 }
 
-a {
+:global a {
     text-decoration: none;
     color: #106ba3;
 }
 
-a:hover {
+:global a:hover {
     cursor: pointer;
     text-decoration: underline;
     color: #106ba3;
 }
 
-a code {
+:global a code {
     color: inherit;
-}
-
-.bp3-skeleton {
-    display: inline;
 }
 
 .footer {
@@ -61,11 +57,11 @@ a code {
     text-align: center;
 }
 
-.bp3-dialog.bp3-alert, .bp3-dialog.bp3-alert .bp3-alert-body {
+:global .bp3-dialog.bp3-alert, :global .bp3-dialog.bp3-alert :global .bp3-alert-body {
     max-width: 100vw;
     width: auto;
 }
 
-.AppContent {
+:global .AppContent {
     padding-left: calc(100vw - 100%);
 }

@@ -130,7 +130,7 @@ class PostCrudList extends Component {
             return <Redirect push={true} to={this.state.redirect}/>
         }
         return (
-            <>
+            <Fragment>
                 {alert}
                 <CrudList
                     items={this.props.items}
@@ -140,7 +140,7 @@ class PostCrudList extends Component {
                     onCreate={this.onCreate}
                     display={this.handleDisplay}
                 />
-            </>
+            </Fragment>
         );
     }
 }
