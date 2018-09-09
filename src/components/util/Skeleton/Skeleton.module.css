@@ -1,0 +1,37 @@
+.skeleton {
+    color: transparent;
+
+    background-clip: padding-box !important;
+    pointer-events: none;
+    user-select: none;
+    cursor: default;
+
+    background: rgba(208, 217, 224, .2);
+
+    border-radius: 2px;
+    box-shadow: none !important;
+
+    animation: color-change-2x 0.5s linear infinite alternate both;
+    opacity: 0.3;
+    width: fit-content;
+}
+
+.skeleton.center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.skeleton:before, .skeleton:after .skeleton * {
+    visibility: hidden !important;
+}
+
+@keyframes color-change-2x {
+    0% {
+        background: #d1d1d1;
+        border-color: #d1d1d1;
+    }
+    100% {
+        background: #bcbcbc;
+        border-color: #bcbcbc;
+    }
+}

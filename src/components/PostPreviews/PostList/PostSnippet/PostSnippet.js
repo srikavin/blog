@@ -2,21 +2,23 @@ import React from 'react';
 
 import PropTypes from 'prop-types';
 
-import {Text} from '@blueprintjs/core';
 import {Link} from 'react-router-dom';
-import PostMeta from '../../../Post/PostHeader/PostAuthor/PostMeta';
+import PostMeta from '../../../Post/PostHeader/PostMeta/PostMeta';
 import PostTags from '../../../Post/PostHeader/PostTags/PostTags';
 import MathRenderer from '../../../Post/PostContent/MathRenderer/MathRenderer';
 
 import styles from './PostSnippet.module.css';
+import Skeleton from '../../../util/Skeleton/Skeleton';
 
 class PostSnippet extends React.Component {
     getContentBlock() {
         if (!this.props.post.overview) {
-            return (<Text className={'bp3-skeleton'}>
-                {'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ac pharetra est, quis venenatis dui.' +
-                ' Etiam eros purus, accumsan sed risus eget, pulvinar lobortis odio. Integer mattis a sem vel molestie. Quisque'}
-            </Text>)
+            return (
+                <Skeleton>
+                    {'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ac pharetra est, quis venenatis dui.' +
+                    ' Etiam eros purus, accumsan sed risus eget, pulvinar lobortis odio. Integer mattis a sem vel molestie. Quisque'}
+                </Skeleton>
+            );
         }
         return (
             <span className={styles.snippetText}>

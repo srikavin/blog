@@ -1,22 +1,22 @@
-.post-tag-item {
+.item {
     margin-left: 4px;
 }
 
-.post-tag-description-container.bp3-skeleton {
-    padding: 5px 150px;
+.skeleton {
+    padding: 8px 150px;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 15px;
 }
 
-.post-tag-description-container {
+.description {
     max-width: 15vw;
     padding: 15px;
     font-size: 16px;
 }
 
 @media screen and (max-width: 1200px) {
-    .post-tag-description-container {
+    .description {
         max-width: 60vw;
         padding: 15px;
         font-size: 16px;

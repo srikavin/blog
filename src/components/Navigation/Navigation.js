@@ -1,21 +1,11 @@
 import React from 'react';
-import {
-    Alignment,
-    Button,
-    Menu,
-    MenuItem,
-    Navbar,
-    NavbarDivider,
-    NavbarGroup,
-    NavbarHeading,
-    Popover,
-    Position
-} from '@blueprintjs/core';
-import {IconNames} from '@blueprintjs/icons';
+
+import {NavBar, NavDivider, NavGroup, NavHeader} from './NavBar/';
+import {Button} from '../util/Button/Button';
 import NavLink from './NavLink/NavLink';
 import {Auth} from '../../data/resource/auth';
 import Link from 'react-router-dom/es/Link';
-import {FaGithub} from 'react-icons/fa';
+import {FaCode, FaGithub, FaQuestionCircle, FaSignOutAlt, FaTachometerAlt, FaUserAlt} from 'react-icons/fa';
 import './Navigation.css'
 
 class Navigation extends React.Component {
@@ -50,26 +40,22 @@ class Navigation extends React.Component {
 
     render() {
         return (
-            <Navbar>
-                <NavbarGroup align={Alignment.LEFT}>
-                    <NavbarHeading>
+            <NavBar>
+                <NavGroup align={'left'}>
+                    <NavHeader>
                         <Link to={'/'}>Srikavin Ramkumar</Link>
-                    </NavbarHeading>
-                    <NavbarDivider/>
-                    <NavLink to="/" icon={IconNames.LAYOUT_AUTO} label="About"/>
-                    <NavLink to="/blog" icon={IconNames.CODE} label="Blog"/>
-                </NavbarGroup>
-                <NavbarGroup align={Alignment.RIGHT}>
+                    </NavHeader>
+                    <NavDivider/>
+                    <NavLink to="/" icon={<FaQuestionCircle/>} label="About"/>
+                    <NavLink to="/blog" icon={<FaCode/>} label="Blog"/>
+                </NavGroup>
+                <NavGroup align={'right'}>
                     {this.state.auth.isLoggedIn() ? (
                         <>
-                            <NavLink icon={'control'} to="/admin" label="Admin"/>
-                            <NavbarDivider/>
-                            <Popover content={<Menu>
-                                <MenuItem text="Profile" icon="user"/>
-                                <MenuItem onClick={this.state.auth.logout} text="Logout" icon="log-out"/>
-                            </Menu>} position={Position.BOTTOM}>
-                                <Button icon="user" text={this.state.user.username}/>
-                            </Popover>
+                            <NavLink icon={<FaTachometerAlt/>} to="/admin" label="Dashboard"/>
+                            <NavDivider/>
+                            <Button minimal icon={<FaUserAlt/>} text={this.state.user.username}/>
+                            <Button minimal onClick={this.state.auth.logout} icon={<FaSignOutAlt/>} text='Logout'/>
                         </>
                     ) : (
                         <div className={'externalIcons'}>
@@ -77,8 +63,8 @@ class Navigation extends React.Component {
                                       onClick={this.redirect('https://github.com/srikavin')} size={25}/>&nbsp;
                         </div>
                     )}
-                </NavbarGroup>
-            </Navbar>
+                </NavGroup>
+            </NavBar>
         )
     }
 }

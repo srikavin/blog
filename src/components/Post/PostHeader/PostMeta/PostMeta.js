@@ -1,27 +1,29 @@
 import React from 'react';
-import {Classes} from '@blueprintjs/core'
-import {css, StyleSheet} from 'aphrodite';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
+
+import styles from './PostMeta.module.css'
+import classNames from 'classnames/bind';
+import Skeleton from '../../../util/Skeleton/Skeleton';
 
 class PostMeta extends React.PureComponent {
     render() {
         if (this.props.loading) {
             return (
                 <div className={this.props.className}>
-                    <div className={css(styles.skeleton, styles.container) + ' ' + Classes.SKELETON}/>
+                    <Skeleton align='center' className={classNames(styles.skeleton, styles.container)}/>
                 </div>
             );
         }
 
         return (
-            <div className={this.props.className + ' ' + css(styles.container)}>
+            <div className={classNames(this.props.className, styles.container)}>
                 <span>Posted on </span>
                 <span title={this.getFormattedToolTip()}>
                     {this.getCreatedDateElement()}
                 </span>
                 <span> by </span>
-                <span className={css(styles.author)}>
+                <span className={styles.author}>
                     {this.props.author.username}
                 </span>
             </div>
@@ -41,22 +43,6 @@ class PostMeta extends React.PureComponent {
         return dayjs(this.props.createdTime).format('MMMM D, YYYY') + (this.isModified() ? '*' : '');
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        marginBottom: '15px',
-        fontStyle: 'italic'
-    },
-    skeleton: {
-        width: '200px',
-        height: '20px',
-        marginLeft: 'auto',
-        marginRight: 'auto'
-    },
-    author: {
-        marginBottom: '15px'
-    }
-});
 
 PostMeta.propTypes = {
     containerClassName: PropTypes.string,

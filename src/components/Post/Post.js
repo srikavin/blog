@@ -4,10 +4,9 @@ import PostContent from './PostContent/PostContent';
 import {Link} from 'react-router-dom';
 import DocumentTitle from 'react-document-title';
 
-import {NonIdealState} from '@blueprintjs/core';
-import {IconNames} from '@blueprintjs/icons';
-
 import {PostStore} from '../../data/resource/post';
+import ErrorState from '../util/ErrorState/ErrorState';
+import {FaExclamationTriangle} from 'react-icons/fa';
 import './Post.css'
 
 class Post extends React.Component {
@@ -49,10 +48,10 @@ class Post extends React.Component {
         if (this.state.error) {
             return (
                 <div className="post-load-error">
-                    <NonIdealState className={'header'} title={'This post could not be loaded'}
-                                   description={'There was an error attempting to load this post.'}
-                                   icon={IconNames.WARNING_SIGN}
-                                   action={<Link to={'/'}>Go home</Link>}/>
+                    <ErrorState className={'header'} title={'This post could not be loaded'}
+                                description={'There was an error attempting to load this post.'}
+                                icon={<FaExclamationTriangle/>}
+                                action={<Link to={'/'}>Go home</Link>}/>
                 </div>
             )
         }

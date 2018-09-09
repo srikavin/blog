@@ -10,6 +10,46 @@ import isEqual from 'react-fast-compare';
 import './MarkdownEditor.css'
 import FileUpload from './FileUpload/FileUpload';
 import {Prompt} from 'react-router-dom';
+import {
+    FaBold,
+    FaCode,
+    FaHeading,
+    FaImage,
+    FaItalic,
+    FaLink,
+    FaListOl,
+    FaListUl,
+    FaQuoteRight,
+    FaStrikethrough,
+    FaTasks
+} from 'react-icons/fa';
+
+function getFaIcon(name) {
+    switch (name) {
+        case 'heading':
+            return <FaHeading/>;
+        case 'bold':
+            return <FaBold/>;
+        case 'italic':
+            return <FaItalic/>;
+        case 'strikethrough':
+            return <FaStrikethrough/>;
+        case 'link':
+            return <FaLink/>;
+        case 'quote-right':
+            return <FaQuoteRight/>;
+        case 'code':
+            return <FaCode/>;
+        case 'image':
+            return <FaImage/>;
+        case 'list-ul':
+            return <FaListUl/>;
+        case 'list-ol':
+            return <FaListOl/>;
+        case 'tasks':
+            return <FaTasks/>;
+    }
+}
 
 class MarkdownEditor extends React.Component {
     constructor(props) {
@@ -37,6 +77,9 @@ class MarkdownEditor extends React.Component {
                            primary="second">
                     <div className={css(styles.scrollable)}>
                         <ReactMde
+                            buttonContentOptions={{
+                                iconProvider: getFaIcon
+                            }}
                             layout="noPreview"
                             onChange={this.handleValueChange}
                             editorState={this.state}
@@ -47,7 +90,7 @@ class MarkdownEditor extends React.Component {
                     </div>
                 </SplitPane>
             </FileUpload>
-        );
+        )
     }
 }
 
