@@ -4,6 +4,7 @@ import styles from './Dashboard.module.css'
 import {Button, ButtonGroup} from '@blueprintjs/core';
 import PostManager from './PostManager/PostManager';
 import TagManager from './TagManager/TagManager';
+import RequireAuth from '../Auth/RequireAuth/RequireAuth';
 
 class Dashboard extends React.Component {
     constructor(props) {
@@ -14,6 +15,7 @@ class Dashboard extends React.Component {
     render() {
         return (
             <Fragment>
+                <RequireAuth from={'/admin/'}/>
                 <div className={styles.container}>
                     <div className={styles.header}>
                         <h1 className={styles.headerText}>
