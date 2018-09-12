@@ -8,6 +8,11 @@
     display: block;
 }
 
+.contentSkeleton {
+    height: 22vh;
+    width: 100%;
+}
+
 .snippetText {
     display: inline;
     line-height: 24px;
