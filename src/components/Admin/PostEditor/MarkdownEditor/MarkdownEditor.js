@@ -19,6 +19,7 @@ import {
     FaLink,
     FaListOl,
     FaListUl,
+    FaQuestion,
     FaQuoteRight,
     FaStrikethrough,
     FaTasks
@@ -48,6 +49,8 @@ function getFaIcon(name) {
             return <FaListOl/>;
         case 'tasks':
             return <FaTasks/>;
+        default:
+            return <FaQuestion/>
     }
 }
 

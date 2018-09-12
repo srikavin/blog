@@ -1,6 +1,6 @@
 import React, {Fragment} from 'react';
 import {MultiSelect} from '@blueprintjs/select';
-import {Alert, Button, FormGroup, Input, Intent, MenuItem, Position, Toaster} from '@blueprintjs/core';
+import {Alert, Button, FormGroup, Intent, MenuItem, Position, Toaster} from '@blueprintjs/core';
 import {css, StyleSheet} from 'aphrodite';
 import PropTypes from 'prop-types';
 import {TagStore} from '../../../../data/resource/tag'

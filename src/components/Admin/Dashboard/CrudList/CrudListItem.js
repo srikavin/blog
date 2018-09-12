@@ -4,10 +4,6 @@ import styles from './CrudListItem.module.css';
 import {Button, ButtonGroup, Card, Intent} from '@blueprintjs/core';
 import {IconNames} from '@blueprintjs/icons';
 
-import classNames from 'classnames/bind'
-
-let cx = classNames.bind(styles);
-
 class CrudListItem extends Component {
     constructor(props) {
         super(props);
