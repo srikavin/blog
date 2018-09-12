@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {docco} from 'react-syntax-highlighter/styles/hljs';
+import docco from 'react-syntax-highlighter/styles/hljs/docco';
 import SyntaxHighlighter, {registerLanguage} from 'react-syntax-highlighter/light';
 
 
