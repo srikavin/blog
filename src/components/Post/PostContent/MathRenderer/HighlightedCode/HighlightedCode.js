@@ -21,7 +21,7 @@ class HighlightedCode extends React.Component {
     loadLanguage() {
         if (this.props.language && this.props.language !== null) {
             let lang = this.props.language.toLowerCase();
-            import('react-syntax-highlighter/languages/hljs/' + lang).then(e => {
+            import(/* webpackChunkName: "code-highlighter-[request]" */'react-syntax-highlighter/languages/hljs/' + lang).then(e => {
                 registerLanguage(lang, e.default);
                 this.forceUpdate();
             });
