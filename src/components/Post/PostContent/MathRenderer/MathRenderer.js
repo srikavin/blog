@@ -19,7 +19,7 @@ class MarkdownRender extends React.Component {
                 ...this.props.renderers,
                 paragraph: (props) => <div>{props.children}</div>,
                 link: (props) => <a target={'_blank'} href={props.href}>{props.children}</a>,
-                inlineCode: (props) => <HighlightedCode {...props}/>,
+                inlineCode: (props) => <HighlightedCode inline={true} {...props}/>,
                 code: (props) => <HighlightedCode {...props}/>,
                 math: (props) =>
                     <span className={css(styles.mathContainer)}><MathJax.Node formula={props.value}/></span>,

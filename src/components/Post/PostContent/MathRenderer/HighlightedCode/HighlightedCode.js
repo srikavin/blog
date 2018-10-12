@@ -1,7 +1,7 @@
 import * as React from 'react';
 import docco from 'react-syntax-highlighter/styles/hljs/docco';
 import SyntaxHighlighter, {registerLanguage} from 'react-syntax-highlighter/light';
-
+import './HighlightedCode.module.css'
 
 class HighlightedCode extends React.Component {
     displayName = 'CodeBlock';
@@ -19,7 +19,7 @@ class HighlightedCode extends React.Component {
     }
 
     loadLanguage() {
-        if (this.props.language && this.props.language !== null) {
+        if (this.props.language) {
             let lang = this.props.language.toLowerCase();
             import(/* webpackChunkName: "code-highlighter-[request]" */'react-syntax-highlighter/languages/hljs/' + lang).then(e => {
                 registerLanguage(lang, e.default);
@@ -29,8 +29,15 @@ class HighlightedCode extends React.Component {
     }
 
     render() {
+        if (this.props.inline) {
+            return (
+                <SyntaxHighlighter customStyle={{'display': 'inline'}} showLineNumbers={false}
+                                   language={this.props.language}
+                                   style={docco}>{this.props.value ? this.props.value : ''}</SyntaxHighlighter>
+            )
+        }
         return (
-            <SyntaxHighlighter language={this.props.language}
+            <SyntaxHighlighter showLineNumbers={true} language={this.props.language}
                                style={docco}>{this.props.value ? this.props.value : ''}</SyntaxHighlighter>
         );
     }
