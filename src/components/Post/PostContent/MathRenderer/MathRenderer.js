@@ -24,7 +24,8 @@ class MarkdownRender extends React.Component {
                 math: (props) =>
                     <span className={css(styles.mathContainer)}><MathJax.Node formula={props.value}/></span>,
                 inlineMath: (props) =>
-                    <span className={css(styles.mathContainer)}><MathJax.Node inline formula={props.value}/></span>,
+                    <span className={css(styles.mathContainer, styles.inline)}><MathJax.Node inline
+                                                                                             formula={props.value}/></span>,
                 image: ImageRenderer
             }
         };
@@ -49,6 +50,9 @@ const styles = StyleSheet.create({
         overflow: 'auto',
         maxWidth: '800px',
         display: 'block'
+    },
+    inline: {
+        display: 'inline'
     }
 });
 
