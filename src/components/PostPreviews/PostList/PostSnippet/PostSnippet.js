@@ -23,7 +23,8 @@ class PostSnippet extends React.Component {
             <span className={styles.snippetText}>
                 <PostContent content={this.props.post.overview}/> {' '}
                 <Link to={`/blog/posts/${this.props.post.slug}`} className={styles.continue}>
-                    <span>Continue Reading <span className={styles.arrow}>→</span></span></Link>
+                    Continue Reading
+                </Link>
             </span>
         );
     }

@@ -11,7 +11,9 @@
 
 @media (max-width: 600px) {
     .container {
-        width: 100vw
+        width: 100vw;
+        margin-left: 8px;
+        margin-right: 8px;
     }
 }
 
@@ -27,22 +29,28 @@
     background-color: #FFFFFF;
     max-width: 1260px;
     width: 1260px;
+    max-height: 52vh;
+    overflow-y: hidden;
 }
 
 @media (max-width: 600px) {
     .preview {
-        width: 100vw;
-        max-width: 100vw;
-        min-width: 100vw;
-        max-height: 320px
+        width: 90%;
+        max-width: 90%;
+        min-width: 90%;
+        max-height: 450px;
     }
 }
 
-@media (max-width: 1800px) {
+@media (min-width: 2000px) {
     .preview {
-        max-width: 70vw;
-        min-width: 70vw;
-        width: 70vw;
-        overflow: hidden
+        box-sizing: border-box;
+        /*flex-grow: 1;*/
+        max-width: 46%;
+        min-width: 46%;
+        width: 46%;
+        /*overflow: hidden*/
+        margin-left: 2%;
+        margin-right: 2%;
     }
 }

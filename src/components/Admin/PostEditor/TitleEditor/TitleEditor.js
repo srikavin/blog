@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     },
     title: {
         marginBottom: '15px',
-        fontFamily: 'Dosis, sans-serif',
+        fontFamily: 'Raleway, sans-serif',
         fontSize: '76px',
         fontWeight: 'lighter'
     }
