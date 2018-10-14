@@ -1,5 +1,5 @@
 //@flow
-import axios, {_v, auth, baseURL} from './_common';
+import axios, {_v, auth, axiosInstanceRoot, baseURL} from './_common';
 import {Identifier} from './identifier'
 import {MemoryCache} from '../cache';
 
@@ -46,7 +46,7 @@ let ImageFetcher: ImageResource = {
         if (val && val.contents) {
             return Promise.resolve(val);
         }
-        return axios
+        return axiosInstanceRoot
             .get(image.url, {
                 responseType: 'blob'
             })

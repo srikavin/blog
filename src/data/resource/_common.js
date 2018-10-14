@@ -26,6 +26,11 @@ export function auth(axios: AxiosInstance) {
 }
 
 export default axiosInstance;
+export const axiosInstanceRoot: AxiosInstance = axios.create({
+    baseURL: '/',
+    timeout: 100000
+});
+
 
 export class Resource {
     axios: AxiosInstance;
