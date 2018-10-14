@@ -4,7 +4,7 @@ import './index.module.css';
 import App from './App';
 import PropTypes from 'prop-types';
 import {BrowserRouter, withRouter} from 'react-router-dom'
-import registerServiceWorker from './registerServiceWorker';
+import {unregister} from './registerServiceWorker';
 import ReactGA from 'react-ga';
 
 ReactGA.initialize('UA-125481234-1');
@@ -50,4 +50,5 @@ ReactDOM.render((
         </GAListener>
     </BrowserRouter>
 ), document.getElementById('root'));
-registerServiceWorker();
+
+unregister();
