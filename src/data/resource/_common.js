@@ -3,7 +3,7 @@ import axios, {AxiosInstance} from 'axios';
 import {Auth} from './auth.js'
 import type {Identifier} from './identifier';
 
-export const baseURL = process.env.NODE_ENV === 'production' ? 'https://srikavin.me/api/v1' : 'http://localhost:4000/api/v1';
+export const baseURL = '/api/v1';
 
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: baseURL,
