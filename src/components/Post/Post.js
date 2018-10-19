@@ -1,7 +1,7 @@
 import React from 'react';
 import PostHeader from './PostHeader/PostHeader'
 import PostContent from './PostContent/PostContent';
-import {Link} from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
 import DocumentTitle from 'react-document-title';
 
 import {PostStore} from '../../data/resource/post';
@@ -48,6 +48,8 @@ class Post extends React.Component {
         if (this.state.error) {
             return (
                 <div className={styles['post-load-error']}>
+                    <Redirect to="/404"/>
+
                     <ErrorState className={'header'} title={'This post could not be loaded'}
                                 description={'There was an error attempting to load this post.'}
                                 icon={<FaExclamationTriangle/>}
