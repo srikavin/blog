@@ -5,8 +5,6 @@ import {Link} from 'react-router-dom';
 
 class NotFound extends Component {
     render() {
-        console.log(this.props.history.location.pathname);
-        console.log(this.props.history.location.pathname !== '/404');
         if (this.props.history.location.pathname !== '/404') {
             window.location.pathname = '/404';
         }
