@@ -1,6 +1,6 @@
 import * as React from 'react';
-import docco from 'react-syntax-highlighter/styles/hljs/docco';
-import SyntaxHighlighter, {registerLanguage} from 'react-syntax-highlighter/light';
+import docco from 'react-syntax-highlighter/dist/styles/hljs/docco';
+import SyntaxHighlighter, {registerLanguage} from 'react-syntax-highlighter/dist/light';
 import './HighlightedCode.module.css'
 
 class HighlightedCode extends React.Component {
@@ -21,7 +21,7 @@ class HighlightedCode extends React.Component {
     loadLanguage() {
         if (this.props.language) {
             let lang = this.props.language.toLowerCase();
-            import(/* webpackChunkName: "code-highlighter-[request]" */'react-syntax-highlighter/languages/hljs/' + lang).then(e => {
+            import(/* webpackChunkName: "code-highlighter-[request]" */'react-syntax-highlighter/dist/languages/hljs/' + lang).then(e => {
                 registerLanguage(lang, e.default);
                 this.forceUpdate();
             });

@@ -2,10 +2,6 @@ import React from 'react'
 import styles from './PortfolioItem.module.css'
 
 class PortfolioItem extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     redirect(url) {
         return () => {
             window.open(url, '_blank')

@@ -58,7 +58,7 @@ class MarkdownEditor extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            markdown: props.value
+            editorState: props.value
         };
         this.handleValueChange = this.handleValueChange.bind(this);
     }
@@ -68,8 +68,10 @@ class MarkdownEditor extends React.Component {
     }
 
     handleValueChange(mdeState) {
-        this.setState(mdeState);
-        this.props.onChange(mdeState.markdown);
+        this.setState({
+            editorState: mdeState
+        });
+        this.props.onChange(mdeState);
     };
 
     render() {
@@ -85,11 +87,11 @@ class MarkdownEditor extends React.Component {
                             }}
                             layout="noPreview"
                             onChange={this.handleValueChange}
-                            editorState={this.state}
+                            value={this.state.editorState}
                         />
                     </div>
                     <div className={css(styles.scrollable)}>
-                        <MathRenderer source={this.state.markdown}/>
+                        <MathRenderer source={this.state.editorState}/>
                     </div>
                 </SplitPane>
             </FileUpload>
