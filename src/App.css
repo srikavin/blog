@@ -1,18 +1,14 @@
-@import "~normalize.css/normalize.css";
-
 html {
-    -webkit-box-sizing: border-box;
     box-sizing: border-box;
 }
 
 *,
 *::before,
 *::after {
-    -webkit-box-sizing: inherit;
     box-sizing: inherit;
 }
 
-:global body {
+body {
     text-transform: none;
     line-height: 1.28581;
     letter-spacing: 0;
@@ -22,31 +18,31 @@ html {
     color: #182026;
 }
 
-:global p {
+p {
     margin-top: 0;
     margin-bottom: 10px;
 }
 
-:global small {
+small {
     font-size: 12px;
 }
 
-:global strong {
+strong {
     font-weight: 600;
 }
 
-:global a {
+a {
     text-decoration: none;
     color: #106ba3;
 }
 
-:global a:hover {
+a:hover {
     cursor: pointer;
     text-decoration: underline;
     color: #106ba3;
 }
 
-:global a code {
+a code {
     color: inherit;
 }
 
@@ -57,11 +53,11 @@ html {
     text-align: center;
 }
 
-:global .bp3-dialog.bp3-alert, :global .bp3-dialog.bp3-alert :global .bp3-alert-body {
+.bp3-dialog.bp3-alert, .bp3-dialog.bp3-alert .bp3-alert-body {
     max-width: 100vw;
     width: auto;
 }
 
-:global .AppContent {
+.AppContent {
     padding-left: calc(100vw - 100%);
 }
