@@ -44,7 +44,7 @@
     grid-area: links;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
-    grid-template-areas: "github binder" "github binder";
+    grid-template-areas: "binder github" "binder github";
 }
 
 .portfolioExternalButton {
@@ -70,7 +70,7 @@
     grid-area: github;
 }
 
-.binder {
+.custom {
     border: 1px solid #e1bbbb;
     composes: portfolioExternalButton;
     grid-area: binder;

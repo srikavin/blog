@@ -18,11 +18,11 @@ class PortfolioItem extends React.Component {
                 <div className={styles.title}>{this.props.name}</div>
                 <div className={styles.description}>{this.props.description}</div>
                 <div className={styles.links}>
-                    {this.props.github ? <div className={styles.github + ' ' + styles.portfolioExternalButton}
-                                              onClick={this.redirect(this.props.github)}>Github</div> :
+                    {this.props.custom ? <div className={styles.custom + ' ' + styles.portfolioExternalButton}
+                                              onClick={this.redirect(this.props.custom)}>{this.props.customName}</div> :
                         <div>&nbsp;</div>}
-                    {this.props.binder ? <div className={styles.binder + ' ' + styles.portfolioExternalButton}
-                                              onClick={this.redirect(this.props.binder)}>Binder</div> :
+                    {this.props.github ? <div className={styles.github + ' ' + styles.portfolioExternalButton}
+                                              onClick={this.redirect(this.props.github)}>{this.props.githubName ? this.props.githubName : "Github"}</div> :
                         <div>&nbsp;</div>}
                 </div>
             </div>
