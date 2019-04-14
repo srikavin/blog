@@ -1,0 +1,36 @@
+:global(.Resizer.vertical) {
+    width: 11px;
+    margin: 0 -5px;
+    border-left: 5px solid rgba(255, 255, 255, 0);
+    border-right: 5px solid rgba(255, 255, 255, 0);
+    cursor: col-resize;
+}
+
+:global(.Resizer) {
+    box-sizing: border-box;
+    background: #CED9E0;
+    opacity: 1;
+    z-index: 1;
+    background-clip: padding-box;
+}
+
+.hidden {
+    display: none;
+}
+
+.container {
+    overflow: auto;
+    height: 100%
+}
+
+.container textarea {
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Open Sans, Helvetica Neue, Icons16, sans-serif !important;
+    line-height: 1.28581;
+}
+
+.scrollable {
+    overflow-y: scroll;
+    margin-left: 15px;
+    margin-right: 15px;
+    min-height: 100%;
+}

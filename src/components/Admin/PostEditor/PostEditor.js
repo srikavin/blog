@@ -1,14 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {css, StyleSheet} from 'aphrodite';
 import MarkdownEditor from './MarkdownEditor/MarkdownEditor';
 import {Button, ButtonGroup, NonIdealState} from '@blueprintjs/core';
 import {IconNames} from '@blueprintjs/icons';
 import TagEditor from './TagEditor/TagEditor';
 import TitleEditor from './TitleEditor/TitleEditor';
 
-import './PostEditor.module.css'
+import styles from './PostEditor.module.css'
 import {Intent} from '@blueprintjs/core/lib/cjs/common/intent';
 
 class PostEditor extends React.Component {
@@ -74,15 +73,15 @@ class PostEditor extends React.Component {
         }
 
         return (
-            <div className={css(styles.editorContainer)}>
-                <ButtonGroup minimal={true} className={css(styles.submitButton)}>
+            <div className={styles.editorContainer}>
+                <ButtonGroup minimal={true} className={styles.submitButton}>
                     {this.submitButton()}
                     <Button onClick={this.callSubmitDraftCallback} icon={IconNames.DOCUMENT} intent={Intent.SUCCESS}>
                         Create Draft
                     </Button>
                 </ButtonGroup>
                 <TitleEditor title={this.state.title} onTitleChange={this.onTitleChange}/>
-                <div className={css(styles.tagEditorContainer)}>
+                <div className={styles.tagEditorContainer}>
                     <TagEditor tags={this.state.tags} onSelectedChange={this.onTagChange}/>
                 </div>
                 <MarkdownEditor onChange={this.onContentsChange} value={this.state.contents}/>
@@ -124,25 +123,6 @@ class PostEditor extends React.Component {
         throw new Error('Invalid type, ' + this.props.type + ', given as a prop to PostEditor');
     }
 }
-
-const styles = StyleSheet.create({
-    editorContainer: {
-        position: 'relative',
-        marginTop: '20px',
-        height: '100%'
-    },
-    submitButton: {
-        position: 'absolute',
-        top: '5px',
-        right: '5px'
-    },
-    tagEditorContainer: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: '25px'
-    }
-});
 
 PostEditor.propTypes = {
     type: PropTypes.oneOf(['update', 'create']).isRequired,

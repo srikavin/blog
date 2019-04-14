@@ -1,12 +1,13 @@
 import {EditableText, H1} from '@blueprintjs/core';
-import {css, StyleSheet} from 'aphrodite';
 import PropTypes from 'prop-types';
 import React from 'react';
+
+import styles from './TitleEditor.module.css'
 
 class TitleEditor extends React.PureComponent {
     render() {
         return (
-            <H1 className={css(styles.titleContainer, styles.title)}>
+            <H1 className={`${styles.titleContainer} ${styles.title}`}>
                 <EditableText
                     value={this.props.title}
                     onChange={this.props.onTitleChange}
@@ -22,17 +23,3 @@ TitleEditor.propTypes = {
 };
 
 export default TitleEditor;
-
-const styles = StyleSheet.create({
-    titleContainer: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    title: {
-        marginBottom: '15px',
-        fontFamily: 'Raleway, sans-serif',
-        fontSize: '76px',
-        fontWeight: 'lighter'
-    }
-});

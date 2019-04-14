@@ -1,3 +1,22 @@
 :global .bp3-editable-text-content {
     height: 95px !important;
 }
+
+.editorContainer {
+    position: relative;
+    margin-top: 20px;
+    height: 100%;
+}
+
+.submitButton {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.tagEditorContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 25px;
+}

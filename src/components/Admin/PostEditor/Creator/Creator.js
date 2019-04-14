@@ -1,6 +1,5 @@
 import React from 'react';
 
-import {css, StyleSheet} from 'aphrodite';
 import PostEditor from '../PostEditor';
 import RequireAuth from '../../Auth/RequireAuth/RequireAuth';
 import {Redirect} from 'react-router-dom';
@@ -8,6 +7,7 @@ import {PostStore} from '../../../../data/resource/post';
 import {Auth} from '../../../../data/resource/auth';
 import {Intent, Position, Toaster} from '@blueprintjs/core';
 import {IconNames} from '@blueprintjs/icons';
+import styles from './Creator.module.css'
 
 const EditorToaster = Toaster.create({
     className: 'recipe-toaster',
@@ -91,7 +91,7 @@ class Creator extends React.Component {
 
     render() {
         return (
-            <div className={css(styles.container)}>
+            <div className={styles.container}>
                 <RequireAuth from={this.props.match.url}/>
                 {this.state.redirect ? <Redirect to={this.state.redirect}/> : ''}
                 <PostEditor
@@ -104,11 +104,5 @@ class Creator extends React.Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        height: '100vh'
-    }
-});
 
 export default Creator;

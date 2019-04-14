@@ -1,7 +1,6 @@
 import React, {Fragment} from 'react';
 import {MultiSelect} from '@blueprintjs/select';
 import {Alert, Button, FormGroup, Intent, MenuItem, Position, Toaster} from '@blueprintjs/core';
-import {css, StyleSheet} from 'aphrodite';
 import PropTypes from 'prop-types';
 import {TagStore} from '../../../../data/resource/tag'
 import isEqual from 'react-fast-compare';
@@ -72,7 +71,7 @@ class TagEditor extends React.Component {
         return (
             <Fragment>
                 <MultiSelect
-                    className={css(styles.input) + ' ' + this.props.className}
+                    className={this.props.className}
                     items={this.state.tags}
                     itemRenderer={this._itemRenderer}
                     itemPredicate={this._itemPredicate}
@@ -209,10 +208,6 @@ class TagEditor extends React.Component {
         }
     }
 }
-
-const styles = StyleSheet.create({
-    input: {}
-});
 
 TagEditor.propTypes = {
     onSelectedChange: PropTypes.func.isRequired,

@@ -4,7 +4,7 @@ import {NavBar, NavDivider, NavGroup, NavHeader} from './NavBar/';
 import {Button} from '../util/Button/Button';
 import NavLink from './NavLink/NavLink';
 import {Auth} from '../../data/resource/auth';
-import Link from 'react-router-dom/es/Link';
+import {Link} from 'react-router-dom';
 import {FaCode, FaGithub, FaQuestionCircle, FaSignOutAlt, FaTachometerAlt, FaUserAlt} from 'react-icons/fa';
 import './Navigation.css'
 

@@ -1,0 +1,13 @@
+.titleContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.title {
+    margin-bottom: 15px;
+    font-family: 'Raleway', 'sans-serif';
+    font-size: 76px !important;
+    font-weight: lighter !important;
+}
+

@@ -1,12 +1,12 @@
 import React from 'react';
 
-import {css, StyleSheet} from 'aphrodite';
 import PostEditor from '../PostEditor';
 import RequireAuth from '../../Auth/RequireAuth/RequireAuth';
 import {Redirect} from 'react-router-dom';
 import {PostStore} from '../../../../data/resource/post';
 import {Intent, Position, Toast, Toaster} from '@blueprintjs/core';
 import {IconNames} from '@blueprintjs/icons';
+import styles from './Editor.module.css'
 
 const EditorToaster = Toaster.create({
     className: 'recipe-toaster',
@@ -92,7 +92,7 @@ class Editor extends React.Component {
 
     render() {
         return (
-            <div className={css(styles.container)}>
+            <div className={styles.container}>
                 <Toaster position={Position.TOP_RIGHT} ref={this.toaster}>
                     {this.state.toasts.map(toast => <Toast {...toast} />)}
                 </Toaster>
@@ -108,11 +108,5 @@ class Editor extends React.Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        height: '100vh'
-    }
-});
 
 export default Editor;

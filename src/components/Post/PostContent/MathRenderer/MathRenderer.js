@@ -3,9 +3,10 @@ import * as ReactMarkdown from 'react-markdown';
 import RemarkMathPlugin from '@ibrahima/remark-math';
 import MathJax from 'react-mathjax';
 import PropTypes from 'prop-types';
-import {css, StyleSheet} from 'aphrodite';
 import HighlightedCode from './HighlightedCode/HighlightedCode';
 import ImageRenderer from './ImageRenderer/ImageRenderer';
+import styles from './MathRenderer.module.css'
+
 
 class MarkdownRender extends React.Component {
     render() {
@@ -22,10 +23,10 @@ class MarkdownRender extends React.Component {
                 inlineCode: (props) => <HighlightedCode inline={true} {...props}/>,
                 code: (props) => <HighlightedCode {...props}/>,
                 math: (props) =>
-                    <span className={css(styles.mathContainer)}><MathJax.Node formula={props.value}/></span>,
+                    <span className={styles.mathContainer}><MathJax.Node formula={props.value}/></span>,
                 inlineMath: (props) =>
-                    <span className={css(styles.mathContainer, styles.inline)}><MathJax.Node inline
-                                                                                             formula={props.value}/></span>,
+                    <span className={`${styles.mathContainer} ${styles.inline}`}><MathJax.Node inline
+                                                                                               formula={props.value}/></span>,
                 image: ImageRenderer
             }
         };
@@ -39,22 +40,6 @@ class MarkdownRender extends React.Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    mathContainer: {
-        '@media (max-width: 800px)': {
-            maxHeight: '100vh'
-        },
-        paddingBottom: '15px',
-        paddingTop: '15px',
-        overflow: 'auto',
-        maxWidth: '800px',
-        display: 'block'
-    },
-    inline: {
-        display: 'inline'
-    }
-});
 
 MarkdownRender.propTypes = {
     source: PropTypes.string.isRequired,

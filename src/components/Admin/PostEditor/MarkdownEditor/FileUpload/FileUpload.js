@@ -214,7 +214,7 @@ class FileUpload extends React.Component {
 
 FileUpload.propTypes = {
     src: PropTypes.string,
-    children: PropTypes.element
+    children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.element), PropTypes.element])
 };
 
 export default FileUpload;
