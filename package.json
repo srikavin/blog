@@ -52,10 +52,8 @@
       "not ie < 11"
     ]
   },
-  "proxy": "https://srikavin.me",
+  "proxy": "http://localhost:4000",
   "devDependencies": {
-    "flow-bin": "^0.95.1",
-    "react-app-rewire-hot-loader": "^2.0.1",
-    "react-app-rewired": "^2.1.1"
+    "flow-bin": "^0.95.1"
   }
 }

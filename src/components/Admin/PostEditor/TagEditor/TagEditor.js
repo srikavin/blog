@@ -33,6 +33,7 @@ class TagEditor extends React.Component {
         this._callUpdateCallback = this._callUpdateCallback.bind(this);
         this._addTagConfirm = this._addTagConfirm.bind(this);
         this._addTagCancel = this._addTagCancel.bind(this);
+        this._onQueryChange = this._onQueryChange.bind(this);
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
@@ -77,6 +78,7 @@ class TagEditor extends React.Component {
                     itemPredicate={this._itemPredicate}
                     onItemSelect={this._onItemSelect}
                     tagRenderer={this._tagRenderer}
+                    onQueryChange={this._onQueryChange}
                     popoverProps={{
                         minimal: true
                     }}
@@ -87,7 +89,7 @@ class TagEditor extends React.Component {
                     }}
                     resetOnSelect={true}
                     noResults={<MenuItem shouldDismissPopover={false} onClick={this._addTag}
-                                         text={`No results. Add ${this.state.query}?`}/>}
+                                         text={`No results. Add a new tag?`}/>}
                     selectedItems={this.state.selected}
                 />
                 {this._getAlert()}
@@ -182,8 +184,11 @@ class TagEditor extends React.Component {
         return this._getTagIndex(tag) !== -1;
     }
 
-    _itemPredicate(query, item) {
+    _onQueryChange(query) {
         this.setState({query});
+    }
+
+    _itemPredicate(query, item) {
         return item.name.includes(query);
     }
 
