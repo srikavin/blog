@@ -4,7 +4,9 @@ import styles from './Resume.module.css'
 class Resume extends React.Component {
     render() {
         return (
-            <div className={styles.landingResumeButton}> Resume</div>
+            <a href={process.env.PUBLIC_URL + '/resume.pdf'}>
+                <div className={styles.landingResumeButton}>Resume</div>
+            </a>
         );
     }
 }

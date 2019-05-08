@@ -4,7 +4,8 @@
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1.5fr;
     grid-template-areas: "title links" "description links";
-    margin-bottom: 5px;
+    margin-top: 8px;
+    margin-left: 16px;
 }
 
 @media screen and (max-width: 850px) {
@@ -13,6 +14,7 @@
         grid-template-rows: 1fr 1fr 1fr;
         grid-template-areas: "title" "description" "links";
         margin-bottom: 8px;
+        margin-left: 0px;
     }
 
     .description {
@@ -30,14 +32,11 @@
 
 .title {
     grid-area: title;
-    font-weight: lighter;
+    font-weight: 300;
     column-span: none;
     font-size: 20px;
 }
 
-.title:hover {
-    color: #c0c0c0;
-}
 
 .links {
     display: grid;

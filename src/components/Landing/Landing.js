@@ -12,6 +12,7 @@ class Landing extends React.Component {
                 <DocumentTitle title='About'/>
                 <About/>
                 <Portfolio/>
+                <br/>
                 <Resume/>
             </div>
         );
