@@ -7,9 +7,9 @@ import HighlightedCode from './HighlightedCode/HighlightedCode';
 import ImageRenderer from './ImageRenderer/ImageRenderer';
 import styles from './MathRenderer.module.css'
 
-
 class MarkdownRender extends React.Component {
     render() {
+        const map = {};
         const newProps = {
             ...this.props.options,
             source: this.props.source,
@@ -21,13 +21,21 @@ class MarkdownRender extends React.Component {
                 paragraph: (props) => <div>{props.children}</div>,
                 link: (props) => <a target={'_blank'} href={props.href}>{props.children}</a>,
                 inlineCode: (props) => <HighlightedCode inline={true} {...props}/>,
-                code: (props) => <HighlightedCode {...props}/>,
+                code: (props) => <HighlightedCode settings={map} {...props}/>,
                 math: (props) =>
                     <span className={styles.mathContainer}><MathJax.Node formula={props.value}/></span>,
                 inlineMath: (props) =>
                     <span className={`${styles.mathContainer} ${styles.inline}`}><MathJax.Node inline
                                                                                                formula={props.value}/></span>,
-                image: ImageRenderer
+                image: ImageRenderer,
+                definition: (p) => {
+                    try {
+                        map[p.identifier] = JSON.parse(p.url);
+                    } catch (e) {
+                        console.error(e);
+                    }
+                    return null
+                }
             }
         };
 

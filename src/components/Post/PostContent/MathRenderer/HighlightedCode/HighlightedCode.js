@@ -6,6 +6,10 @@ import './HighlightedCode.module.css'
 class HighlightedCode extends React.Component {
     displayName = 'CodeBlock';
 
+    defaults = {
+        'show-line-numbers': true
+    };
+
     constructor(props) {
         super(props);
         this.loadLanguage();
@@ -24,11 +28,17 @@ class HighlightedCode extends React.Component {
             import(/* webpackChunkName: "code-highlighter-[request]" */'react-syntax-highlighter/dist/languages/hljs/' + lang).then(e => {
                 registerLanguage(lang, e.default);
                 this.forceUpdate();
-            });
+            }).catch(console.log)
         }
     }
 
     render() {
+        let settings;
+        if (this.props.settings) {
+            console.log(this.props.settings)
+            settings = Object.assign({}, this.defaults, this.props.settings);
+            console.log(settings)
+        }
         if (this.props.inline) {
             return (
                 <SyntaxHighlighter customStyle={{'display': 'inline'}} showLineNumbers={false}
@@ -37,7 +47,7 @@ class HighlightedCode extends React.Component {
             )
         }
         return (
-            <SyntaxHighlighter showLineNumbers={true} language={this.props.language}
+            <SyntaxHighlighter showLineNumbers={settings['show-line-numbers']} language={this.props.language}
                                style={docco}>{this.props.value ? this.props.value : ''}</SyntaxHighlighter>
         );
     }
