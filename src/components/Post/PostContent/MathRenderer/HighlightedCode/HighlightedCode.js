@@ -34,10 +34,8 @@ class HighlightedCode extends React.Component {
 
     render() {
         let settings;
-        if (this.props.settings) {
-            console.log(this.props.settings)
+        if (this.props.settings && !this.props.inline) {
             settings = Object.assign({}, this.defaults, this.props.settings);
-            console.log(settings)
         }
         if (this.props.inline) {
             return (

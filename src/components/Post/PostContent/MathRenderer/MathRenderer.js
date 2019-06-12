@@ -9,7 +9,7 @@ import styles from './MathRenderer.module.css'
 
 class MarkdownRender extends React.Component {
     render() {
-        const map = {};
+        let map = {};
         const newProps = {
             ...this.props.options,
             source: this.props.source,
@@ -30,11 +30,13 @@ class MarkdownRender extends React.Component {
                 image: ImageRenderer,
                 definition: (p) => {
                     try {
-                        map[p.identifier] = JSON.parse(p.url);
+                        let tmp = {};
+                        tmp[p.identifier] = JSON.parse(p.url);
+                        map = Object.assign({}, map, tmp);
                     } catch (e) {
                         console.error(e);
                     }
-                    return null
+                    return null;
                 }
             }
         };
