@@ -82,7 +82,7 @@ class PostEditor extends React.Component {
                 </ButtonGroup>
                 <TitleEditor title={this.state.title} onTitleChange={this.onTitleChange}/>
                 <div className={styles.tagEditorContainer}>
-                    <TagEditor tags={this.state.tags} onSelectedChange={this.onTagChange}/>
+                    <TagEditor tags={this.state.tags} onSelectedChange={this.onTagChange} addTags={true}/>
                 </div>
                 <MarkdownEditor onChange={this.onContentsChange} value={this.state.contents}/>
             </div>

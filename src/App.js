@@ -11,6 +11,7 @@ import Navigation from './components/Navigation/Navigation';
 import Post from './components/Post/Post';
 import Home from './components/Home/Home';
 import NotFound from './NotFound';
+import FilteredPostList from './components/PostPreviews/FilteredPostList/FilteredPostList';
 
 const Auth = Loadable({
     loader: () => import(/* webpackChunkName: "auth" */'./components/Admin/Auth/Auth'),
@@ -36,6 +37,7 @@ class App extends React.Component {
                         <Route exact path="/" component={Landing}/>
                         <Route exact path="/blog" component={Home}/>
                         <Route exact path="/blog/posts/:slug" component={Post}/>
+                        <Route exact path="/blog/tag/:tags" component={FilteredPostList}/>
                         <Route path="/admin" component={Admin}/>
                         <Route path="/404" component={NotFound}/>
                         <Route component={NotFound}/>

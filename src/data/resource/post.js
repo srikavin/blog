@@ -20,6 +20,12 @@ export type PostSchema = {
     updatedAt: Date;
 }
 
+interface PostQuery {
+    slug?: string,
+    author?: string,
+    tags?: Array<TagSchema>
+}
+
 interface PostResource {
     getById(id: Identifier): Promise<PostSchema>;
 
@@ -34,6 +40,8 @@ interface PostResource {
     delete(id: Identifier): Promise<void>;
 
     createPost(post: PostSchema): Promise<PostSchema>;
+
+    query(query: PostQuery): Promise<Array<PostSchema>>;
 
     createDraft(post: PostSchema): Promise<PostSchema>;
 }
@@ -124,6 +132,11 @@ let PostFetcher: PostResource = {
     getAllDrafts() {
         auth(axios);
         return axios.get('/posts/drafts')
+            .then((e) => e.data)
+            .then(normalizePostArray);
+    },
+    query(query: PostQuery) {
+        return axios.get('/posts', {params: query})
             .then((e) => e.data)
             .then(normalizePostArray);
     },
