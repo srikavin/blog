@@ -23,7 +23,7 @@ export type PostSchema = {
 interface PostQuery {
     slug?: string,
     author?: string,
-    tags?: any
+    tags?: Array<TagSchema>
 }
 
 interface PostResource {

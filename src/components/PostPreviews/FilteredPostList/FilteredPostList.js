@@ -1,59 +1,102 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import {PostStore} from '../../../data/resource/post';
 import PostList from '../PostList/PostList';
 import {TagStore} from '../../../data/resource/tag';
 
 import PropTypes from 'prop-types';
-import TagEditor from '../../Admin/PostEditor/TagEditor/TagEditor';
+import ItemSelector from './ItemSelector/ItemSelector'
+
+import styles from './FilteredPostList.module.css'
+import {debounce} from "../../util/debounce";
 
 class FilteredPostList extends Component {
-    constructor(props) {
-        super(props);
-        let query = this.props.match.params;
-        if (query.tags) {
-            query.tags = query.tags.split(',')
-        }
-        this.state = {
-            posts: [],
-            query: query,
-            filter: []
-        };
-        this.changeTagFilter = this.changeTagFilter.bind(this);
-    }
-
-    componentDidMount() {
-        let query = this.state.query;
-        PostStore.query(query).then(e => {
+    updatePosts = debounce(200, function () {
+        let tagIds = this.state.filter.map(e => e.id);
+        PostStore.query({
+            tags: tagIds,
+            search: this.state.search
+        }).then(e => {
             this.setState({
                 posts: e
             });
         }).catch(console.error);
+        if (tagIds.length > 0) {
+            this.props.history.push(`/blog/tag/${tagIds.join(',')}`)
+        }
+    });
 
+    constructor(props) {
+        super(props);
+        let tags = [];
+
+        this.state = {
+            tags: tags,
+            loading: true,
+            filter: [],
+            search: ''
+        };
+
+        TagStore.getAll().then((tags) => {
+            this.setState({
+                tags,
+                loading: false
+            });
+        });
+
+        this.changeTagFilter = this.changeTagFilter.bind(this);
+        this.updatePosts = this.updatePosts.bind(this);
+        this.changeSearch = this.changeSearch.bind(this);
+
+        this.updatePosts();
+    }
+
+    componentDidMount() {
+        let query = this.props.match.params;
         if (query.tags) {
-            query.tags.forEach(e => {
-                TagStore.getById(e).then(res => {
-                    this.setState({
-                        filter: [...this.state.filter, res]
-                    });
-                })
-            })
+            let tags = query.tags.split(',');
+            let p = [];
+            tags.forEach(e => {
+                p.push(TagStore.getById(e));
+            });
+
+            Promise.all(p).then((tags) => {
+                console.log(tags);
+                this.setState({
+                    filter: tags
+                }, this.updatePosts())
+            });
+
         }
     }
 
+    changeSearch(e) {
+        this.setState({search: e.target.value}, this.updatePosts);
+    }
+
     changeTagFilter(tags) {
-        let query = this.state.query;
-        query.tags.push(tags);
         this.setState({
-            query
-        })
+            filter: tags ? tags : []
+        }, this.updatePosts);
     }
 
     render() {
         return (
-            <Fragment>
-                Filtering on: <TagEditor onSelectedChange={this.changeTagFilter} tags={this.state.query.tags}/>
+            <>
+                <div className={styles.filters}>
+                    <span className={styles.filterText}>Filters: </span>
+                    <div className={styles.filter}>
+                        <input className={styles.search} type={"text"} placeholder={"Search"} value={this.state.search}
+                               onChange={this.changeSearch}/>
+                    </div>
+                    <ItemSelector tags={this.state.tags}
+                                  loading={this.state.loading}
+                                  placeholder={"Tags"}
+                                  value={this.state.filter}
+                                  className={styles.filter}
+                                  onChange={this.changeTagFilter}/>
+                </div>
                 <PostList posts={this.state.posts}/>
-            </Fragment>
+            </>
         );
     }
 }
