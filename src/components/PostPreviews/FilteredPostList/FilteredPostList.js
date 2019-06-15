@@ -4,7 +4,7 @@ import PostList from '../PostList/PostList';
 import {TagStore} from '../../../data/resource/tag';
 
 import PropTypes from 'prop-types';
-import TagEditor from '../../PostEditor/TagEditor/TagEditor';
+import TagEditor from '../../Admin/PostEditor/TagEditor/TagEditor';
 
 class FilteredPostList extends Component {
     constructor(props) {
