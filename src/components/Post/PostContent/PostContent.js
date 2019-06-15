@@ -59,7 +59,7 @@ class PostContent extends React.Component {
 
     render() {
         return (
-            <div className={'content ' + this.props.className}>
+            <div className={'content ' + (this.props.className !== undefined ? this.props.className : '')}>
                 {this.getContentBlock(this.props.content)}
             </div>
         );
