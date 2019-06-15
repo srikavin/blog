@@ -38,6 +38,7 @@ class App extends React.Component {
                         <Route exact path="/blog" component={Home}/>
                         <Route exact path="/blog/posts/:slug" component={Post}/>
                         <Route exact path="/blog/tag/:tags" component={FilteredPostList}/>
+                        <Route exact path="/blog/tag/" component={FilteredPostList}/>
                         <Route path="/admin" component={Admin}/>
                         <Route path="/404" component={NotFound}/>
                         <Route component={NotFound}/>

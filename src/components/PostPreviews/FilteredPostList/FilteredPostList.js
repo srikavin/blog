@@ -8,21 +8,11 @@ import ItemSelector from './ItemSelector/ItemSelector'
 
 import styles from './FilteredPostList.module.css'
 import {debounce} from "../../util/debounce";
+import * as qs from 'qs'
 
 class FilteredPostList extends Component {
-    updatePosts = debounce(200, function () {
-        let tagIds = this.state.filter.map(e => e.id);
-        PostStore.query({
-            tags: tagIds,
-            search: this.state.search
-        }).then(e => {
-            this.setState({
-                posts: e
-            });
-        }).catch(console.error);
-        if (tagIds.length > 0) {
-            this.props.history.push(`/blog/tag/${tagIds.join(',')}`)
-        }
+    updatePostSearch = debounce(300, () => {
+        this.updatePosts()
     });
 
     constructor(props) {
@@ -50,7 +40,24 @@ class FilteredPostList extends Component {
         this.updatePosts();
     }
 
+    updatePosts() {
+        let tagIds = this.state.filter.map(e => e.id);
+        PostStore.query({
+            tags: tagIds,
+            search: this.state.search
+        }).then(e => {
+            this.setState({
+                posts: e
+            });
+        }).catch(console.error);
+
+        this.props.history.push(`/blog/tag/${tagIds.join(',')}` + ((this.state.search && this.state.search.length > 0) ? `?${qs.stringify({search: this.state.search})}` : ''))
+    };
+
     componentDidMount() {
+        let search = (this.props.location && this.props.location.search) ? qs.parse(this.props.location.search)['?search'] : '';
+        this.setState({search}, this.updatePosts);
+
         let query = this.props.match.params;
         if (query.tags) {
             let tags = query.tags.split(',');
@@ -60,17 +67,11 @@ class FilteredPostList extends Component {
             });
 
             Promise.all(p).then((tags) => {
-                console.log(tags);
                 this.setState({
-                    filter: tags
+                    filter: tags,
                 }, this.updatePosts())
             });
-
         }
-    }
-
-    changeSearch(e) {
-        this.setState({search: e.target.value}, this.updatePosts);
     }
 
     changeTagFilter(tags) {
@@ -98,6 +99,10 @@ class FilteredPostList extends Component {
                 <PostList posts={this.state.posts}/>
             </>
         );
+    }
+
+    changeSearch(e) {
+        this.setState({search: e.target.value}, this.updatePostSearch);
     }
 }
 

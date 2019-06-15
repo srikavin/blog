@@ -5,7 +5,7 @@ import {Button} from '../util/Button/Button';
 import NavLink from './NavLink/NavLink';
 import {Auth} from '../../data/resource/auth';
 import {Link} from 'react-router-dom';
-import {FaCode, FaGithub, FaQuestionCircle, FaSignOutAlt, FaTachometerAlt, FaUserAlt} from 'react-icons/fa';
+import {FaCode, FaGithub, FaQuestionCircle, FaSearch, FaSignOutAlt, FaTachometerAlt, FaUserAlt} from 'react-icons/fa';
 import './Navigation.css'
 
 class Navigation extends React.Component {
@@ -48,6 +48,7 @@ class Navigation extends React.Component {
                     <NavDivider/>
                     <NavLink to="/" icon={<FaQuestionCircle/>} label="About"/>
                     <NavLink to="/blog" icon={<FaCode/>} label="Blog"/>
+                    <NavLink to="/blog/tag/" icon={<FaSearch/>} label="Search"/>
                 </NavGroup>
                 <NavGroup align={'right'}>
                     {this.state.auth.isLoggedIn() ? (
@@ -59,8 +60,8 @@ class Navigation extends React.Component {
                         </Fragment>
                     ) : (
                         <div className={'externalIcons'}>
-                            <FaGithub className={'navExternIconLink'}
-                                      onClick={this.redirect('https://github.com/srikavin')} size={25}/>&nbsp;
+                            <a href={'https://github.com/srikavin'}><FaGithub className={'navExternIconLink'}
+                                                                              size={25}/></a>&nbsp;
                         </div>
                     )}
                 </NavGroup>
