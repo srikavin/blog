@@ -1,0 +1,88 @@
+.portfolioItem {
+    display: grid;
+    height: 100%;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1.5fr;
+    grid-template-areas: "title links" "description links";
+    margin-top: 8px;
+    margin-left: 16px;
+}
+
+@media screen and (max-width: 850px) {
+    .portfolioItem {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+        grid-template-areas: "title" "description" "links";
+        margin-bottom: 8px;
+        margin-left: 0px;
+    }
+
+    .description {
+        font-size: 18px;
+    }
+
+    .portfolioLinks {
+        grid-template-areas: "github github" "binder binder";
+    }
+
+    .title {
+        font-size: 22px;
+    }
+}
+
+.title {
+    grid-area: title;
+    font-weight: 300;
+    column-span: none;
+    font-size: 20px;
+}
+
+
+.links {
+    display: grid;
+    grid-area: links;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas: "binder github" "binder github";
+}
+
+.portfolioExternalButton {
+    display: inline-block;
+    color: #555;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    height: 38px;
+    line-height: 38px;
+    letter-spacing: .1rem;
+    text-transform: uppercase;
+    border-radius: 4px;
+    border: 1px solid #bbb;
+    cursor: pointer;
+    margin: auto 5%;
+    width: 90%;
+}
+
+.github {
+    border: 1px solid #bbbbe1;
+    composes: portfolioExternalButton;
+    grid-area: github;
+}
+
+.custom {
+    border: 1px solid #e1bbbb;
+    composes: portfolioExternalButton;
+    grid-area: binder;
+}
+
+.description {
+    grid-area: description;
+    font-size: 14px;
+    margin-left: 16px;
+}
+
+.portfolioExternalButton:hover {
+    color: #333;
+    border-color: #888;
+    outline: 0;
+}

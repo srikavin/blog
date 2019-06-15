@@ -1,14 +1,13 @@
 import React from 'react';
 import PostHeader from './PostHeader/PostHeader'
 import PostContent from './PostContent/PostContent';
-import {Link} from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
 import DocumentTitle from 'react-document-title';
 
-import {NonIdealState} from '@blueprintjs/core';
-import {IconNames} from '@blueprintjs/icons';
-
 import {PostStore} from '../../data/resource/post';
-import './Post.css'
+import ErrorState from '../util/ErrorState/ErrorState';
+import {FaExclamationTriangle} from 'react-icons/fa';
+import styles from './Post.module.css'
 
 class Post extends React.Component {
     constructor(props) {
@@ -48,19 +47,21 @@ class Post extends React.Component {
     render() {
         if (this.state.error) {
             return (
-                <div className="post-load-error">
-                    <NonIdealState className={'header'} title={'This post could not be loaded'}
-                                   description={'There was an error attempting to load this post.'}
-                                   icon={IconNames.WARNING_SIGN}
-                                   action={<Link to={'/'}>Go home</Link>}/>
+                <div className={styles['post-load-error']}>
+                    <Redirect to="/404"/>
+
+                    <ErrorState className={'header'} title={'This post could not be loaded'}
+                                description={'There was an error attempting to load this post.'}
+                                icon={<FaExclamationTriangle/>}
+                                action={<Link to={'/'}>Go home</Link>}/>
                 </div>
             )
         }
         return (
             <div>
-                {!this.state.loading ? <DocumentTitle title={'sharath.pro | ' + this.state.post.title}/> : null}
+                {!this.state.loading ? <DocumentTitle title={this.state.post.title}/> : null}
                 <PostHeader loading={this.state.loading}
-                            className="header"
+                            className={styles.header}
                             author={this.state.post.author}
                             title={this.state.post.title}
                             tags={this.state.post.tags}

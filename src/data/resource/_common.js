@@ -3,11 +3,11 @@ import axios, {AxiosInstance} from 'axios';
 import {Auth} from './auth.js'
 import type {Identifier} from './identifier';
 
-const baseURL = process.env.NODE_ENV === 'production' ? 'https://sharath.pro:2087/api/v1' : 'http://localhost:4000/api/v1';
+export const baseURL = '/api/v1';
 
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: baseURL,
-    timeout: 30000
+    timeout: 100000
 });
 
 export function _v(url: string, vars: any): string {
@@ -26,6 +26,11 @@ export function auth(axios: AxiosInstance) {
 }
 
 export default axiosInstance;
+export const axiosInstanceRoot: AxiosInstance = axios.create({
+    baseURL: '/',
+    timeout: 100000
+});
+
 
 export class Resource {
     axios: AxiosInstance;

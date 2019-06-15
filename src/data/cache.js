@@ -9,17 +9,17 @@ export class MemoryCache<K, V> {
     data: Map<K, CacheEntry<V>>;
 
     constructor() {
-        setInterval(this._removeOld, 1000 * 30);
-    }
+        setInterval(() => {
+            let now = new Date();
+            this.data.forEach((value, key, map) => {
+                let diff = now - value.added;
+                if (diff > value.ttl * 1000) {
+                    map.delete(key);
+                }
+            });
 
-    _removeOld() {
-        let now = new Date();
-        this.data.forEach((value, key, map) => {
-            let diff = now - value.added;
-            if (diff > value.ttl * 1000) {
-                map.delete(key);
-            }
-        });
+        }, 1000 * 30);
+        this.data = new Map();
     }
 
     get(key: K): ?V {

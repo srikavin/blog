@@ -1,0 +1,17 @@
+@media (max-width: 800px) {
+    .math-container {
+        max-height: 100vh;
+    }
+}
+
+.math-container {
+    padding-bottom: 15px;
+    padding-top: 15px;
+    overflow: auto;
+    max-width: 800px;
+    display: block;
+}
+
+.inline {
+    display: inline;
+}

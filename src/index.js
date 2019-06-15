@@ -1,13 +1,50 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './index.module.css';
 import App from './App';
-import {BrowserRouter} from 'react-router-dom'
-import registerServiceWorker from './registerServiceWorker';
+import {BrowserRouter, withRouter} from 'react-router-dom'
+import {unregister} from './registerServiceWorker';
+import ReactGA from 'react-ga';
+
+ReactGA.initialize('UA-125481234-1');
+
+let ScrollToTopWrapped = withRouter(class ScrollToTop extends React.Component {
+    componentDidUpdate(prevProps) {
+        if (this.props.location !== prevProps.location) {
+            window.scrollTo(0, 0)
+        }
+    }
+
+    render() {
+        return this.props.children
+    }
+});
+
+class _GAListener extends React.Component {
+    static sendPageView(location) {
+        ReactGA.set({page: location.pathname});
+        ReactGA.pageview(location.pathname);
+    }
+
+    componentDidUpdate() {
+        _GAListener.sendPageView(this.props.location);
+    }
+
+    render() {
+        return this.props.children;
+    }
+}
+
+const GAListener = withRouter(_GAListener);
 
 ReactDOM.render((
     <BrowserRouter>
-        <App/>
+        <GAListener>
+            <ScrollToTopWrapped>
+                <App/>
+            </ScrollToTopWrapped>
+        </GAListener>
     </BrowserRouter>
 ), document.getElementById('root'));
-registerServiceWorker();
+
+unregister();

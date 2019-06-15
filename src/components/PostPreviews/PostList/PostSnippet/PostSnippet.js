@@ -2,40 +2,59 @@ import React from 'react';
 
 import PropTypes from 'prop-types';
 
-import {Text} from '@blueprintjs/core';
 import {Link} from 'react-router-dom';
-import PostMeta from '../../../Post/PostHeader/PostAuthor/PostMeta';
+import PostMeta from '../../../Post/PostHeader/PostMeta/PostMeta';
 import PostTags from '../../../Post/PostHeader/PostTags/PostTags';
-import MathRenderer from '../../../Post/PostContent/MathRenderer/MathRenderer';
-import {css, StyleSheet} from 'aphrodite';
 
-import './PostSnippet.css';
+import styles from './PostSnippet.module.css';
+import Skeleton from '../../../util/Skeleton/Skeleton';
+import PostContent from '../../../Post/PostContent/PostContent';
 
 class PostSnippet extends React.Component {
     getContentBlock() {
-        if (!this.props.post.overview) {
-            return (<Text className={'bp3-skeleton'}>
-                {'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ac pharetra est, quis venenatis dui.' +
-                ' Etiam eros purus, accumsan sed risus eget, pulvinar lobortis odio. Integer mattis a sem vel molestie. Quisque'}
-            </Text>)
+        if (!this.props.post || !this.props.post.overview) {
+            return (
+                <Skeleton className={styles.contentSkeleton}>
+                    {' '}
+                </Skeleton>
+            );
         }
         return (
-            <span className={'snippetText'}>
-                <MathRenderer source={this.props.post.overview}/> {' '}
-                <Link to={`/posts/${this.props.post.slug}`} className={css(styles.continue)}>
-                    <span>Continue Reading <span className={css(styles.arrow)}>→</span></span></Link>
+            <span className={styles.snippetText}>
+                <PostContent content={this.props.post.overview}/> {' '}
+                <Link to={`/blog/posts/${this.props.post.slug}`} className={styles.continue}>
+                    Continue Reading
+                </Link>
             </span>
         );
     }
 
     render() {
+        if (!this.props.post) {
+            return (
+                <div className={this.props.className ? this.props.className : ''}>
+                    <div className={styles.snippetTitle}>
+                        <Skeleton>
+                            Lorem ipsum dolor
+                        </Skeleton>
+                    </div>
+                    <PostMeta containerClassName={styles.authorContainer}
+                              className={styles.author}
+                              loading={true}
+                    />
+                    <PostTags/>
+                    {this.getContentBlock()}
+                </div>
+            )
+
+        }
         return (
-            <div className={'snippet-container ' + this.props.className ? this.props.className : ''}>
-                <Link to={'/posts/' + this.props.post.slug} className={css(styles.snippetTitle)}>
+            <div className={this.props.className ? this.props.className : ''}>
+                <Link to={`/blog/posts/${this.props.post.slug}`} className={styles.snippetTitle}>
                     {this.props.post.title}
                 </Link>
-                <PostMeta containerClassName={css(styles.authorContainer)}
-                          className={css(styles.author)}
+                <PostMeta containerClassName={styles.authorContainer}
+                          className={styles.author}
                           author={this.props.post.author}
                           createdTime={this.props.post.createdAt}
                           modifiedTime={this.props.post.updatedAt}
@@ -48,43 +67,8 @@ class PostSnippet extends React.Component {
 }
 
 PostSnippet.propTypes = {
-    post: PropTypes.any.isRequired,
+    post: PropTypes.any,
     className: PropTypes.string
 };
-
-const styles = StyleSheet.create({
-    snippetTitle: {
-        fontFamily: 'Dosis, sans-serif',
-        fontSize: '56px',
-        fontWeight: 'lighter',
-        lineHeight: '80px',
-        marginTop: '35px',
-        marginBottom: '25px'
-    },
-    authorContainer: {},
-    author: {},
-    continue: {
-        fontWeight: '300',
-        fontSize: '18px',
-        marginBottom: '3px',
-        '@media (max-width: 600px)': {
-            position: 'absolute',
-            bottom: '0px',
-            left: '0',
-            background: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.7) 26%, rgba(255,255,255,0.8) 70%)',
-            width: '100%',
-            textAlign: 'center',
-            padding: '15px',
-            margin: 0,
-            fontWeight: 'bold'
-        }
-    },
-    arrow: {
-        fontSize: '22px',
-        '@media (max-width: 600px)': {
-            display: 'none'
-        }
-    }
-});
 
 export default PostSnippet;

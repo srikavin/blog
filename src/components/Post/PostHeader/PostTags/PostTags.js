@@ -1,14 +1,15 @@
 import React from 'react';
-import {Tag} from '@blueprintjs/core';
-import './PostTags.css'
+import styles from './PostTags.module.css'
+import Skeleton from '../../../util/Skeleton/Skeleton';
+import Tag from '../../../util/Tag/Tag';
 
 class PostTags extends React.Component {
     genTagsBlock() {
         if (!this.props.tags) {
-            return <div className={'post-tag-description-container bp3-skeleton'}/>
+            return <Skeleton align={'center'} className={styles.skeleton}/>;
         }
         return this.props.tags && this.props.tags.map(e => (
-            <Tag interactive={true} className={'post-tag-item'} minimal={true}>{e.name}</Tag>
+            <Tag key={e.id} interactive={true} className={styles.item} minimal={true}>{e.name}</Tag>
         ));
     }
 

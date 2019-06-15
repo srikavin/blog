@@ -33,12 +33,6 @@ class AuthFetcher implements AuthService {
     user: ?UserSchema;
     userPromise = Promise.resolve({});
 
-    _setToken;
-    callOnChange;
-    logout;
-    login;
-    register;
-
     _onChangeFunc = (user) => {
     };
 

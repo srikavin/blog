@@ -1,15 +1,45 @@
 import React from 'react'
-import PortfolioItem from './PortfolioItem/PortfolioItem'
-import './Portfolio.css'
+import styles from './Portfolio.module.css'
+import PortfolioItem from "./PortfolioItem/PortfolioItem";
 
 class Portfolio extends React.Component {
     render() {
         return (
             <div>
-                <div className={'portfolioHeader'}>Projects</div>
-                <PortfolioItem name={'SVD Image Compression'} description={'Image Compression using singular value decomposition'} github={'https://github.com/sharath/svd-compress/'} binder={'https://mybinder.org/v2/gh/sharath/svd-compress/master?filepath=demo.ipynb'}/>
-                <PortfolioItem name={'wxtlogger'} description={'Sampling software for Vaisala WXT510 Weather Stations'} github={'https://github.com/sharath/wxtlogger'}/>
-                <PortfolioItem name={'terabox.space'} description={'Created a business that rented out OpenVZ-based virtualized server on a monthly basis.'}/>
+                <div className={styles.portfolioHeader}>Projects</div>
+                <PortfolioItem name="BookKeeper"
+                               description="A library management system that placed first at the 2018 Florida FBLA conference"
+                               github="https://github.com/srikavin/BookKeeper"
+                />
+                <PortfolioItem name="Conway's Game of Life"
+                               description="An implementation of Conway's Game of Life in javascript"
+                               github="https://github.com/srikavin/game-of-life"
+                               custom="https://srikavin.github.io/game-of-life/index.html"
+                               customName="Link"
+                />
+                <PortfolioItem name="Chest Randomizer" description="A Minecraft server plugin with 225,000+ installs"
+                               github="https://github.com/srikavin/Chest-Randomizer"
+                               custom="https://dev.bukkit.org/projects/chest-randomizer"
+                               customName="Bukkit Dev"
+                />
+                <PortfolioItem name="FactorySim"
+                               description="A game written using LWJGL and OpenGL in Java"
+                               github="https://github.com/srikavin/factorysim"
+                />
+                <PortfolioItem name="Chess" description="A chess game server written in Java using Java Web Server"
+                               github="https://github.com/srikavin/Chess"
+                               githubName="Github (Backend)"
+                               custom="https://github.com/srikavin/Chess-Web"
+                               customName="Github (Frontend)"
+                />
+                <PortfolioItem name="Java Web Server"
+                               description="A simple web server written in Java with an event-driven and modular design"
+                               github="https://github.com/srikavin/JavaWebServer"
+                />
+                <PortfolioItem name="JPL"
+                               description="A basic interpreted language written in Java with a lexer, interpreter, and parser included in Java Web Server"
+                               github="https://github.com/srikavin/JPL"
+                />
             </div>
         );
     }

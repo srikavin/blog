@@ -1,3 +1,9 @@
 .navExternIconLink {
     cursor: pointer;
 }
+
+@media screen and (max-width: 500px) {
+    .externalIcons {
+        display: none;
+    }
+}

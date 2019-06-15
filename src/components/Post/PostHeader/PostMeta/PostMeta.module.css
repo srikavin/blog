@@ -1,0 +1,15 @@
+.container {
+    font-style: italic;
+    margin-bottom: 15px;
+}
+
+.skeleton {
+    width: 200px;
+    height: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.author {
+    margin-bottom: 15px;
+}

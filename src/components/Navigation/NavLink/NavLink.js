@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Button} from '@blueprintjs/core';
 import {Link, Route} from 'react-router-dom';
+import {Button} from '../../util/Button/Button';
 
 class NavLink extends React.Component {
     render() {
@@ -21,7 +21,7 @@ class NavLink extends React.Component {
 
 NavLink.propTypes = {
     to: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-    icon: PropTypes.string,
+    icon: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
     label: PropTypes.string.isRequired
 };
 

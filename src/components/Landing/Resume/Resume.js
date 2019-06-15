@@ -1,13 +1,12 @@
 import React from 'react'
-import './Resume.css'
+import styles from './Resume.module.css'
 
 class Resume extends React.Component {
     render() {
         return (
-            <div className={'landingResumeButton'}
-                 onClick={() => {
-                     window.open(process.env.PUBLIC_URL + '/resume.pdf', '_blank')
-                 }}> Resume</div>
+            <a href={process.env.PUBLIC_URL + '/resume.pdf'}>
+                <div className={styles.landingResumeButton}>Resume</div>
+            </a>
         );
     }
 }

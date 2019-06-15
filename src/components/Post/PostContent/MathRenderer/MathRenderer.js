@@ -3,11 +3,13 @@ import * as ReactMarkdown from 'react-markdown';
 import RemarkMathPlugin from '@ibrahima/remark-math';
 import MathJax from 'react-mathjax';
 import PropTypes from 'prop-types';
-import {css, StyleSheet} from 'aphrodite';
 import HighlightedCode from './HighlightedCode/HighlightedCode';
+import ImageRenderer from './ImageRenderer/ImageRenderer';
+import styles from './MathRenderer.module.css'
 
 class MarkdownRender extends React.Component {
     render() {
+        let map = {};
         const newProps = {
             ...this.props.options,
             source: this.props.source,
@@ -18,12 +20,24 @@ class MarkdownRender extends React.Component {
                 ...this.props.renderers,
                 paragraph: (props) => <div>{props.children}</div>,
                 link: (props) => <a target={'_blank'} href={props.href}>{props.children}</a>,
-                inlineCode: (props) => <HighlightedCode {...props}/>,
-                code: (props) => <HighlightedCode {...props}/>,
+                inlineCode: (props) => <HighlightedCode inline={true} {...props}/>,
+                code: (props) => <HighlightedCode settings={map} {...props}/>,
                 math: (props) =>
-                    <span className={css(styles.mathContainer)}><MathJax.Node formula={props.value}/></span>,
+                    <span className={styles.mathContainer}><MathJax.Node formula={props.value}/></span>,
                 inlineMath: (props) =>
-                    <span className={css(styles.mathContainer)}><MathJax.Node inline formula={props.value}/></span>
+                    <span className={`${styles.mathContainer} ${styles.inline}`}><MathJax.Node inline
+                                                                                               formula={props.value}/></span>,
+                image: ImageRenderer,
+                definition: (p) => {
+                    try {
+                        let tmp = {};
+                        tmp[p.identifier] = JSON.parse(p.url);
+                        map = Object.assign({}, map, tmp);
+                    } catch (e) {
+                        console.error(e);
+                    }
+                    return null;
+                }
             }
         };
 
@@ -36,19 +50,6 @@ class MarkdownRender extends React.Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    mathContainer: {
-        '@media (max-width: 800px)': {
-            maxHeight: '100vh'
-        },
-        paddingBottom: '15px',
-        paddingTop: '15px',
-        overflow: 'auto',
-        maxWidth: '800px',
-        display: 'block'
-    }
-});
 
 MarkdownRender.propTypes = {
     source: PropTypes.string.isRequired,
