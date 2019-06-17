@@ -1,3 +1,7 @@
-:global a {
-
+.code-block {
+    max-width: 85vw;
+    width: fit-content;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    min-width: 100%;
 }
