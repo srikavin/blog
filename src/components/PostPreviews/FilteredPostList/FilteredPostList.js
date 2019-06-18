@@ -42,6 +42,10 @@ class FilteredPostList extends Component {
 
     updatePosts() {
         let tagIds = this.state.filter.map(e => e.id);
+        this.setState({
+            posts: undefined
+        });
+
         PostStore.query({
             tags: tagIds,
             search: this.state.search
