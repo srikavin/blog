@@ -3,6 +3,8 @@ import docco from 'react-syntax-highlighter/dist/styles/hljs/docco';
 import SyntaxHighlighter, {registerLanguage} from 'react-syntax-highlighter/dist/light';
 import styles from './HighlightedCode.module.css'
 
+docco.hljs.padding = '0.17em';
+
 class HighlightedCode extends React.Component {
     displayName = 'CodeBlock';
 
