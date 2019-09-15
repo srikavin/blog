@@ -37,7 +37,11 @@ class MarkdownRender extends React.Component {
                         console.error(e);
                     }
                     return null;
+                },
+                blockquote: (elements) => {
+                    return <blockquote className={styles.blockquote}>{elements.children}</blockquote>
                 }
+
             }
         };
 
