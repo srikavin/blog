@@ -11,6 +11,13 @@ class Portfolio extends React.Component {
                                description="A library management system that placed first at the 2018 Florida FBLA conference"
                                github="https://github.com/srikavin/BookKeeper"
                 />
+                <PortfolioItem name="Quizza"
+                               description="A mobile quiz game with a built-in editor, online multiplayer, and offline studying"
+                               github="https://github.com/srikavin/Quizza-Android"
+                               githubName="Github (App)"
+                               custom="https://github.com/srikavin/Quizza-GameServer"
+                               customName="Github (Multiplayer Server)"
+                />
                 <PortfolioItem name="Conway's Game of Life"
                                description="An implementation of Conway's Game of Life in javascript"
                                github="https://github.com/srikavin/game-of-life"
