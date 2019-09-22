@@ -1,6 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 
+import type {PostSchema} from "../../../../../data/resource/post";
 import {PostStore} from '../../../../../data/resource/post';
 import CrudList from '../../CrudList/CrudList';
 import PostHeader from '../../../../Post/PostHeader/PostHeader';
@@ -15,6 +16,7 @@ class PostCrudList extends Component {
         this.onView = this.onView.bind(this);
         this.onCreate = this.onCreate.bind(this);
         this.handleDisplay = this.handleDisplay.bind(this);
+        this.onTogglePrivacy = this.onTogglePrivacy.bind(this);
 
         this.state = {
             showContent: []
@@ -60,6 +62,21 @@ class PostCrudList extends Component {
         });
     }
 
+    onTogglePrivacy(post: PostSchema) {
+        PostStore.updatePost(post.id, {
+            ...post,
+            draft: !post.draft
+        }).then(r => {
+            post.draft = r.draft;
+            let it = this.props.items.filter((e) => {
+                return e.id !== post.id;
+            });
+            this.props.updateItems(it);
+        }).catch((e) => {
+            console.log(e);
+        })
+    }
+
     handleDisplay(post) {
         let ret = (
             <PostHeader title={post.title}
@@ -92,6 +109,7 @@ class PostCrudList extends Component {
                 onView={this.onView}
                 onCreate={this.onCreate}
                 display={this.handleDisplay}
+                onTogglePrivacy={this.onTogglePrivacy}
             />
         );
     }

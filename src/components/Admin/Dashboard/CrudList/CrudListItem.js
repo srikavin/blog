@@ -30,6 +30,9 @@ class CrudListItem extends Component {
                                 onClick={() => this.props.onView(this.props.item)}/>
                         <Button icon={IconNames.EDIT} intent={Intent.PRIMARY} text={'Edit'}
                                 onClick={() => this.props.onEdit(this.props.item)}/>
+                        <Button icon={IconNames.DOCUMENT_SHARE} intent={Intent.PRIMARY}
+                                text={this.props.item.draft ? "Make Public" : "Make Private"}
+                                onClick={() => this.props.onTogglePrivacy(this.props.item)}/>
                     </ButtonGroup>
                     <ButtonGroup minimal={true} className={styles.delete}>
                         <Button icon={IconNames.TRASH} intent={Intent.DANGER} text={'Delete'}
@@ -46,7 +49,8 @@ CrudListItem.propTypes = {
     item: PropTypes.any.isRequired,
     onEdit: PropTypes.func,
     onDelete: PropTypes.func,
-    onView: PropTypes.func
+    onView: PropTypes.func,
+    onTogglePrivacy: PropTypes.func
 };
 
 export default CrudListItem;

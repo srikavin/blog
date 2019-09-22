@@ -30,6 +30,7 @@ class CrudList extends Component {
                                       onEdit={this.props.onEdit}
                                       onDelete={this.props.onDelete}
                                       onView={this.props.onView}
+                                      onTogglePrivacy={this.props.onTogglePrivacy}
                                       item={e}
                         />
                     </div>
@@ -48,7 +49,8 @@ CrudList.propTypes = {
     onEdit: PropTypes.func,
     onDelete: PropTypes.func,
     onCreate: PropTypes.func,
-    onView: PropTypes.func
+    onView: PropTypes.func,
+    onTogglePrivacy: PropTypes.func
 };
 
 export default CrudList;
