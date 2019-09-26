@@ -18,6 +18,20 @@ class MarkdownRender extends React.Component {
             ],
             renderers: {
                 ...this.props.renderers,
+                heading: (props) => {
+                    let tmp = React.createElement(`h${props.level}`, props['data-sourcepos'] ? {'data-sourcepos': props['data-sourcepos']} : {}, props.children);
+
+                    if (!(props.children && props.children[0])) {
+                        return tmp;
+                    }
+                    let id = `${props.children[0].props.value}-${props.level}`.replace(/[^a-zA-Z0-9-_]/g, '-');
+                    return (
+                        <>
+                            <a id={id}/>
+                            {tmp}
+                        </>
+                    )
+                },
                 paragraph: (props) => <div>{props.children}</div>,
                 link: (props) => <a target={'_blank'} href={props.href}>{props.children}</a>,
                 inlineCode: (props) => <HighlightedCode inline={true} {...props}/>,
