@@ -40,6 +40,19 @@ class FilteredPostList extends Component {
         this.updatePosts();
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot): void {
+        if (prevProps.location && prevProps.location.pathname &&
+            this.props.location.pathname !== prevProps.location.pathname &&
+            this.props.location.pathname !== this.generateURI()) {
+            this.componentDidMount();
+        }
+    }
+
+    generateURI() {
+        let tagIds = this.state.filter.map(e => e.id);
+        return `/blog/tag/${tagIds.join(',')}` + ((this.state.search && this.state.search.length > 0) ? `?${qs.stringify({search: this.state.search})}` : '');
+    }
+
     updatePosts() {
         let tagIds = this.state.filter.map(e => e.id);
         this.setState({
@@ -54,13 +67,11 @@ class FilteredPostList extends Component {
                 posts: e
             });
         }).catch(console.error);
-
-        this.props.history.push(`/blog/tag/${tagIds.join(',')}` + ((this.state.search && this.state.search.length > 0) ? `?${qs.stringify({search: this.state.search})}` : ''))
+        this.props.history.push(this.generateURI())
     };
 
     componentDidMount() {
         let search = (this.props.location && this.props.location.search) ? qs.parse(this.props.location.search)['?search'] : '';
-        this.setState({search}, this.updatePosts);
 
         let query = this.props.match.params;
         if (query.tags) {
@@ -73,7 +84,8 @@ class FilteredPostList extends Component {
             Promise.all(p).then((tags) => {
                 this.setState({
                     filter: tags,
-                }, this.updatePosts())
+                    search: search,
+                }, this.updatePosts)
             });
         }
     }
