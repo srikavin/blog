@@ -6,7 +6,9 @@ import {BrowserRouter, withRouter} from 'react-router-dom'
 import {unregister} from './registerServiceWorker';
 import ReactGA from 'react-ga';
 
-ReactGA.initialize('UA-125481234-1');
+ReactGA.initialize('UA-125481234-1', {
+    standardImplementation: true
+});
 
 let ScrollToTopWrapped = withRouter(class ScrollToTop extends React.Component {
     componentDidUpdate(prevProps) {
