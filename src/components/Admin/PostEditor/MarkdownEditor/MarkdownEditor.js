@@ -54,7 +54,7 @@ function getFaIcon(name) {
     }
 }
 
-const DebouncedMathRenderer = debounceRender(MathRenderer, 50);
+const DebouncedMathRenderer = debounceRender(MathRenderer, 350);
 
 class MarkdownEditor extends React.Component {
     constructor(props) {
