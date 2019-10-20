@@ -5,6 +5,7 @@ import 'react-mde/lib/styles/css/react-mde-all.css';
 import MathRenderer from '../../../Post/PostContent/MathRenderer/MathRenderer';
 import SplitPane from 'react-split-pane';
 import isEqual from 'react-fast-compare';
+import debounceRender from 'react-debounce-render';
 
 import styles from './MarkdownEditor.module.css'
 import FileUpload from './FileUpload/FileUpload';
@@ -53,6 +54,8 @@ function getFaIcon(name) {
     }
 }
 
+const DebouncedMathRenderer = debounceRender(MathRenderer, 50);
+
 class MarkdownEditor extends React.Component {
     constructor(props) {
         super(props);
@@ -90,7 +93,7 @@ class MarkdownEditor extends React.Component {
                         />
                     </div>
                     <div className={styles.scrollable}>
-                        <MathRenderer source={this.state.editorState}/>
+                        <DebouncedMathRenderer source={this.state.editorState}/>
                     </div>
                 </SplitPane>
             </FileUpload>
