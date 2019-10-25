@@ -24,7 +24,7 @@ class PostEditor extends React.Component {
         this._setStateFromProps(props);
     }
 
-    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
+    componentWillReceiveProps(nextProps, nextContext) {
         this._setStateFromProps(nextProps);
     }
 

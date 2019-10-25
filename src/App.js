@@ -1,6 +1,5 @@
 import React from 'react';
 import {Route, Switch} from 'react-router-dom'
-import DocumentTitle from 'react-document-title';
 
 import './App.css';
 import 'normalize.css/normalize.css';
@@ -12,6 +11,7 @@ import Post from './components/Post/Post';
 import Home from './components/Home/Home';
 import NotFound from './NotFound';
 import FilteredPostList from './components/PostPreviews/FilteredPostList/FilteredPostList';
+import {Helmet} from "react-helmet";
 
 const Auth = Loadable({
     loader: () => import(/* webpackChunkName: "auth" */'./components/Admin/Auth/Auth'),
@@ -27,7 +27,9 @@ class App extends React.Component {
     render() {
         return (
             <div className="App">
-                <DocumentTitle title="Blog"/>
+                <Helmet>
+                    <title>Blog</title>
+                </Helmet>
                 <header className="App-header">
                     <Navigation/>
                 </header>

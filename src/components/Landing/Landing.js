@@ -3,13 +3,15 @@ import styles from './Landing.module.css'
 import About from './About/About';
 import Portfolio from './Portolio/Portfolio';
 import Resume from './Resume/Resume'
-import DocumentTitle from 'react-document-title'
+import {Helmet} from "react-helmet";
 
 class Landing extends React.Component {
     render() {
         return (
             <div className={styles.landingContainer}>
-                <DocumentTitle title='About'/>
+                <Helmet>
+                    <title>About</title>
+                </Helmet>
                 <About/>
                 <Portfolio/>
                 <br/>

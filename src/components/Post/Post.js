@@ -2,17 +2,18 @@ import React from 'react';
 import PostHeader from './PostHeader/PostHeader'
 import PostContent from './PostContent/PostContent';
 import {Link, Redirect} from 'react-router-dom';
-import DocumentTitle from 'react-document-title';
 
 import {PostStore} from '../../data/resource/post';
 import ErrorState from '../util/ErrorState/ErrorState';
 import {FaExclamationTriangle} from 'react-icons/fa';
 import styles from './Post.module.css'
+import {Helmet} from "react-helmet";
 
 class Post extends React.Component {
     constructor(props) {
         super(props);
         this.onPostChange = this.onPostChange.bind(this);
+        this.generateHeader = this.generateHeader.bind(this);
 
         this.state = {
             error: false,
@@ -44,6 +45,27 @@ class Post extends React.Component {
             });
     }
 
+    generateHeader() {
+        if (!this.state.loading) {
+            console.log(this.state.post);
+            return (
+                <Helmet>
+                    <title>{this.state.post.title}</title>
+                    <meta name="author" content={this.state.post.author.username}/>
+                    <meta name="robots" content="index,follow"/>
+                    <meta name="directory" content="post"/>
+                    <meta name="revised" content={this.state.post.updatedAt}/>
+                    <meta name="og:title" content={this.state.post.title}/>
+                    <meta name="og:type" content="article"/>
+                    <meta name="og:url" content={'https://srikavin.me/blog/posts/' + this.state.post.slug}/>
+                    <meta name="og:site_name" content='srikavin.me'/>
+                </Helmet>
+            )
+
+        }
+        return null;
+    }
+
     render() {
         if (this.state.error) {
             return (
@@ -59,7 +81,7 @@ class Post extends React.Component {
         }
         return (
             <div>
-                {!this.state.loading ? <DocumentTitle title={this.state.post.title}/> : null}
+                {this.generateHeader()}
                 <PostHeader loading={this.state.loading}
                             className={styles.header}
                             author={this.state.post.author}

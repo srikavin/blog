@@ -1,13 +1,15 @@
 import React, {Component} from 'react';
 import PostPreviews from '../PostPreviews/PostPreviews';
-import DocumentTitle from 'react-document-title'
+import {Helmet} from "react-helmet";
 
 class Home extends Component {
     render() {
 
         return (
             <div>
-                <DocumentTitle title='Blog'/>
+                <Helmet>
+                    <title>Blog</title>
+                </Helmet>
                 <PostPreviews/>
             </div>
         );
