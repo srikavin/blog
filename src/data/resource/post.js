@@ -6,7 +6,6 @@ import {UserStore} from './user';
 import axios, {_v, auth} from './_common';
 import {Identifier} from './identifier'
 
-
 export type PostSchema = {
     id: Identifier;
     title: string;
@@ -20,6 +19,18 @@ export type PostSchema = {
     updatedAt: Date;
 }
 
+export type CommentSchema = {
+    id: Identifier,
+    username: string,
+    gravatarUrl: string,
+    contents: string,
+    parent?: CommentSchema,
+    children: Array<CommentSchema>,
+    post: PostSchema,
+    createdAt: Date,
+    updatedAt: Date
+}
+
 interface PostQuery {
     slug?: string,
     author?: string,
@@ -28,6 +39,10 @@ interface PostQuery {
 
 interface PostResource {
     getById(id: Identifier): Promise<PostSchema>;
+
+    getCommentsForPost(postId: Identifier): Promise<Array<CommentSchema>>;
+
+    createCommentOnPost(postId: Identifier, captcha: string, name: string, email: string, contents: string, parent: Identifier): Promise<CommentSchema>;
 
     getAll(contents?: boolean): Promise<Array<PostSchema>>;
 
@@ -113,11 +128,63 @@ function restorePost(post: any) {
     delete post.updatedAt;
 }
 
+function normalizeComments(comments: Array<CommentSchema>): Promise<CommentSchema> {
+    console.log(comments);
+    let commentMap: Map<Identifier, Comment> = new Map();
+
+    let root: Array<CommentSchema> = [];
+
+    comments.forEach((value: CommentSchema) => {
+        commentMap.set(value.id, value);
+        if (!value.parent) {
+            root.push(value);
+        }
+
+        if (!value.children) {
+            value.children = []
+        }
+
+        if (typeof value.createdAt === 'string') {
+            value.createdAt = new Date(value.createdAt);
+        }
+
+        if (typeof value.updatedAt === 'string') {
+            value.updatedAt = new Date(value.updatedAt);
+        }
+    });
+
+
+    comments.forEach((value: CommentSchema) => {
+        if (value.parent) {
+            let parentId = typeof value.parent === 'string' ? value.parent : value.parent.id;
+            value.parent = commentMap.get(parentId);
+            value.parent.children.push(value);
+        }
+    });
+
+    console.log(root);
+    return root;
+}
+
 let PostFetcher: PostResource = {
     getById(id: Identifier) {
         return axios.get(_v('/posts/:id', {id: id}))
             .then((e) => e.data)
             .then(normalizePost);
+    },
+    getCommentsForPost(postId) {
+        return axios.get(_v('/posts/:id/comments', {id: postId}))
+            .then((e) => e.data)
+            .then(normalizeComments);
+    },
+    createCommentOnPost(postId, captcha, name, email, contents, parent?) {
+        return axios.post(_v('/posts/:id/comments/new', {id: postId}), {
+            'g-recaptcha-response': captcha,
+            'username': name,
+            'email': email,
+            'contents': contents,
+            'parent': parent
+        }).then((e) => e.data)
     },
     getBySlug(slug: string) {
         return axios.get(`/posts?slug=${slug}`)
@@ -169,5 +236,7 @@ let PostFetcher: PostResource = {
             .then(normalizePost);
     }
 };
+
+console.log(PostFetcher.getCommentsForPost('5b9893ccbd1c36790c410c2b'));
 
 export const PostStore: PostResource = PostFetcher;

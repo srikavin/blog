@@ -25,7 +25,7 @@ class PostContent extends React.Component {
 
     genLoremIpsum() {
         let paragraphs = [];
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 3; i++) {
             paragraphs.push((
                 <Skeleton key={i}>
                     <p>

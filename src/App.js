@@ -27,7 +27,8 @@ class App extends React.Component {
     render() {
         return (
             <div className="App">
-                <Helmet>
+
+            <Helmet>
                     <title>Blog</title>
                 </Helmet>
                 <header className="App-header">

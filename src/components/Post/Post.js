@@ -8,6 +8,7 @@ import ErrorState from '../util/ErrorState/ErrorState';
 import {FaExclamationTriangle} from 'react-icons/fa';
 import styles from './Post.module.css'
 import {Helmet} from "react-helmet";
+import CommentsSection from "./CommentsSection/CommentsSection";
 
 class Post extends React.Component {
     constructor(props) {
@@ -91,6 +92,7 @@ class Post extends React.Component {
                             modifiedTime={this.state.post.updatedAt}
                 />
                 <PostContent content={this.state.post.contents}/>
+                {this.state.loading ? '' : <CommentsSection postId={this.state.post.id}/>}
             </div>
         )
     }

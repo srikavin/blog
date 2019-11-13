@@ -19,8 +19,7 @@ class Skeleton extends Component {
                 let className = classNames(child.props ? child.props.className : undefined, classes, this.props.className);
 
                 if (typeof (child) === 'string') {
-                    return <p
-                        className={className}>{child}</p>
+                    return <p className={className}>{child}</p>
                 }
                 return (
                     React.cloneElement(child, {

@@ -1,0 +1,30 @@
+.section > * {
+    width: 100%;
+}
+
+.section > input, textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.alert {
+    padding: 15px;
+    border-radius: 3px;
+    color: white;
+}
+
+.alert.error {
+    background: #f08080;
+}
+
+.alert.success {
+    background: #90ee90;
+}
+
+.button {
+}
+
+.label {
+    font-size: 0.9em;
+}
