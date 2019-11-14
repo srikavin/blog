@@ -65,9 +65,10 @@ class FilteredPostList extends Component {
         }).then(e => {
             this.setState({
                 posts: e
+            }, () => {
+                this.props.history.replace(this.generateURI());
             });
         }).catch(console.error);
-        this.props.history.push(this.generateURI())
     };
 
     componentDidMount() {
