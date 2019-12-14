@@ -24,7 +24,7 @@ class ParagraphRenderer extends React.Component {
         };
 
         return (
-            <span style={styles}>{this.props.children}</span>
+            <p style={styles}>{this.props.children}</p>
         )
     }
 }
