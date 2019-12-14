@@ -135,6 +135,10 @@ function normalizeComments(comments: Array<CommentSchema>): Promise<CommentSchem
 
     let root: Array<CommentSchema> = [];
 
+    if (comments.error) {
+        return;
+    }
+
     comments.forEach((value: CommentSchema) => {
         commentMap.set(value.id, value);
         if (!value.parent) {

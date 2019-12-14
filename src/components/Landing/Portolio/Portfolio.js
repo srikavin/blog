@@ -11,12 +11,14 @@ class Portfolio extends React.Component {
                 <div className={styles.portfolioHeader}>Projects</div>
                 {
                     this.props.items.map((e) => {
-                        return (<PortfolioItem name={e.name}
-                                               description={e.description}
-                                               github={e.github}
-                                               githubName={e.githubName}
-                                               custom={e.custom}
-                                               customName={e.customName}
+                        return (<PortfolioItem
+                            key={e.name}
+                            name={e.name}
+                            description={e.description}
+                            github={e.github}
+                            githubName={e.githubName}
+                            custom={e.custom}
+                            customName={e.customName}
                         />)
                     })
                 }
