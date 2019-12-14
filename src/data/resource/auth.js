@@ -1,10 +1,10 @@
 //@flow
+import axios from './_common';
 import type {UserSchema} from './user';
 import {UserStore} from './user';
-import axios from './_common';
 import {Identifier} from './identifier'
 import decode from 'jwt-decode';
-
+import {AxiosInstance} from "axios";
 
 interface AuthService {
     login(email: string, password: string): Promise<string>;
@@ -28,6 +28,10 @@ type TokenSchema = {
     id: Identifier;
 }
 
+export function auth(axios: AxiosInstance) {
+    axios.defaults.headers['x-access-token'] = Auth.getToken();
+    return axios;
+}
 
 class AuthFetcher implements AuthService {
     user: ?UserSchema;

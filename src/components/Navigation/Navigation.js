@@ -7,6 +7,7 @@ import {Auth} from '../../data/resource/auth';
 import {Link} from 'react-router-dom';
 import {FaCode, FaGithub, FaQuestionCircle, FaSearch, FaSignOutAlt, FaTachometerAlt, FaUserAlt} from 'react-icons/fa';
 import './Navigation.css'
+import config from '../../config'
 
 class Navigation extends React.Component {
     constructor(props) {
@@ -43,7 +44,7 @@ class Navigation extends React.Component {
             <NavBar>
                 <NavGroup align={'left'}>
                     <NavHeader>
-                        <Link to={'/'}>Srikavin Ramkumar</Link>
+                        <Link to={'/'}>{config.brandName}</Link>
                     </NavHeader>
                     <NavDivider/>
                     <NavLink to="/" icon={<FaQuestionCircle/>} label="About"/>

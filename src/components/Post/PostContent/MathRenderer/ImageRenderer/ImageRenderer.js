@@ -13,6 +13,12 @@ class ImageRenderer extends React.Component {
         this.state = {};
     }
 
+    defaults = {
+        'image-position': 'center',
+        'image-width': 'auto',
+        'image-height': 'auto'
+    };
+
     componentDidMount() {
         if (isValidURL(this.props.src)) {
             this.setState({
@@ -51,13 +57,28 @@ class ImageRenderer extends React.Component {
     }
 
     render() {
+        let settings;
+        if (this.props.settings) {
+            settings = Object.assign({}, this.defaults, this.props.settings);
+        }
+
+        console.log(settings);
+
         let imgStyles = cx({
             'post-img': true,
-            'blur': this.state.blur
+            'blur': this.state.blur,
         });
+
+        let styles = {
+            'float': settings["image-position"]
+        };
+
+
         return (
-            <img width={this.state.width} height={this.state.height} src={this.state.url} className={imgStyles}
-                 alt={this.state.title}/>
+            <img height={settings['image-height']}
+                 width={settings['image-width']}
+                 src={this.state.url} className={imgStyles}
+                 alt={this.state.title} style={styles}/>
         )
     }
 }
@@ -72,7 +93,8 @@ let isValidURL = (string) => {
 };
 
 ImageRenderer.propTypes = {
-    src: PropTypes.string
+    src: PropTypes.string,
+    settings: PropTypes.object
 };
 
 export default ImageRenderer;

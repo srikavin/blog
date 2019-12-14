@@ -1,10 +1,11 @@
 //@flow
+import axios, {_v} from './_common';
 import type {TagSchema} from './tag';
 import {TagStore} from './tag';
 import type {UserSchema} from './user';
 import {UserStore} from './user';
-import axios, {_v, auth} from './_common';
 import {Identifier} from './identifier'
+import {auth} from "./auth";
 
 export type PostSchema = {
     id: Identifier;

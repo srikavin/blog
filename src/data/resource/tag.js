@@ -1,5 +1,6 @@
 //@flow
-import axios, {_v, auth} from './_common';
+import axios, {_v} from './_common';
+import {auth} from "./auth";
 import {Identifier} from './identifier'
 import {MemoryCache} from '../cache';
 

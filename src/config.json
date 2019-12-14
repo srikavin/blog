@@ -1,0 +1,73 @@
+{
+  "homepage": {
+    "usePortfolio": true,
+    "portfolio": [
+      {
+        "name": "BookKeeper",
+        "description": "A library management system that placed first at the 2018 Florida FBLA conference",
+        "github": "https://github.com/srikavin/BookKeeper"
+      },
+      {
+        "name": "Quizza",
+        "description": "A mobile quiz game with a built-in editor, online multiplayer, and offline studying",
+        "github": "https://github.com/srikavin/Quizza-Android",
+        "githubName": "Github (App)",
+        "custom": "https://github.com/srikavin/Quizza-GameServer",
+        "customName": "Github (Multiplayer Server)"
+      },
+      {
+        "name": "Conway's Game of Life",
+        "description": "An implementation of Conway's Game of Life in javascript",
+        "github": "https://github.com/srikavin/game-of-life",
+        "custom": "https://srikavin.github.io/game-of-life/index.html",
+        "customName": "Link"
+      },
+      {
+        "name": "Chest Randomizer",
+        "description": "A Minecraft server plugin with 225,000+ installs",
+        "github": "https://github.com/srikavin/Chest-Randomizer",
+        "custom": "https://dev.bukkit.org/projects/chest-randomizer",
+        "customName": "Bukkit Dev"
+      },
+      {
+        "name": "FactorySim",
+        "description": "A game written using LWJGL and OpenGL in Java",
+        "github": "https://github.com/srikavin/factorysim"
+      },
+      {
+        "name": "Chess",
+        "description": "A chess game server written in Java using Glade",
+        "github": "https://github.com/srikavin/Chess",
+        "githubName": "Github (Backend)",
+        "custom": "https://github.com/srikavin/Chess-Web",
+        "customName": "Github (Frontend)"
+      },
+      {
+        "name": "Glade",
+        "description": "A web server written in Java with an event-driven and modular design",
+        "github": "https://github.com/srikavin/Glade"
+      },
+      {
+        "name": "epistle",
+        "description": "Chat server and client with a drop-and-play plugin system and permission support",
+        "github": "https://github.com/srikavin/epistle"
+      },
+      {
+        "name": "JPL",
+        "description": "A basic interpreted language written in Java with a lexer, interpreter, and parser included in Glade",
+        "github": "https://github.com/srikavin/JPL"
+      },
+      {
+        "name": "srikavin.me",
+        "description": "A personal website created with React with a backend written using MongoDB and Express",
+        "github": "https://github.com/srikavin/blog-api",
+        "githubName": "Github (Backend)",
+        "custom": "https://github.com/srikavin/blog",
+        "customName": "Github (Frontend)"
+      }
+    ],
+    "useLandingPage": true,
+    "useResume": true
+  },
+  "brandName": "Srikavin Ramkumar"
+}

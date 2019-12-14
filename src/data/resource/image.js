@@ -1,7 +1,8 @@
 //@flow
-import axios, {_v, auth, axiosInstanceRoot, baseURL} from './_common';
+import axios, {_v, axiosInstanceRoot, baseURL} from './_common';
 import {Identifier} from './identifier'
 import {MemoryCache} from '../cache';
+import {auth} from "./auth";
 
 export type ImageSchema = {
     id?: Identifier;

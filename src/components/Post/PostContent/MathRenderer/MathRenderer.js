@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 import HighlightedCode from './HighlightedCode/HighlightedCode';
 import ImageRenderer from './ImageRenderer/ImageRenderer';
 import styles from './MathRenderer.module.css'
+import ParagraphRenderer from "./ParagraphRenderer/ParagraphRenderer";
+import LinkRenderer from "./LinkRenderer/LinkRenderer";
 
 class MarkdownRender extends React.Component {
     render() {
@@ -16,6 +18,7 @@ class MarkdownRender extends React.Component {
             plugins: [
                 RemarkMathPlugin
             ],
+            escapeHtml: this.props.trusted !== true,
             renderers: {
                 ...this.props.renderers,
                 heading: (props) => {
@@ -26,8 +29,8 @@ class MarkdownRender extends React.Component {
 
                     return React.createElement(`h${props.level}`, p, props.children);
                 },
-                paragraph: (props) => <div>{props.children}</div>,
-                link: (props) => <a target={'_blank'} href={props.href}>{props.children}</a>,
+                paragraph: (props) => <ParagraphRenderer settings={map} {...props}/>,
+                link: (props) => <LinkRenderer settings={map} {...props}/>,
                 inlineCode: (props) => <HighlightedCode inline={true} {...props}/>,
                 code: (props) => <HighlightedCode settings={map} {...props}/>,
                 math: (props) =>
@@ -35,21 +38,21 @@ class MarkdownRender extends React.Component {
                 inlineMath: (props) =>
                     <span className={`${styles.mathContainer} ${styles.inline}`}><MathJax.Node inline
                                                                                                formula={props.value}/></span>,
-                image: ImageRenderer,
+                image: (props) => <ImageRenderer settings={map} {...props}/>,
                 definition: (p) => {
+                    let tmp = {};
                     try {
-                        let tmp = {};
                         tmp[p.identifier] = JSON.parse(p.url);
                         map = Object.assign({}, map, tmp);
                     } catch (e) {
-                        console.error(e);
+                        tmp[p.identifier] = p.url;
+                        map = Object.assign({}, map, tmp);
                     }
                     return null;
                 },
                 blockquote: (elements) => {
                     return <blockquote className={styles.blockquote}>{elements.children}</blockquote>
                 }
-
             }
         };
 
@@ -69,7 +72,8 @@ MarkdownRender.propTypes = {
     renderers: PropTypes.object,
     className: PropTypes.string,
     markdownClassName: PropTypes.string,
-    htmlRef: PropTypes.object
+    htmlRef: PropTypes.object,
+    trusted: PropTypes.bool
 };
 
 export default MarkdownRender;

@@ -1,6 +1,5 @@
 // @flow
 import axios, {AxiosInstance} from 'axios';
-import {Auth} from './auth.js'
 import type {Identifier} from './identifier';
 
 export const baseURL = '/api/v1';
@@ -9,6 +8,8 @@ const axiosInstance: AxiosInstance = axios.create({
     baseURL: baseURL,
     timeout: 100000
 });
+
+console.log(axiosInstance, 1111111111111);
 
 export function _v(url: string, vars: any): string {
     url.split('/').forEach((e) => {
@@ -20,10 +21,6 @@ export function _v(url: string, vars: any): string {
     return url;
 }
 
-export function auth(axios: AxiosInstance) {
-    axios.defaults.headers['x-access-token'] = Auth.getToken();
-    return axios;
-}
 
 export default axiosInstance;
 export const axiosInstanceRoot: AxiosInstance = axios.create({
