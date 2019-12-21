@@ -4,14 +4,15 @@ import React from 'react';
 
 import styles from './TitleEditor.module.css'
 
-class TitleEditor extends React.PureComponent {
+class TitleEditor extends React.Component {
     render() {
         return (
             <H1 className={`${styles.titleContainer} ${styles.title}`}>
-                <EditableText
+                <input
+                    type="text"
                     value={this.props.title}
                     onChange={this.props.onTitleChange}
-                    selectAllOnFocus={true} placeholder={'Title'}/>
+                    placeholder={'Title'}/>
             </H1>
         );
     }
