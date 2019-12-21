@@ -5,8 +5,9 @@ import App from './App';
 import {BrowserRouter, withRouter} from 'react-router-dom'
 import {unregister} from './registerServiceWorker';
 import ReactGA from 'react-ga';
+import config from './config'
 
-ReactGA.initialize('UA-125481234-1', {
+ReactGA.initialize(config['google-analytics-key'], {
     standardImplementation: true
 });
 

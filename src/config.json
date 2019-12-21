@@ -70,5 +70,6 @@
     "useResume": true
   },
   "brandName": "Srikavin Ramkumar",
-  "recaptcha-sitekey": "6Lfi7MEUAAAAANIndAjO55fVgnKvijv91BbKZt8v"
+  "recaptcha-sitekey": "6Lfi7MEUAAAAANIndAjO55fVgnKvijv91BbKZt8v",
+  "google-analytics-key": "UA-125481234-1"
 }
