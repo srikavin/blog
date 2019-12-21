@@ -44,7 +44,7 @@ class PostEditor extends React.Component {
 
     onTitleChange(e) {
         this.setState({
-            title: e
+            title: e.target.value
         });
     };
 
