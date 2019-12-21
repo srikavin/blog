@@ -5,6 +5,8 @@ import {PostStore} from "../../../data/resource/post";
 import Comment from "./Comment/Comment";
 
 import styles from './CommentsSection.module.css'
+import config from '../../../config'
+
 
 class CommentsSection extends React.Component {
     constructor(props) {
@@ -37,7 +39,7 @@ class CommentsSection extends React.Component {
     componentDidUpdate() {
         if (!this.state.loading && this.state.captcha_id === undefined) {
             this.setState({
-                captcha_id: window.grecaptcha.render('comments_recaptcha', {sitekey: '6Lfi7MEUAAAAANIndAjO55fVgnKvijv91BbKZt8v'})
+                captcha_id: window.grecaptcha.render('comments_recaptcha', {sitekey: config["recaptcha-sitekey"]})
             });
         }
     }

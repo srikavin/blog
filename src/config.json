@@ -69,5 +69,6 @@
     "useLandingPage": true,
     "useResume": true
   },
-  "brandName": "Srikavin Ramkumar"
+  "brandName": "Srikavin Ramkumar",
+  "recaptcha-sitekey": "6Lfi7MEUAAAAANIndAjO55fVgnKvijv91BbKZt8v"
 }
