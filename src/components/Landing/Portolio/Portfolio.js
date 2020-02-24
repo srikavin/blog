@@ -8,7 +8,7 @@ class Portfolio extends React.Component {
     render() {
         return (
             <div>
-                <div className={styles.portfolioHeader}>Projects</div>
+                <h1 className={styles.portfolioHeader}>Projects</h1>
                 {
                     this.props.items.map((e) => {
                         return (<PortfolioItem

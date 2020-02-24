@@ -102,10 +102,11 @@ class AuthFetcher implements AuthService {
 
     _setToken(_token) {
         token = _token;
-        localStorage.setItem('jwt_token', _token);
         if (_token === null || _token === undefined) {
             this.logout();
             return;
+        } else {
+            localStorage.setItem('jwt_token', _token);
         }
 
         let data: TokenSchema = decode(token);
