@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 class LinkRenderer extends React.Component {
     defaults = {
-        'font-size': '18px'
+        'font-size': '1rem'
     };
 
     constructor(props) {
