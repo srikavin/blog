@@ -30,6 +30,10 @@ class FileUpload extends React.Component {
 
     };
     onDrop = (e) => {
+        if (!e) {
+            return
+        }
+
         e.stopPropagation();
         e.preventDefault();
 
@@ -41,6 +45,9 @@ class FileUpload extends React.Component {
         this.handleFile(file);
     };
     onSelectInputFile = (e) => {
+        if (!e) {
+            return
+        }
         this.handleFile(e.target.files[0]);
         this.setState({
             fileName: e.target.files[0].name
@@ -58,27 +65,22 @@ class FileUpload extends React.Component {
             return;
         }
 
-        let cmp = this;
-        let imgObjURL = window.URL.createObjectURL(file);
-        let img = new Image();
-        img.onload = function () {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.height = this.naturalHeight;
-            canvas.width = this.naturalWidth;
-            ctx.drawImage(this, 0, 0);
-            let dataURL = canvas.toDataURL('img/png');
-            dataURL = dataURL.slice(dataURL.indexOf('base64') + 7);
-            cmp.setState({
-                fileObjectURL: imgObjURL,
+        const reader = new FileReader()
+
+        reader.addEventListener('load', () => {
+            let dataURL = reader.result;
+            this.setState({
+                fileObjectURL: dataURL,
                 fileType: file.type,
-                img: dataURL,
+                img: dataURL.slice(dataURL.indexOf('base64,') + 7),
                 alert: 'preview',
                 alertOpen: true
             })
-        };
-        img.src = imgObjURL;
+        })
+
+        reader.readAsDataURL(file)
     };
+
     copyMarkdown = () => {
         this.inputRef.select();
         document.execCommand('copy');
@@ -165,7 +167,7 @@ class FileUpload extends React.Component {
                     onCancel={() => this.setState({alertOpen: false})}
                     onClose={() => window.URL.revokeObjectURL(this.state.fileObjectURL)}
                     intent={Intent.PRIMARY}>
-                    <img src={this.state.fileObjectURL} alt={'Upload Preview'}/>
+                    <object type={this.state.fileType} data={this.state.fileObjectURL} title={'Upload Preview'}/>
                     <H5 className={styles['alert-text']}>
                         <FormGroup label={'Image Title'} labelInfo={'(alt text)'}>
                             <InputGroup placeholder={'Image Title'} value={this.state.imageTitle}

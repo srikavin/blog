@@ -12,6 +12,7 @@ export type ImageSchema = {
     title: string;
     width: number;
     height: number;
+    fileType: string;
 }
 
 interface ImageResource {
@@ -33,6 +34,9 @@ let ImageFetcher: ImageResource = {
         return axios.get(_v('/images/:id', {id: id}))
             .then((e) => e.data)
             .then((e: ImageSchema) => {
+                if (e.fileType === 'image/svg') {
+                    e.fileType = 'image/svg+xml'
+                }
                 e.url = baseURL + e.url;
                 return e;
             })
@@ -60,7 +64,9 @@ let ImageFetcher: ImageResource = {
                 })
             })
             .then(e => {
+                console.log(e)
                 image.contents = e;
+
                 return image;
             })
             .then((e) => {

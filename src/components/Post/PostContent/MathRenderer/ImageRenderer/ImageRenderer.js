@@ -31,7 +31,8 @@ class ImageRenderer extends React.Component {
                 this.setState({
                     title: this.props.alt || value.title,
                     width: value.width,
-                    height: value.height
+                    height: value.height,
+                    fileType: value.fileType,
                 });
 
                 if (value.contents) {
@@ -66,20 +67,33 @@ class ImageRenderer extends React.Component {
 
         let imgStyles = cx({
             'post-img': true,
-            'blur': this.state.blur,
         });
 
         let styles = {
-            'float': settings["image-position"]
+            'float': settings["image-position"],
+            'blur': this.state.blur,
+            'max-width': '100%'
         };
 
-
         return (
-            <img height={settings['image-height']}
-                 width={settings['image-width']}
-                 src={this.state.url} className={imgStyles}
-                 alt={this.state.title} style={styles}/>
+            <span className={imgStyles}>
+                {this.state.blur ? (
+                    <img height='auto'
+                         width={this.state.width}
+                         src={this.state.url}
+                         style={styles}
+                         alt={this.state.title}/>
+                ) : (
+                    <object height={settings['image-height']}
+                            width={settings['image-width']}
+                            type={this.state.fileType}
+                            data={this.state.url}
+                            style={styles}
+                    >{this.state.title}</object>
+                )}
+            </span>
         )
+
     }
 }
 
