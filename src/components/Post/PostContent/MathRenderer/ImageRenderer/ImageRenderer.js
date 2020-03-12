@@ -63,8 +63,6 @@ class ImageRenderer extends React.Component {
             settings = Object.assign({}, this.defaults, this.props.settings);
         }
 
-        console.log(settings);
-
         let imgStyles = cx({
             'post-img': true,
         });

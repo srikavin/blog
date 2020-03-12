@@ -9,8 +9,6 @@ const axiosInstance: AxiosInstance = axios.create({
     timeout: 100000
 });
 
-console.log(axiosInstance, 1111111111111);
-
 export function _v(url: string, vars: any): string {
     url.split('/').forEach((e) => {
         if (e.startsWith(':')) {

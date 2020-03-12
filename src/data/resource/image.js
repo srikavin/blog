@@ -64,7 +64,6 @@ let ImageFetcher: ImageResource = {
                 })
             })
             .then(e => {
-                console.log(e)
                 image.contents = e;
 
                 return image;

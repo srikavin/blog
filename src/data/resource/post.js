@@ -130,7 +130,6 @@ function restorePost(post: any) {
 }
 
 function normalizeComments(comments: Array<CommentSchema>): Promise<CommentSchema> {
-    console.log(comments);
     let commentMap: Map<Identifier, Comment> = new Map();
 
     let root: Array<CommentSchema> = [];
@@ -167,7 +166,6 @@ function normalizeComments(comments: Array<CommentSchema>): Promise<CommentSchem
         }
     });
 
-    console.log(root);
     return root;
 }
 
@@ -241,7 +239,5 @@ let PostFetcher: PostResource = {
             .then(normalizePost);
     }
 };
-
-console.log(PostFetcher.getCommentsForPost('5b9893ccbd1c36790c410c2b'));
 
 export const PostStore: PostResource = PostFetcher;

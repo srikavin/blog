@@ -29,7 +29,6 @@ class Navigation extends React.Component {
     }
 
     updateUser(user) {
-        console.log(user);
         this.setState({user});
     }
 
