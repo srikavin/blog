@@ -66,7 +66,7 @@
         "customName": "Github (Frontend)"
       }
     ],
-    "useLandingPage": true,
+    "useLandingPage": false,
     "useResume": true
   },
   "brandName": "Srikavin Ramkumar",

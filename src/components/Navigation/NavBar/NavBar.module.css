@@ -17,7 +17,8 @@
 
 .navbar .heading {
     margin-right: 15px;
-    font-size: 16px;
+    font-size: 1.1em;
+    white-space: nowrap;
 }
 
 .navbar .group {
