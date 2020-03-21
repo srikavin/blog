@@ -9,6 +9,7 @@ import {FaExclamationTriangle} from 'react-icons/fa';
 import styles from './Post.module.css'
 import {Helmet} from "react-helmet";
 import CommentsSection from "./CommentsSection/CommentsSection";
+import ScrollSpy from "./ScrollSpy/ScrollSpy";
 
 class Post extends React.Component {
     constructor(props) {
@@ -21,6 +22,7 @@ class Post extends React.Component {
             loading: true,
             post: {}
         }
+        this.root = React.createRef()
     }
 
     onPostChange(post) {
@@ -80,8 +82,9 @@ class Post extends React.Component {
                 </div>
             )
         }
-        return (
-            <div>
+        return <>
+            <ScrollSpy root={this.root} postId={this.state.post.id}/>
+            <>
                 {this.generateHeader()}
                 <PostHeader loading={this.state.loading}
                             className={styles.header}
@@ -91,10 +94,12 @@ class Post extends React.Component {
                             createdTime={this.state.post.createdAt}
                             modifiedTime={this.state.post.updatedAt}
                 />
-                <PostContent content={this.state.post.contents}/>
+                <div ref={this.root}>
+                    <PostContent content={this.state.post.contents}/>
+                </div>
                 {this.state.loading ? '' : <CommentsSection postId={this.state.post.id}/>}
-            </div>
-        )
+            </>
+        </>
     }
 }
 

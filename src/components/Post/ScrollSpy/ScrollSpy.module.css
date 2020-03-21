@@ -1,0 +1,39 @@
+.scrollSpy {
+    position: fixed;
+    top: 80px;
+    left: 25px;
+    line-height: 22px;
+}
+
+@media screen and (max-width: 1300px) {
+    .scrollSpy {
+        display: none;
+    }
+}
+
+.value {
+    padding-left: 4px
+}
+
+.level-1 {
+    margin-left: 6px
+}
+
+.level-2 {
+    margin-left: 14px
+}
+
+.level-3 {
+    margin-left: 22px
+}
+
+.value:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.selected {
+    font-weight: bold;
+    padding-left: 2px;
+    border-left: 2px solid #1584ce
+}
