@@ -56,7 +56,7 @@ class CommentsSection extends React.Component {
 
         let response = window.grecaptcha.getResponse(this.state.captcha_id);
         if (response === '' || response === undefined) {
-            this.setAlert('ReCaptcha Invalid', 'error');
+            this.setAlert('Invalid ReCaptcha', 'error');
             return;
         }
 
@@ -158,7 +158,7 @@ class CommentsSection extends React.Component {
                                       onChange={(e) => this.setState({comment: e.target.value})}/> <br/>
                         </span>
                         <div id="comments_recaptcha" className="g-recaptcha"/>
-                        <button type='submit' className={styles.button}>Post Comment</button>
+                        <button type='submit' className={styles.submit}>Post Comment</button>
                     </form>
                 </div>
                 {this.state.loading ? this.generateSkeleton() :
@@ -166,6 +166,7 @@ class CommentsSection extends React.Component {
                         {this.state.comments.map((e: CommentSchema) => {
                             return <Comment key={e.id} id={e.id} contents={e.contents} gravatarUrl={e.gravatarUrl}
                                             username={e.username} nested={e.children} level={1}
+                                            createdTime={e.createdAt}
                                             replyTo={this.handleReplyTo}/>
                         })}
                     </div>
