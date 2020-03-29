@@ -2,7 +2,6 @@ import React from 'react';
 
 import styles from './ScrollSpy.module.css'
 import type {Identifier} from "../../../data/resource/identifier";
-import {debounce} from "../../util/debounce";
 
 interface ScrollSpyProps {
     root: React.Ref;
@@ -15,7 +14,7 @@ interface ScrollSpyState {
 }
 
 class ScrollSpy extends React.Component<ScrollSpyProps, ScrollSpyState> {
-    scrollListener = debounce(50, function () {
+    scrollListener = function () {
         const cur = this.props.root.current;
 
         const headings = []
@@ -43,7 +42,7 @@ class ScrollSpy extends React.Component<ScrollSpyProps, ScrollSpyState> {
         })
 
         this.setState({headings: headings, current: curObj})
-    })
+    }
 
     constructor(props) {
         super(props);

@@ -51,7 +51,7 @@ class PostSnippet extends React.Component {
         return (
             <div className={this.props.className ? this.props.className : ''}>
                 <Link to={`/blog/posts/${this.props.post.slug}`} className={styles.snippetTitle}>
-                    {this.props.post.title}
+                    {this.props.post.draft === true ? <small>draft</small> : null} {this.props.post.title}
                 </Link>
                 <PostMeta containerClassName={styles.authorContainer}
                           className={styles.author}
