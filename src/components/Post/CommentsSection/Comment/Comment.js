@@ -7,8 +7,11 @@ import type {CommentSchema} from "../../../../data/resource/post";
 import styles from './Comment.module.css'
 import dayjs from "dayjs";
 import MarkdownRender from "../../PostContent/MathRenderer/MathRenderer";
+import {ThemeContext} from "../../../Theme";
 
 class Comment extends React.Component {
+    static contextType = ThemeContext
+
     constructor() {
         super();
         this.ref = React.createRef();

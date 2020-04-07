@@ -1,9 +1,12 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
+import {ThemeContext} from "../../../../Theme";
 
 class ParagraphRenderer extends React.Component {
+    static contextType = ThemeContext
+
     defaults = {
-        'color': 'black',
+        'color': 'inherit',
         'font-size': '1rem'
     };
 

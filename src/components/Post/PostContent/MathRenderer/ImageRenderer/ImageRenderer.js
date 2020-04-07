@@ -1,13 +1,17 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import {ImageStore} from '../../../../../data/resource/image';
+import SVG from 'react-inlinesvg';
 
 import classNames from 'classnames/bind';
 import styles from './ImageRenderer.module.css'
+import {ThemeContext} from "../../../../Theme";
 
 let cx = classNames.bind(styles);
 
 class ImageRenderer extends React.Component {
+    static contextType = ThemeContext
+
     constructor(props) {
         super(props);
         this.state = {};
@@ -63,14 +67,14 @@ class ImageRenderer extends React.Component {
             settings = Object.assign({}, this.defaults, this.props.settings);
         }
 
-        let imgStyles = cx({
+        let imgStyles = cx(this.context, {
             'post-img': true,
         });
 
         let styles = {
             'float': settings["image-position"],
             'blur': this.state.blur,
-            'max-width': '100%'
+            'max-width': '100%',
         };
 
         return (
@@ -81,13 +85,21 @@ class ImageRenderer extends React.Component {
                          src={this.state.url}
                          style={styles}
                          alt={this.state.title}/>
-                ) : (
-                    <object height={settings['image-height']}
-                            width={settings['image-width']}
-                            type={this.state.fileType}
-                            data={this.state.url}
-                            style={styles}
-                    >{this.state.title}</object>
+                ) : (this.state.fileType === 'image/svg+xml' ? (
+                        <SVG type={this.state.fileType}
+                             preProcessor={(code) => {
+                                 return code.replace(/[Â]/g, '&nbsp')
+                             }}
+                             src={this.state.url}
+                             style={styles}
+                        >{this.state.title}</SVG>
+                    ) : (
+                        <img src={this.state.url}
+                             alt={this.state.title}
+                             height={settings['image-height']}
+                             width={settings['image-width']}
+                             style={styles}/>
+                    )
                 )}
             </span>
         )

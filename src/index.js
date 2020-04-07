@@ -1,11 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.module.css';
+import './index.css';
 import App from './App';
 import {BrowserRouter, withRouter} from 'react-router-dom'
 import {unregister} from './registerServiceWorker';
 import ReactGA from 'react-ga';
+
 import config from './config'
+import ThemeSelector from "./components/ThemeSelector/ThemeSelector";
 
 ReactGA.initialize(config['google-analytics-key'], {
     standardImplementation: true
@@ -44,7 +46,9 @@ ReactDOM.render((
     <BrowserRouter>
         <GAListener>
             <ScrollToTopWrapped>
-                <App/>
+                <ThemeSelector>
+                    <App/>
+                </ThemeSelector>
             </ScrollToTopWrapped>
         </GAListener>
     </BrowserRouter>

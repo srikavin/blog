@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import ErrorState from './components/util/ErrorState/ErrorState';
+import ErrorState from './util/ErrorState/ErrorState';
 import {FaExclamationTriangle} from 'react-icons/fa';
 import {Link} from 'react-router-dom';
 

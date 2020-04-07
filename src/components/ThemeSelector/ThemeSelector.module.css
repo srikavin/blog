@@ -1,0 +1,23 @@
+.selector {
+    /*background: blue;*/
+    position: fixed;
+    bottom: 25px;
+    left: 39px;
+    font-size: 1rem;
+    font-weight: lighter;
+    transition: opacity 500ms;
+    opacity: 25%;
+}
+
+.selector:hover {
+    opacity: 100%;
+    cursor: pointer;
+}
+
+.selector.dark {
+    color: white;
+}
+
+.icon {
+    font-size: 2rem;
+}

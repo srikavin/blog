@@ -30,7 +30,7 @@ export class MemoryCache<K, V> {
         return entry.value;
     }
 
-    set(key: K, value: V, ttl: number = 60 * 5) {
+    set(key: K, value: V, ttl: number = 60 * 60 * 24) {
         let entry = {
             added: new Date(),
             ttl,

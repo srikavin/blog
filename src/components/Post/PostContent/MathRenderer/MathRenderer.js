@@ -8,8 +8,14 @@ import ImageRenderer from './ImageRenderer/ImageRenderer';
 import styles from './MathRenderer.module.css'
 import ParagraphRenderer from "./ParagraphRenderer/ParagraphRenderer";
 import LinkRenderer from "./LinkRenderer/LinkRenderer";
+import {ThemeContext} from "../../../Theme";
+import classNames from 'classnames/bind';
+
+let cx = classNames.bind(styles);
 
 class MarkdownRender extends React.Component {
+    static contextType = ThemeContext
+
     render() {
         let map = {};
         const newProps = {
@@ -51,7 +57,7 @@ class MarkdownRender extends React.Component {
                     return null;
                 },
                 blockquote: (elements) => {
-                    return <blockquote className={styles.blockquote}>{elements.children}</blockquote>
+                    return <blockquote className={cx(this.context, 'blockquote')}>{elements.children}</blockquote>
                 }
             }
         };

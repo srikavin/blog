@@ -6,7 +6,7 @@ let cx = classNames.bind(styles);
 
 class NavDivider extends Component {
     render() {
-        let className = cx({
+        let className = cx(this.context, {
             divider: true
         });
 

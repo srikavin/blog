@@ -9,9 +9,11 @@ import Landing from './components/Landing/Landing'
 import Navigation from './components/Navigation/Navigation';
 import Post from './components/Post/Post';
 import Home from './components/Home/Home';
-import NotFound from './NotFound';
+import NotFound from './components/NotFound';
 import FilteredPostList from './components/PostPreviews/FilteredPostList/FilteredPostList';
 import {Helmet} from "react-helmet";
+import {ThemeContext} from "./components/Theme";
+import cx from 'classnames'
 
 const Auth = Loadable({
     loader: () => import(/* webpackChunkName: "auth" */'./components/Admin/Auth/Auth'),
@@ -24,11 +26,12 @@ const Admin = Loadable({
 });
 
 class App extends React.Component {
+    static contextType = ThemeContext
+
     render() {
         return (
-            <div className="App">
-
-            <Helmet>
+            <div className={cx('App', this.context)}>
+                <Helmet>
                     <title>Blog</title>
                 </Helmet>
                 <header className="App-header">

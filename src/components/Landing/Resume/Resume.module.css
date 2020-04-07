@@ -19,8 +19,17 @@
     cursor: pointer;
 }
 
+.landingResumeButton.dark {
+    color: #e3e3e3;
+}
+
 .landingResumeButton:hover {
     color: #333;
     border-color: #888;
     outline: 0;
+}
+
+.landingResumeButton.dark:hover {
+    border-color: #cbcbcb;
+    color: white;
 }

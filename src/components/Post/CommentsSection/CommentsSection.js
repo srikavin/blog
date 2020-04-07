@@ -6,9 +6,14 @@ import Comment from "./Comment/Comment";
 
 import styles from './CommentsSection.module.css'
 import config from '../../../config'
+import {ThemeContext} from "../../Theme";
+import classNames from 'classnames/bind';
 
+let cx = classNames.bind(styles);
 
 class CommentsSection extends React.Component {
+    static contextType = ThemeContext
+
     constructor(props) {
         super(props);
         this.state = {
@@ -39,7 +44,10 @@ class CommentsSection extends React.Component {
     componentDidUpdate() {
         if (!this.state.loading && this.state.captcha_id === undefined) {
             this.setState({
-                captcha_id: window.grecaptcha.render('comments_recaptcha', {sitekey: config["recaptcha-sitekey"]})
+                captcha_id: window.grecaptcha.render('comments_recaptcha', {
+                    sitekey: config["recaptcha-sitekey"],
+                    theme: this.context
+                })
             });
         }
     }
@@ -101,7 +109,7 @@ class CommentsSection extends React.Component {
         }
 
         return (
-            <div className={styles.alert + ' ' + styles[this.state.alertType]}>{this.state.alert}</div>
+            <div className={cx('alert', this.state.alertType)}>{this.state.alert}</div>
         )
     }
 
@@ -125,10 +133,8 @@ class CommentsSection extends React.Component {
 
         return (
             <>
-                <div className={'content'}>
+                <div className={cx('content', this.context)} ref={this.scrollRef}>
                     <h2>Comments</h2>
-                </div>
-                <div className={'content'} ref={this.scrollRef}>
                     {this.renderAlert()}
                     <form onSubmit={(e) => this.handleFormSubmit(e)}>
                         <span className={styles.section}>
@@ -136,7 +142,7 @@ class CommentsSection extends React.Component {
                             <input name='name' type='text' value={this.state.name} required={true}
                                    onChange={(e) => this.setState({name: e.target.value})}/> <br/>
                         </span>
-                        <span className={styles.section}>
+                        <span className={cx('section', this.context)}>
                             <label className={styles.label} htmlFor='email'>Email <small>(Used to display Gravatar image)</small></label>
                             <input name='name' type='email' value={this.state.email} required={true}
                                    onChange={(e) => this.setState({email: e.target.value})}/> <br/>

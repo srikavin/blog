@@ -8,14 +8,12 @@
     margin-left: 16px;
 }
 
-
 .title {
     grid-area: title;
     font-weight: 300;
     column-span: none;
     font-size: 1.5em;
 }
-
 
 .links {
     display: grid;
@@ -42,6 +40,10 @@
     width: 90%;
 }
 
+.portfolioItem.dark .portfolioExternalButton {
+    color: #e3e3e3;
+}
+
 .github {
     border: 1px solid #bbbbe1;
     composes: portfolioExternalButton;
@@ -64,6 +66,11 @@
     color: #333;
     border-color: #888;
     outline: 0;
+}
+
+.portfolioItem.dark .portfolioExternalButton:hover {
+    color: white;
+    border-color: #cbcbcb;
 }
 
 @media screen and (max-width: 1599px) {

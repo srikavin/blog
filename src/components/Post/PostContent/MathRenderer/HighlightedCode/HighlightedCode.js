@@ -1,13 +1,18 @@
 import * as React from 'react';
-import docco from 'react-syntax-highlighter/dist/esm/styles/hljs/docco';
+import dark from 'react-syntax-highlighter/dist/esm/styles/hljs/dracula';
+import light from 'react-syntax-highlighter/dist/esm/styles/hljs/docco';
 import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/light';
 import styles from './HighlightedCode.module.css'
+import {DARK_THEME, ThemeContext} from "../../../../Theme";
 
 const registerLanguage = SyntaxHighlighter.registerLanguage;
 
-docco.hljs.padding = '0.17em';
+dark.hljs.padding = '0.17em';
+light.hljs.padding = '0.17em';
 
 class HighlightedCode extends React.Component {
+    static contextType = ThemeContext
+
     displayName = 'CodeBlock';
 
     defaults = {
@@ -37,6 +42,9 @@ class HighlightedCode extends React.Component {
     }
 
     render() {
+        console.log(this.context)
+        let theme = this.context === DARK_THEME ? dark : light
+
         let settings;
         if (this.props.settings && !this.props.inline) {
             settings = Object.assign({}, this.defaults, this.props.settings);
@@ -45,14 +53,14 @@ class HighlightedCode extends React.Component {
             return (
                 <SyntaxHighlighter customStyle={{'display': 'inline'}} showLineNumbers={false}
                                    language={this.props.language}
-                                   style={docco}>{this.props.value ? this.props.value : ''}</SyntaxHighlighter>
+                                   style={theme}>{this.props.value ? this.props.value : ''}</SyntaxHighlighter>
             )
         }
 
         return (
             <div className={styles['code-block']}>
                 <SyntaxHighlighter showLineNumbers={settings['show-line-numbers']} language={this.props.language}
-                                   style={docco}>{this.props.value ? this.props.value : ''}</SyntaxHighlighter>
+                                   style={theme}>{this.props.value ? this.props.value : ''}</SyntaxHighlighter>
             </div>
         );
     }

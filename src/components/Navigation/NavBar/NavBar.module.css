@@ -8,6 +8,11 @@
     padding: 0 15px;
 }
 
+.navbar.dark {
+    background-color: #333538;
+    color: white;
+}
+
 .navbar.fixed-top {
     position: fixed;
     top: 0;
@@ -39,4 +44,8 @@
     border-left: 1px solid rgba(16, 22, 26, 0.15);
     height: 20px;
     margin: 0 10px;
+}
+
+.navbar.dark .divider {
+    border-left: 1px solid rgba(138, 141, 141, 0.15);
 }

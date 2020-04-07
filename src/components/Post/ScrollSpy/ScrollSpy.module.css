@@ -3,6 +3,13 @@
     top: 80px;
     left: 25px;
     line-height: 22px;
+    transition: opacity .5s;
+    opacity: 0.5;
+}
+
+.scrollSpy:hover {
+    z-index: 100;
+    opacity: 1;
 }
 
 @media screen and (max-width: 1300px) {

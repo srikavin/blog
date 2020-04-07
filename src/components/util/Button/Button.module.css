@@ -8,6 +8,10 @@
     cursor: pointer;
 }
 
+.button.dark {
+    color: white;
+}
+
 .button.minimal {
     background: none;
     border: none;
@@ -15,6 +19,10 @@
 
 .button:hover {
     background: rgb(245, 245, 245);
+}
+
+.button.dark:hover {
+    background: rgb(61, 61, 61);
 }
 
 .icon > svg {
@@ -26,4 +34,8 @@
     margin-right: 5px;
     margin-top: auto;
     margin-bottom: 3px;
+}
+
+.icon.dark > svg {
+    fill: white;
 }

@@ -6,6 +6,14 @@
     transition: 1.5s filter, opacity ease-out;
 }
 
+.post-img > * {
+    text-align: center;
+}
+
+.post-img.dark > svg {
+    filter: invert();
+}
+
 .blur {
     transition: 0s;
     filter: blur(15px);
