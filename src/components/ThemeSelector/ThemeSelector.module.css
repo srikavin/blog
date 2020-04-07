@@ -6,7 +6,7 @@
     font-size: 1rem;
     font-weight: lighter;
     transition: opacity 500ms;
-    opacity: 25%;
+    opacity: .25;
 }
 
 .selector:hover {
