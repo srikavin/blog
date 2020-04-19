@@ -9,8 +9,14 @@ import ItemSelector from './ItemSelector/ItemSelector'
 import styles from './FilteredPostList.module.css'
 import {debounce} from "../../util/debounce";
 import * as qs from 'qs'
+import {ThemeContext} from "../../Theme";
+import classNames from 'classnames/bind';
+
+let cx = classNames.bind(styles);
 
 class FilteredPostList extends Component {
+    static contextType = ThemeContext
+
     updatePostSearch = debounce(300, () => {
         this.updatePosts()
     });
@@ -100,9 +106,9 @@ class FilteredPostList extends Component {
     render() {
         return (
             <>
-                <div className={styles.filters}>
+                <div className={cx('filters', this.context)}>
                     <span className={styles.filterText}>Filters: </span>
-                    <div className={styles.filter}>
+                    <div className={cx('filter', this.context)}>
                         <input className={styles.search} type={"text"} placeholder={"Search"} value={this.state.search}
                                onChange={this.changeSearch}/>
                     </div>

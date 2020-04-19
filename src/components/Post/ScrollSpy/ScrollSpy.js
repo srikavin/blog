@@ -20,7 +20,7 @@ class ScrollSpy extends React.Component<ScrollSpyProps, ScrollSpyState> {
         const headings = []
 
         function positionHeaders(tagName, level) {
-            cur.querySelectorAll(tagName).forEach((val) => {
+            cur.querySelectorAll(tagName + '[id]').forEach((val) => {
                 headings.push({name: val.innerText, position: val.offsetTop - 20, level: level})
             })
         }
@@ -34,7 +34,7 @@ class ScrollSpy extends React.Component<ScrollSpyProps, ScrollSpyState> {
         const scroll = window.scrollY
         let curObj = undefined
 
-        headings.forEach((val, index) => {
+        headings.forEach((val, _index) => {
             // headings is sorted in ascending order
             if (val.position < scroll) {
                 curObj = val

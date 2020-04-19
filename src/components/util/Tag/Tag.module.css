@@ -14,14 +14,28 @@
     min-height: 20px;
 }
 
+.tag.dark {
+    background: #e5edfa;
+    color: black;
+}
+
 .tag.minimal {
     background: transparent;
     border: 1px solid #5b6e7e;
     color: #5b6e7e;
 }
 
+.tag.minimal.dark {
+    border: 1px solid #e5e5f1;
+    color: #e5e5f1;
+}
+
 .tag.minimal.interactive:hover {
     color: white;
+}
+
+.tag.minimal.interactive.dark:hover {
+    color: black;
 }
 
 .tag.interactive {
@@ -30,4 +44,8 @@
 
 .tag.interactive:hover {
     background: #6b8294;
+}
+
+.tag.interactive.dark:hover {
+    background: #c6d0d9;
 }
