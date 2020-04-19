@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import {ThemeContext} from "../../../Theme";
+import {DARK_THEME, ThemeContext} from "../../../Theme";
 
 const lightTheme = (theme) => {
     return {
@@ -40,7 +40,7 @@ class ItemSelector extends Component {
                         getOptionLabel={(e) => e.name}
                         value={this.props.value}
                         placeholder={this.props.placeholder}
-                        theme={darkTheme}
+                        theme={this.context === DARK_THEME ? darkTheme : lightTheme}
                         getOptionValue={(e) => e.id}/>
             </div>
         )
