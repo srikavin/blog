@@ -17,7 +17,7 @@ let cx = classNames.bind(styles);
 class FilteredPostList extends Component {
     static contextType = ThemeContext
 
-    updatePostSearch = debounce(300, () => {
+    updatePostSearch = debounce(350, () => {
         this.updatePosts()
     });
 
@@ -70,7 +70,8 @@ class FilteredPostList extends Component {
             search: this.state.search
         }).then(e => {
             this.setState({
-                posts: e
+                posts: e,
+                loading: false
             }, () => {
                 this.props.history.replace(this.generateURI());
             });
@@ -125,7 +126,7 @@ class FilteredPostList extends Component {
     }
 
     changeSearch(e) {
-        this.setState({search: e.target.value}, this.updatePostSearch);
+        this.setState({search: e.target.value, posts: undefined, loading: true}, this.updatePostSearch);
     }
 }
 
