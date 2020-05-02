@@ -13,11 +13,14 @@ class ThemeSelector extends Component {
             value: 'light'
         };
 
-        const query = window.matchMedia('(prefers-color-scheme: dark)')
+        this.onClick = this.onClick.bind(this);
+    }
 
-        if (query.matches) {
-            this.state.value = 'dark'
-        }
+    componentDidMount() {
+        const query = window.matchMedia('(prefers-color-scheme: dark)')
+        this.setState({
+            value: query.matches ? 'dark' : 'light'
+        })
 
         query.onchange = (q) => {
             if (q.matches) {
@@ -30,8 +33,6 @@ class ThemeSelector extends Component {
                 })
             }
         }
-
-        this.onClick = this.onClick.bind(this);
     }
 
     onClick() {
