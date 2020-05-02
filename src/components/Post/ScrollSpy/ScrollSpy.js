@@ -9,7 +9,7 @@ interface ScrollSpyProps {
 }
 
 interface ScrollSpyState {
-    headings: Array<{ name: string, position: number, level: number }>,
+    headings: Array<{ name: string, position: number, level: number, id: string }>,
     current?: { name: string, position: number, level: number },
 }
 
@@ -21,7 +21,7 @@ class ScrollSpy extends React.Component<ScrollSpyProps, ScrollSpyState> {
 
         function positionHeaders(tagName, level) {
             cur.querySelectorAll(tagName + '[id]').forEach((val) => {
-                headings.push({name: val.innerText, position: val.offsetTop - 20, level: level})
+                headings.push({name: val.innerText, position: val.offsetTop - 20, level: level, id: val.id})
             })
         }
 
@@ -63,6 +63,7 @@ class ScrollSpy extends React.Component<ScrollSpyProps, ScrollSpyState> {
             behavior: 'smooth'
         })
         this.scrollListener()
+
     }
 
     componentWillUnmount(): void {
@@ -75,6 +76,11 @@ class ScrollSpy extends React.Component<ScrollSpyProps, ScrollSpyState> {
         }
     }
 
+    onClickListener(e, position) {
+        e.preventDefault()
+        this.scrollTo(position)
+    }
+
     render() {
         return (
             <div className={styles.scrollSpy}>
@@ -82,16 +88,18 @@ class ScrollSpy extends React.Component<ScrollSpyProps, ScrollSpyState> {
                     this.state.headings.map((value => {
                         if (value === this.state.current) {
                             return (
-                                <div key={value.position} onClick={() => this.scrollTo(value.position)}
-                                     className={styles.selected + ' ' + styles[`level-${value.level}`]}>
+                                <a href={`#${value.id}`} key={value.position}
+                                   onClick={(e) => this.onClickListener(e, value.position)}
+                                   className={styles.selected + ' ' + styles[`level-${value.level}`]}>
                                     {value.name}
-                                </div>)
+                                </a>)
                         } else {
                             return (
-                                <div key={value.position} onClick={() => this.scrollTo(value.position)}
-                                     className={styles.value + ' ' + styles[`level-${value.level}`]}>
+                                <a href={`#${value.id}`} key={value.position}
+                                   onClick={(e) => this.onClickListener(e, value.position)}
+                                   className={styles.value + ' ' + styles[`level-${value.level}`]}>
                                     {value.name}
-                                </div>)
+                                </a>)
                         }
                     }))
                 }

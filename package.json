@@ -43,6 +43,12 @@
     "test": "react-scripts --env=jsdom",
     "eject": "react-scripts eject"
   },
+  "reactSnap": {
+    "puppeteerArgs": [
+      "--no-sandbox",
+      "--disable-setuid-sandbox"
+    ]
+  },
   "browserslist": {
     "development": [
       "last 2 chrome versions",
@@ -56,7 +62,7 @@
       "not ie < 11"
     ]
   },
-  "proxy": "http://localhost:4000",
+  "proxy": "https://srikavin.me",
   "devDependencies": {
     "flow-bin": "^0.114.0",
     "react-snap": "^1.23.0"
