@@ -42,7 +42,6 @@ class HighlightedCode extends React.Component {
     }
 
     render() {
-        console.log(this.context)
         let theme = this.context === DARK_THEME ? dark : light
 
         let settings;

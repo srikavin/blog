@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {hydrate, render} from "react-dom";
 import './index.css';
 import App from './App';
 import {BrowserRouter, withRouter} from 'react-router-dom'
@@ -42,7 +42,7 @@ class _GAListener extends React.Component {
 
 const GAListener = withRouter(_GAListener);
 
-ReactDOM.render((
+const root = (
     <BrowserRouter>
         <GAListener>
             <ScrollToTopWrapped>
@@ -52,6 +52,14 @@ ReactDOM.render((
             </ScrollToTopWrapped>
         </GAListener>
     </BrowserRouter>
-), document.getElementById('root'));
+)
+
+const rootElement = document.getElementById("root");
+
+if (rootElement.hasChildNodes()) {
+    hydrate(root, rootElement);
+} else {
+    render(root, rootElement);
+}
 
 unregister();
