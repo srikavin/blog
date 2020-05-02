@@ -69,6 +69,10 @@
     "useLandingPage": false,
     "useResume": true
   },
+  "externalLinks": {
+    "github": "https://github.com/srikavin",
+    "linkedin": "https://www.linkedin.com/in/srikavin/"
+  },
   "brandName": "Srikavin Ramkumar",
   "recaptcha-sitekey": "6Lfi7MEUAAAAANIndAjO55fVgnKvijv91BbKZt8v",
   "google-analytics-key": "UA-125481234-1"

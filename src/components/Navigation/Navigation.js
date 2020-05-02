@@ -5,9 +5,31 @@ import {Button} from '../util/Button/Button';
 import NavLink from './NavLink/NavLink';
 import {Auth} from '../../data/resource/auth';
 import {Link} from 'react-router-dom';
-import {FaCode, FaGithub, FaQuestionCircle, FaSearch, FaSignOutAlt, FaTachometerAlt, FaUserAlt} from 'react-icons/fa';
-import './Navigation.css'
+import {
+    FaCode,
+    FaGithub,
+    FaLinkedin,
+    FaQuestionCircle,
+    FaSearch,
+    FaSignOutAlt,
+    FaTachometerAlt,
+    FaUserAlt,
+} from 'react-icons/fa';
+import styles from './Navigation.module.css'
 import config from '../../config'
+
+const ExternalLink = ({href, icon, title}) => {
+    if (href) {
+        return (
+            <>
+                <a href={href}>
+                    {React.cloneElement(icon, {size: 25, title})}
+                </a>&nbsp;
+            </>
+        )
+    }
+    return null;
+}
 
 class Navigation extends React.Component {
     constructor(props) {
@@ -32,12 +54,6 @@ class Navigation extends React.Component {
         this.setState({user});
     }
 
-    redirect(url) {
-        return () => {
-            window.open(url, '_blank')
-        }
-    }
-
     render() {
         return (
             <NavBar>
@@ -51,6 +67,7 @@ class Navigation extends React.Component {
                     <NavLink to="/blog/tag/" icon={<FaSearch/>} label="Search"/>
                 </NavGroup>
                 <NavGroup align={'right'}>
+                    <NavDivider/>
                     {this.state.auth.isLoggedIn() ? (
                         <Fragment>
                             <NavLink icon={<FaTachometerAlt/>} to="/admin" label="Dashboard"/>
@@ -59,9 +76,9 @@ class Navigation extends React.Component {
                             <Button minimal onClick={this.state.auth.logout} icon={<FaSignOutAlt/>} text='Logout'/>
                         </Fragment>
                     ) : (
-                        <div className={'externalIcons'}>
-                            <a href={'https://github.com/srikavin'}><FaGithub className={'navExternIconLink'}
-                                                                              size={25}/></a>&nbsp;
+                        <div className={styles.externalIcons}>
+                            <ExternalLink title={"Github"} href={config.externalLinks.github} icon={<FaGithub/>}/>
+                            <ExternalLink title={"LinkedIn"} href={config.externalLinks.linkedin} icon={<FaLinkedin/>}/>
                         </div>
                     )}
                 </NavGroup>
