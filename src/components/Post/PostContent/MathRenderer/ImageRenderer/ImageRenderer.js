@@ -74,7 +74,7 @@ class ImageRenderer extends React.Component {
         let styles = {
             'float': settings["image-position"],
             'blur': this.state.blur,
-            'max-width': '100%',
+            'maxWidth': '100%',
         };
 
         return (

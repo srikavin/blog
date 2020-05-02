@@ -63,7 +63,7 @@ class MarkdownRender extends React.Component {
         };
 
         return (
-            <div ref={this.props.htmlRef} className={this.props.className} style={{'overflow-wrap': 'break-word'}}>
+            <div ref={this.props.htmlRef} className={this.props.className} style={{'overflowWrap': 'break-word'}}>
                 <MathJax.Provider>
                     <ReactMarkdown className={this.props.markdownClassName} {...newProps} />
                 </MathJax.Provider>

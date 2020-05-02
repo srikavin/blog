@@ -4,8 +4,9 @@
 }
 
 .snippetText img {
-    max-height: 125px;
+    max-width: 100%;
     width: auto;
+    height: auto;
     display: block;
 }
 

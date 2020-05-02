@@ -5,10 +5,13 @@
     line-height: 22px;
     transition: opacity .5s;
     opacity: 0.5;
+    max-height: 70%;
+    overflow-y: hidden;
 }
 
 .scrollSpy:hover {
     z-index: 100;
+    overflow-y: auto;
     opacity: 1;
 }
 
