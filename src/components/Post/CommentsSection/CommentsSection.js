@@ -42,11 +42,11 @@ class CommentsSection extends React.Component {
     }
 
     componentDidUpdate() {
-        if (!window.grecaptcha) {
+        if (!window.grecaptcha || !window.grecaptcha.render) {
             window.greCallback = this.forceUpdate;
             return;
         }
-        if (!this.state.loading && this.state.captcha_id === undefined && window.grecaptcha) {
+        if (!this.state.loading && this.state.captcha_id === undefined && window.grecaptcha && window.grecaptcha.render) {
             this.setState({
                 captcha_id: window.grecaptcha.render('comments_recaptcha', {
                     sitekey: config["recaptcha-sitekey"],
