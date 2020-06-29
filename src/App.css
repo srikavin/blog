@@ -24,12 +24,12 @@ body {
     transition: background-color .5s, color .5s, border .5s;
 }
 
-.App.light {
+body.light, .App.light {
     color: #182026;
     background: white;
 }
 
-.App.dark {
+body.dark, .App.dark {
     color: #e5e5f1;
     background: #292a2d;
 }
@@ -38,7 +38,7 @@ body {
     height: 100%;
 }
 
-.App.dark a {
+body.dark a, .App.dark a {
     color: #6394b3;
 }
 

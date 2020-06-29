@@ -29,6 +29,8 @@ class App extends React.Component {
     static contextType = ThemeContext
 
     render() {
+        document.body.className = (cx(this.context))
+
         return (
             <div className={cx('App', this.context)}>
                 <Helmet>

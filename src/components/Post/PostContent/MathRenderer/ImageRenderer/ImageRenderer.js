@@ -12,16 +12,42 @@ let cx = classNames.bind(styles);
 class ImageRenderer extends React.Component {
     static contextType = ThemeContext
 
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-
     defaults = {
         'image-position': 'center',
-        'image-width': 'auto',
-        'image-height': 'auto'
+        'image-width': 'none',
+        'image-height': 'none'
     };
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            imageRef: React.createRef(),
+            observer: new IntersectionObserver(this.loadFullImage, {root: null, rootMargin: '0px', threshold: 0})
+        };
+    }
+
+    componentWillUnmount() {
+        this.state.observer.disconnect();
+    }
+
+    loadFullImage = (items) => {
+        items.forEach(e => {
+            if (!e.isIntersecting) {
+                return;
+            }
+
+            if (this.state.blur === false) {
+                return;
+            }
+
+            ImageStore.resolveFull(this.state.value).then(val => {
+                this.setState({
+                    url: val.contents,
+                    blur: false
+                });
+            });
+        });
+    }
 
     componentDidMount() {
         if (isValidURL(this.props.src)) {
@@ -37,27 +63,24 @@ class ImageRenderer extends React.Component {
                     width: value.width,
                     height: value.height,
                     fileType: value.fileType,
-                });
-
-                if (value.contents) {
-                    this.setState({
+                    value,
+                    ...(value.contents ? {
                         url: value.contents,
                         blur: false
-                    });
-                } else {
-                    this.setState({
+                    } : {
                         url: 'data:img/png;base64,' + value.small,
                         blur: true
-                    });
-                    ImageStore.resolveFull(value).then(e => {
-                        this.setState({
-                            url: e.contents,
-                            blur: false
-                        });
-                    });
-                }
-
+                    })
+                });
             });
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.state.blur) {
+            this.state.observer.observe(this.state.imageRef.current);
+        } else {
+            this.state.observer.disconnect();
         }
     }
 
@@ -67,39 +90,58 @@ class ImageRenderer extends React.Component {
             settings = Object.assign({}, this.defaults, this.props.settings);
         }
 
-        let imgStyles = cx(this.context, {
+        let containerClasses = cx(this.context, {
             'post-img': true,
         });
 
+        let imgClasses = cx(this.context, {
+            'blur': this.state.blur
+        })
+
+
         let styles = {
             'float': settings["image-position"],
-            'blur': this.state.blur,
-            'maxWidth': '100%',
         };
 
-        return (
-            <span className={imgStyles}>
-                {this.state.blur ? (
-                    <img height='auto'
-                         width={this.state.width}
-                         src={this.state.url}
+        if (settings['image-height'] === 'none') {
+            settings['image-height'] = this.state.height;
+        }
+
+        if (settings['image-width'] === 'none') {
+            settings['image-width'] = this.state.width;
+        }
+
+        if (this.state.blur) {
+            return (
+                <span className={containerClasses}>
+                    <img src={this.state.url}
+                         ref={this.state.imageRef}
+                         height={settings['image-height']}
+                         width={settings['image-width']}
+                         className={imgClasses}
                          style={styles}
                          alt={this.state.title}/>
-                ) : (this.state.fileType === 'image/svg+xml' ? (
-                        <SVG type={this.state.fileType}
-                             preProcessor={(code) => {
-                                 return code.replace(/[Â]/g, '&nbsp')
-                             }}
-                             src={this.state.url}
-                             style={styles}
-                        >{this.state.title}</SVG>
-                    ) : (
-                        <img src={this.state.url}
-                             alt={this.state.title}
-                             height={settings['image-height']}
-                             width={settings['image-width']}
-                             style={styles}/>
-                    )
+                </span>
+            )
+        }
+
+        return (
+            <span className={containerClasses}>
+                {this.state.fileType === 'image/svg+xml' ? (
+                    <SVG type={this.state.fileType}
+                         preProcessor={(code) => {
+                             return code.replace(/[Â]/g, '&nbsp')
+                         }}
+                         src={this.state.url}
+                         className={imgClasses}
+                         style={styles}
+                    >{this.state.title}</SVG>
+                ) : (<img src={this.state.url}
+                          alt={this.state.title}
+                          height={settings['image-height']}
+                          width={settings['image-width']}
+                          className={imgClasses}
+                          style={styles}/>
                 )}
             </span>
         )
