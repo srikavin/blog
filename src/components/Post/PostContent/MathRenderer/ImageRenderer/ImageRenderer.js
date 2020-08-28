@@ -104,11 +104,11 @@ class ImageRenderer extends React.Component {
         };
 
         if (settings['image-height'] === 'none') {
-            settings['image-height'] = this.state.height;
+            settings['image-height'] = 'auto';
         }
 
         if (settings['image-width'] === 'none') {
-            settings['image-width'] = this.state.width;
+            settings['image-width'] = 'auto';
         }
 
         if (this.state.blur) {
@@ -116,8 +116,8 @@ class ImageRenderer extends React.Component {
                 <span className={containerClasses}>
                     <img src={this.state.url}
                          ref={this.state.imageRef}
-                         height={settings['image-height']}
-                         width={settings['image-width']}
+                         height={this.state.height}
+                         width={this.state.width}
                          className={imgClasses}
                          style={styles}
                          alt={this.state.title}/>
