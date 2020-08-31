@@ -2,7 +2,7 @@
 import axios, {AxiosInstance} from 'axios';
 import type {Identifier} from './identifier';
 
-export const baseURL = navigator.userAgent === 'ReactSnap' ? 'https://srikavin.me/api/v1' : '/api/v1';
+export const baseURL = '/api/v1';
 
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: baseURL,
