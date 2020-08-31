@@ -8,6 +8,7 @@ import styles from './Comment.module.css'
 import dayjs from "dayjs";
 import MarkdownRender from "../../PostContent/MathRenderer/MathRenderer";
 import {ThemeContext} from "../../../Theme";
+import {Button} from "../../../util/Button/Button";
 
 class Comment extends React.Component {
     static contextType = ThemeContext
@@ -47,7 +48,8 @@ class Comment extends React.Component {
                         <small className={styles.date}>{dayjs(this.props.createdTime).format('MMMM D, YYYY')}</small>
                     </div>
                     <MarkdownRender source={this.props.contents} className={styles.content}/>
-                    <div className={styles.reply}><a onClick={() => this.handleReplyTo()}>Reply</a></div>
+                    <div className={styles.reply}><Button minimal={true}
+                                                          onClick={() => this.handleReplyTo()}>Reply</Button></div>
                 </div>
                 <div className={styles.nested}>
                     {this.props.nested.map((e: CommentSchema) => {

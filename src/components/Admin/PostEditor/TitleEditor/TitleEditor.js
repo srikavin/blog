@@ -1,4 +1,4 @@
-import {EditableText, H1} from '@blueprintjs/core';
+import {H1} from '@blueprintjs/core';
 import PropTypes from 'prop-types';
 import React from 'react';
 

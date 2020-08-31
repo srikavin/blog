@@ -8,6 +8,7 @@ import styles from './CommentsSection.module.css'
 import config from '../../../config'
 import {ThemeContext} from "../../Theme";
 import classNames from 'classnames/bind';
+import {Button} from "../../util/Button/Button";
 
 let cx = classNames.bind(styles);
 
@@ -155,7 +156,7 @@ class CommentsSection extends React.Component {
                             <span className={styles.section}>
                                 <label className={styles.label} htmlFor='parent'>Replying to: </label>
                                 <small>
-                                    <a onClick={this.handleClearReplyTo}>(clear)</a>
+                                    <Button minimal={true} onClick={this.handleClearReplyTo}>(clear)</Button>
                                 </small>
                                 <input name='parent' value={this.state.parentName} required={true}
                                        disabled={true}/> <br/>

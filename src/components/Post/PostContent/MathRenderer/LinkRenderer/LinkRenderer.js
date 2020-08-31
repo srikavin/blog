@@ -22,7 +22,7 @@ class LinkRenderer extends React.Component {
         };
 
         return (
-            <a style={styles} target={'_blank'} href={this.props.href}>{this.props.children}</a>
+            <a style={styles} target='_blank' rel="noopener noreferrer" href={this.props.href}>{this.props.children}</a>
         )
     }
 }
