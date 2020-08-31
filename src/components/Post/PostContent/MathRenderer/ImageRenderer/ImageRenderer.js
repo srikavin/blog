@@ -95,7 +95,8 @@ class ImageRenderer extends React.Component {
         });
 
         let imgClasses = cx(this.context, {
-            'blur': this.state.blur
+            'blur': this.state.blur,
+            'svg': this.state.fileType === 'image/svg+xml'
         })
 
 

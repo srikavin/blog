@@ -15,7 +15,7 @@
     text-align: center;
 }
 
-.post-img.dark > svg {
+.post-img.dark > .svg {
     filter: invert();
 }
 
