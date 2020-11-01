@@ -1,3 +1,3 @@
 # blog
 
-[srikavin.me/blog](https://srikavin.me/blog)
+[blog.srikavin.me](https://blog.srikavin.me)

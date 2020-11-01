@@ -61,7 +61,7 @@
       "not ie < 11"
     ]
   },
-  "proxy": "https://srikavin.me",
+  "proxy": "https://blog.srikavin.me",
   "devDependencies": {
     "flow-bin": "^0.114.0",
     "react-snap": "^1.23.0"

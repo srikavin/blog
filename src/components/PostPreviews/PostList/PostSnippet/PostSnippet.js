@@ -22,7 +22,7 @@ class PostSnippet extends React.Component {
         return (
             <span className={styles.snippetText}>
                 <PostContent content={this.props.post.overview}/> {' '}
-                <Link to={`/blog/posts/${this.props.post.slug}`} className={styles.continue}>
+                <Link to={`/posts/${this.props.post.slug}`} className={styles.continue}>
                     Continue Reading
                 </Link>
             </span>
@@ -50,7 +50,7 @@ class PostSnippet extends React.Component {
         }
         return (
             <div className={this.props.className ? this.props.className : ''}>
-                <Link to={`/blog/posts/${this.props.post.slug}`} className={styles.snippetTitle}>
+                <Link to={`/posts/${this.props.post.slug}`} className={styles.snippetTitle}>
                     {this.props.post.draft === true ? <small>draft</small> : null} {this.props.post.title}
                 </Link>
                 <PostMeta containerClassName={styles.authorContainer}

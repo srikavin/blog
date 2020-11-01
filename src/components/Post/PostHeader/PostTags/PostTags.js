@@ -11,7 +11,7 @@ class PostTags extends React.Component {
         }
 
         return this.props.tags.map(e => (
-            <Link key={e.id} to={`/blog/tag/${e.id}`}>
+            <Link key={e.id} to={`/tag/${e.id}`}>
                 <Tag interactive={true} className={styles.item} minimal={true}>{e.name}</Tag>
             </Link>
         ));

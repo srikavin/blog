@@ -56,7 +56,7 @@ class FilteredPostList extends Component {
 
     generateURI() {
         let tagIds = this.state.filter.map(e => e.id);
-        return `/blog/tag/${tagIds.join(',')}` + ((this.state.search && this.state.search.length > 0) ? `?${qs.stringify({search: this.state.search})}` : '');
+        return `/tag/${tagIds.join(',')}` + ((this.state.search && this.state.search.length > 0) ? `?${qs.stringify({search: this.state.search})}` : '');
     }
 
     updatePosts() {

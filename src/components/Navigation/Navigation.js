@@ -5,16 +5,7 @@ import {Button} from '../util/Button/Button';
 import NavLink from './NavLink/NavLink';
 import {Auth} from '../../data/resource/auth';
 import {Link} from 'react-router-dom';
-import {
-    FaCode,
-    FaGithub,
-    FaLinkedin,
-    FaQuestionCircle,
-    FaSearch,
-    FaSignOutAlt,
-    FaTachometerAlt,
-    FaUserAlt,
-} from 'react-icons/fa';
+import {FaCode, FaGithub, FaLinkedin, FaSearch, FaSignOutAlt, FaTachometerAlt, FaUserAlt,} from 'react-icons/fa';
 import styles from './Navigation.module.css'
 import config from '../../config'
 
@@ -59,12 +50,11 @@ class Navigation extends React.Component {
             <NavBar>
                 <NavGroup align={'left'}>
                     <NavHeader>
-                        <Link to={'/'}>{config.brandName}</Link>
+                        <Link to={'/'}>{config.title}</Link>
                     </NavHeader>
                     <NavDivider/>
-                    <NavLink to="/" icon={<FaQuestionCircle/>} label="About"/>
-                    <NavLink to="/blog" icon={<FaCode/>} label="Blog"/>
-                    <NavLink to="/blog/tag/" icon={<FaSearch/>} label="Search"/>
+                    <NavLink to="/" icon={<FaCode/>} label="Posts"/>
+                    <NavLink to="/tag/" icon={<FaSearch/>} label="Search"/>
                 </NavGroup>
                 <NavGroup align={'right'}>
                     <NavDivider/>

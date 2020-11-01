@@ -5,9 +5,6 @@ import {Link} from 'react-router-dom';
 
 class NotFound extends Component {
     render() {
-        if (this.props.history.location.pathname !== '/404') {
-            window.location.pathname = '/404';
-        }
         return (
             <ErrorState title={'404 Page not Found'}
                         description={'The requested page could not be found'}
