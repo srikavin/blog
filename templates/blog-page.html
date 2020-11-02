@@ -1,3 +1,5 @@
+{% import "macros/posts.html" as posts %}
+
 {% extends "base.html" %}
 
 {% block title %}{{ page.title }}{% endblock title %}
@@ -5,60 +7,7 @@
 {% block content %}
 
 <div class="blog-container">
-    <div class="blog-header">
-        <h1 class="title">
-            {{ page.title }}
-        </h1>
-        <div class="subtitle">
-        <span>
-            Posted on <span class="date">
-            {{page.date | date(format="%B %e, %Y")}}
-            {% if page.taxonomies["categories"] -%}
-                in {{page.taxonomies["categories"] | join(sep=", ")}}
-            {% endif %}
-        </span> </span>
-        </div>
-        <div class="tags">
-            {% for tag in page.taxonomies["tags"] %}
-            <span class="tag minimal interactive">
-                {{tag}}
-            </span>
-            {% endfor %}
-        </div>
-    </div>
-
-    <div class="blog-content light">
-        <div class="blog-scrollspy">
-            <h1 class="scrollspy-label">Table of Contents</h1>
-            <ul>
-                {% for h1 in page.toc %}
-                <li>
-                    <a data-target="{{h1.id}}" href="#{{h1.id}}">{{ h1.title }}</a>
-                    {% if h1.children %}
-                    <ul>
-                        {% for h2 in h1.children %}
-                        <li>
-                            <a data-target="{{h2.id}}" href="#{{h2.id}}">{{ h2.title | safe}}</a>
-                            {% if h2.children %}
-                            <ul>
-                                {% for h3 in h2.children %}
-                                <li>
-                                    <a data-target="{{h3.id}}" href="#{{h3.id}}">{{ h3.title | safe}}</a>
-                                </li>
-                                {% endfor %}
-                            </ul>
-                            {% endif %}
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        {{ page.content | safe }}
-    </div>
+    {{ posts::post(page=page) }}
 </div>
 
 <script src="https://utteranc.es/client.js"

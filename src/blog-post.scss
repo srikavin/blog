@@ -49,6 +49,23 @@
   }
 }
 
+.blog-content {
+  h1, h2, h3 {
+    margin-left: -22px;
+  }
+}
+
+h1 .permalink, h2 .permalink, h3 .permalink {
+  display: inline-block;
+  visibility: hidden;
+  width: 22px;
+  margin: 0;
+}
+
+h1:hover .permalink, h2:hover .permalink, h3:hover, .permalink {
+  visibility: visible;
+}
+
 .blog-container {
   max-width: 850px;
   width: 60vw;
@@ -63,7 +80,7 @@
 .blog-content img, .blog-content object[type="image/svg+xml"] {
   position: relative;
   max-width: 70vw;
-  margin-left: 50%;
+  left: 50%;
   transform: translateX(-50%);
   text-align: center;
 }

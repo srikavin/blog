@@ -1,4 +1,4 @@
-{% import "macros/macros.html" as macros %}
+{% import "macros/posts.html" as posts %}
 
 {% extends "base.html" %}
 
@@ -8,6 +8,6 @@ Posts
 
 {% block content %}
 
-{{ macros::postlist(pages=section.pages) }}
+{{ posts::list(pages=section.pages) }}
 
 {% endblock content %}

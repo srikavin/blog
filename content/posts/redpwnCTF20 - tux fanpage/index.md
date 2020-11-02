@@ -15,15 +15,14 @@ categories = ["ctf-writeups"]
 
 We're also given the source code:
 
+<!-- more -->
+
 {{ gist(url="https://gist.github.com/srikavin/88989ab1c98ab52f94c86593e3d30b5a") }}
 
-<!-- more -->
 
 # Local File Inclusion
 
 When we open the site we're greeted by a wonderfully-designed site. The URL also includes a path parameter: `https://tux-fanpage.2020.redpwnc.tf/page?path=index.html`. Looking at the source code shows us that the path is used to load a file from the file system after a series of checks:
-
-[show-line-numbers]: false
 
 ```javascript
 //Prevent directory traversal attack

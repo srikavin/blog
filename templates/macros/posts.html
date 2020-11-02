@@ -1,0 +1,91 @@
+{% macro header(page, link=false) %}
+<div class="blog-header">
+    <h1 class="title">
+        {% if link %}
+        <a href="{{ page.permalink | safe }}">{{ page.title }}</a>
+        {% else %}
+        {{ page.title }}
+        {% endif %}
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: {{ page.date }}
+                        {%- if page.updated -%}
+                        &#10;Updated: {{ page.updated }}
+                        {%- endif -%}">
+                            {{- page.date | date(format="%B %e, %Y" ) -}}
+                            {% if page.updated %}
+                            {{- "*" -}}
+                            {% endif %}
+                        </span>
+
+                        {% if page.taxonomies["categories"] -%}
+                            in {{page.taxonomies["categories"] | join(sep=", ")}}
+                        {% endif %}
+                </span>
+    </div>
+    <div class="tags">
+        {% for tag in page.taxonomies["tags"] %}
+        {% set url = get_taxonomy_url(kind="tags", name=tag, lang=page.lang) %}
+        <a href="{{url}}"><span class="tag minimal interactive">{{tag}}</span></a>
+        {% endfor %}
+    </div>
+</div>
+{% endmacro %}
+
+{% macro post_preview(page, link=false) %}
+{{ self::header(page=page, link=link) }}
+<div class="blog-content">
+    {{ page.summary | safe }}
+</div>
+{% endmacro %}
+
+{% macro post(page) %}
+
+{{ self::header(page=page) }}
+
+<div class="blog-content light">
+    <div class="blog-scrollspy">
+        <h1 class="scrollspy-label">Table of Contents</h1>
+        <ul>
+            {% for h1 in page.toc %}
+            <li>
+                <a data-target="{{h1.id}}" href="#{{h1.id}}">{{ h1.title }}</a>
+                {% if h1.children %}
+                <ul>
+                    {% for h2 in h1.children %}
+                    <li>
+                        <a data-target="{{h2.id}}" href="#{{h2.id}}">{{ h2.title | safe}}</a>
+                        {% if h2.children %}
+                        <ul>
+                            {% for h3 in h2.children %}
+                            <li>
+                                <a data-target="{{h3.id}}" href="#{{h3.id}}">{{ h3.title | safe}}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {{ page.content | safe }}
+</div>
+
+{% endmacro %}
+
+{% macro list(pages) %}
+<div class="blog-preview-list">
+    {% for page in pages %}
+    <div class="blog-preview">
+        {{ self::post_preview(page=page, link=true) }}
+        <a class="blog-preview-continue-reading" href="{{ page.permalink | safe }}">Continue Reading</a>
+    </div>
+    {% endfor %}
+</div>
+{% endmacro postlist %}

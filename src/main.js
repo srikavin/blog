@@ -9,7 +9,8 @@ renderMathInElement(document.body, {
         {left: "$", right: "$", display: false},
         {left: "\\(", right: "\\)", display: false},
         {left: "\\[", right: "\\]", display: true}
-    ]
+    ],
+    preProcess: (math) => math.replaceAll('\\\n', '\\\\')
 });
 
 const headings = [];
