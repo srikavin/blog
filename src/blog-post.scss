@@ -1,0 +1,91 @@
+.blog-header {
+  text-align: center;
+
+  .title {
+    font-family: "Segoe UI", "Calibri", "Droid Sans", sans-serif;
+    font-size: 76px;
+    font-weight: lighter;
+    line-height: 80px;
+    margin-top: .34em;
+    margin-bottom: .2em;
+  }
+
+  .tag {
+    font-size: 12px;
+    padding: 2px 6px;
+    margin: 2px;
+    border: none;
+    border-radius: 3px;
+    min-width: 24px;
+    min-height: 20px;
+  }
+
+  .tag.dark {
+    background: #e5edfa;
+    color: black;
+  }
+
+  .tag.minimal.dark {
+    border: 1px solid #e5e5f1;
+    color: #e5e5f1;
+  }
+
+  .tag.minimal.interactive.dark:hover {
+    color: black;
+  }
+
+  .tag.interactive {
+    cursor: pointer;
+  }
+
+  .tag.interactive.dark:hover {
+    background: #c6d0d9;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    font-style: italic;
+    margin-bottom: 8px;
+  }
+}
+
+body {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 850px;
+  width: 60vw;
+  font-family: -apple-system, "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Helvetica Neue", "Icons16", sans-serif;
+}
+
+.blog-content {
+  line-height: 1.6;
+}
+
+.blog-content img {
+  max-width: 85vw;
+  margin-left: 50%;
+  margin-right: -50%;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+  -webkit-transition: filter .3s linear;
+  -o-transition: .3s filter linear;
+  transition: filter .3s linear;
+  -webkit-filter: blur(0);
+  filter: blur(0);
+  text-align: center;
+}
+
+.blog-content.light blockquote {
+  border-left-width: 2px;
+  border-left-style: solid;
+}
+
+.blog-content blockquote {
+  padding: 10px;
+  margin: 0 0 1em;
+  overflow: auto;
+}
+
+.blog-content > pre {
+  padding: 8px;
+}

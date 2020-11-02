@@ -1,0 +1,25 @@
+nav {
+  height: 32px;
+  width: 100%;
+}
+
+nav .nav-left {
+  position: absolute;
+  top: 16px;
+  left: 32px;
+  font-size: 16px;
+
+  .name {
+    font-size: 24px;
+    width: auto;
+    margin-right: 22px;
+  }
+
+  span {
+    margin-right: 8px;
+  }
+
+  span > a {
+    color: black;
+  }
+}

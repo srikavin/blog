@@ -1,0 +1,26 @@
+@import "blog-post";
+@import "scrollspy";
+@import "nav";
+
+p {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+a {
+  text-decoration: none;
+}
+
+a, a:visited {
+  color: #0000EE;
+}
+
+a:hover, a:focus {
+  text-decoration: underline;
+}
+
+//@media (prefers-color-scheme: light){
+@import "blog-post.light";
+@import "scrollspy.light";
+//}

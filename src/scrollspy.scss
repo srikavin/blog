@@ -1,0 +1,59 @@
+.blog-scrollspy {
+  @media screen and (min-width: 1200px) {
+    position: fixed;
+    top: 80px;
+    left: 28px;
+    line-height: 22px;
+    transition: opacity .5s;
+    max-height: 70%;
+    overflow-y: hidden;
+    font-size: 14px;
+    color: inherit;
+
+    > ul:hover {
+      z-index: 100;
+      overflow-y: auto;
+      opacity: 1;
+    }
+
+    > ul {
+      opacity: 0.5;
+      transition: opacity 0.5s;
+    }
+
+    .value {
+      padding-left: 4px;
+      display: block;
+      color: inherit !important;
+    }
+
+    ul {
+      list-style: none;
+      margin-block-start: 0;
+      margin-block-end: 0;
+      margin-left: 12px;
+      padding-inline-start: 0;
+    }
+
+    .value:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .active {
+      color: inherit !important;
+      font-weight: bold;
+      padding-left: 2px;
+      border-left: 2px solid #1584ce
+    }
+    .scrollspy-label {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 1200px) {
+    .scrollspy-label {
+      display: block;
+    }
+  }
+}
