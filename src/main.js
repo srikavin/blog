@@ -21,6 +21,18 @@ document.querySelectorAll('.blog-scrollspy a').forEach((val) => {
 
 headings.sort((a, b) => a.position - b.position);
 
+function throttle(func, wait = 100) {
+    let timer = null;
+    return function (...args) {
+        if (timer === null) {
+            timer = setTimeout(() => {
+                func.apply(this, args);
+                timer = null;
+            }, wait);
+        }
+    };
+}
+
 const scrollListener = () => {
     const scroll = window.scrollY;
     let curObj = undefined;
@@ -39,5 +51,5 @@ const scrollListener = () => {
     }
 };
 
-window.addEventListener('scroll', scrollListener, {passive: true})
+window.addEventListener('scroll', throttle(scrollListener, 100))
 scrollListener();

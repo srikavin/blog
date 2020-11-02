@@ -1,7 +1,7 @@
 +++
 title = "pwnable.tw - applestore"
-date = 2019-08-27
-aliases = ["5f478a835f6cee02e28f045a-pwnabletw-applestore"]
+date = 2020-08-27
+aliases = ["/posts/5f478a835f6cee02e28f045a-pwnabletw-applestore"]
 [taxonomies]
 tags = ["pwnable.tw", "binary-exploitation", "pwntools", "rce"]
 categories = ["ctf-writeups"]

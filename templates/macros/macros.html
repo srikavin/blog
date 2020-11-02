@@ -1,0 +1,32 @@
+{% macro postlist(pages) %}
+<div class="blog-preview-list">
+    {% for page in pages %}
+    <div class="blog-preview">
+        <div class="blog-header">
+            <h1 class="title">
+                <a href="{{ page.permalink | safe }}">{{ page.title }}</a>
+            </h1>
+            <div class="subtitle">
+                    <span>Posted on <span class="date">
+                        {{page.date | date(format="%B %e, %Y")}}
+                        {% if page.taxonomies["categories"] -%}
+                            in {{page.taxonomies["categories"] | join(sep=", ")}}
+                        {% endif %}
+                    </span>
+                </span>
+            </div>
+            <div class="tags">
+                {% for tag in page.taxonomies["tags"] %}
+                {% set url = get_taxonomy_url(kind="tags", name=tag, lang=page.lang) %}
+                <a href="{{url}}"><span class="tag minimal interactive">{{tag}}</span></a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="blog-content">
+            {{ page.summary | safe }}
+        </div>
+        <a class="blog-preview-continue-reading" href="{{ page.permalink | safe }}">Continue Reading</a>
+    </div>
+    {% endfor %}
+</div>
+{% endmacro postlist %}

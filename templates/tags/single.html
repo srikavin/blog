@@ -1,0 +1,13 @@
+{% import "macros/macros.html" as macros %}
+
+{% extends "base.html" %}
+
+{% block title %}
+Posts
+{% endblock title %}
+
+{% block content %}
+
+{{ macros::postlist(pages=term.pages) }}
+
+{% endblock content %}

@@ -1,3 +1,5 @@
+{% import "macros/macros.html" as macros %}
+
 {% extends "base.html" %}
 
 {% block title %}
@@ -5,36 +7,7 @@ Posts
 {% endblock title %}
 
 {% block content %}
-<ul>
-    {% for page in section.pages %}
-    <a href="{{ page.permalink | safe }}">
-        <div class="blog-preview">
-            <h1 class="title">
-                {{ page.title }}
-            </h1>
-            <div class="subtitle">
-        <span>
-            Posted on <span class="date">
-            {{page.date | date(format="%B %e, %Y")}}
-            {% if page.taxonomies["categories"] -%}
-                in {{page.taxonomies["categories"] | join(sep=", ")}}
-            {% endif %}
-        </span>
-        </span>
-            </div>
-            <div class="tags">
-                {% for tag in page.taxonomies["tags"] %}
-                <span class="tag minimal interactive">
-                {{tag}}
-            </span>
-                {% endfor %}
-            </div>
-        </div>
-        <div>
-            {{ page.summary | safe }}
-        </div>
-    </a>
 
-    {% endfor %}
-</ul>
+{{ macros::postlist(pages=section.pages) }}
+
 {% endblock content %}
