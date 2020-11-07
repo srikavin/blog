@@ -1,0 +1,17 @@
+.tags-content {
+  width: 60vw;
+  margin-left: auto;
+  margin-right: auto;
+
+  > h1 {
+    font-weight: 300;
+  }
+}
+
+.tags-content.list {
+  line-height: 2.3em;
+
+  .tag {
+    font-size: 18px;
+  }
+}

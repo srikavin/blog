@@ -3,23 +3,21 @@
   background: #fcf5d9;
 }
 
-.blog-header {
-  .tag {
-    background: #5b6e7e;
-    color: white;
-  }
+.tag {
+  background: #5b6e7e;
+  color: white;
+}
 
-  .tag.minimal {
-    background: transparent;
-    border: 1px solid #5b6e7e;
-    color: #5b6e7e;
-  }
+.tag.minimal {
+  background: transparent;
+  border: 1px solid #5b6e7e;
+  color: #5b6e7e;
+}
 
-  .tag.minimal.interactive:hover {
-    color: white;
-  }
+.tag.minimal.interactive:hover {
+  color: white;
+}
 
-  .tag.interactive:hover {
-    background: #6b8294;
-  }
+.tag.interactive:hover {
+  background: #6b8294;
 }

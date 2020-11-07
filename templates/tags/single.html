@@ -3,11 +3,14 @@
 {% extends "base.html" %}
 
 {% block title %}
-Posts
+{{term.name}} - Tags
 {% endblock title %}
 
 {% block content %}
 
-{{ posts::list(pages=term.pages) }}
+<div class="tags-content">
+    <h1>Posts tagged with <span class="tag minimal">{{term.name}}</span></h1>
+    {{ posts::list(pages=term.pages) }}
+</div>
 
 {% endblock content %}

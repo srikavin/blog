@@ -9,7 +9,6 @@
     "dev": "npm-run-all --parallel dev:rollup dev:zola",
     "build:rollup": "rollup -c",
     "build:zola": "node bin/zola.js build",
-    "build:parcel": "node parcel.build.js",
     "build": "npm-run-all build:rollup build:zola"
   },
   "repository": {

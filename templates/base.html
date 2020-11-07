@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block meta %} {% endblock %}
     <title>{% block title %} {% endblock %} - srikavin.me</title>
     <link rel="stylesheet" href="/bundle.css">
 </head>
@@ -18,7 +19,7 @@
             <a href="/posts" class="nav-link">Posts</a>
         </span>
         <span>
-            <a href="/search" class="nav-link">Search</a>
+            <a class="nav-link" href="/tags">Tags</a>
         </span>
     </div>
 </nav>
@@ -29,6 +30,8 @@
 </section>
 
 <script src="/bundle.js"></script>
+{% block scripts %} {% endblock %}
+
 </body>
 
 </html>

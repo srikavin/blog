@@ -4,6 +4,26 @@
 
 {% block title %}{{ page.title }}{% endblock title %}
 
+{% block meta %}
+<meta content="{{page.title}}" property="og:title"/>
+<meta content="article" property="og:type"/>
+<meta content="{{page.date}}" property="og:published_time"/>
+{% if page.updated -%}
+<meta content="{{page.updated}}" property="og:modified_time"/>
+{% endif -%}
+<meta content="Srikavin Ramkumar" property="og:author"/>
+{% if page.description -%}
+<meta content="{{page.description}}" property="og:description"/>
+{% endif -%}
+{% if page.taxonomies["categories"] | length > 0 -%}
+<meta content="{{page.taxonomies['categories'] | first}}" property="og:section"/>
+{% endif -%}
+{% for tag in page.taxonomies["tags"] -%}
+<meta content="{{tag}}" property="og:tag"/>
+{% endfor -%}
+<meta content="{{page.permalink | safe}}" property="og:url"/>
+{% endblock %}
+
 {% block content %}
 
 <div class="blog-container">
@@ -14,7 +34,7 @@
         repo="srikavin/blog"
         issue-term="url"
         label="💬comments"
-        theme="preferred-color-scheme"
+        theme="github-light"
         crossorigin="anonymous"
         async>
 </script>
