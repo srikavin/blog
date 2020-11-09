@@ -3,13 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "dev:rollup": "rollup -c -w",
+    "dev:gulp": "gulp watch",
     "dev:zola": "node bin/zola.js serve",
-    "dev": "npm-run-all --parallel dev:rollup dev:zola",
-    "build:rollup": "rollup -c",
-    "build:zola": "node bin/zola.js build",
-    "build": "npm-run-all build:rollup build:zola"
+    "dev": "npm-run-all --parallel dev:gulp dev:zola",
+    "build": "gulp"
   },
   "repository": {
     "type": "git",
@@ -24,10 +23,11 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^16.0.0",
     "@rollup/plugin-node-resolve": "^10.0.0",
-    "html-minifier": "^4.0.0",
+    "gulp": "^4.0.2",
+    "gulp-imagemin": "^7.1.0",
+    "gulp-html-minifier-terser": "^6.0.1",
     "node-sass": "^5.0.0",
     "npm-run-all": "^4.1.5",
-    "parcel-bundler": "^1.12.4",
     "rollup": "^2.33.0",
     "rollup-plugin-postcss": "^3.1.8",
     "rollup-plugin-terser": "^7.0.2"

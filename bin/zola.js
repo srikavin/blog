@@ -1,12 +1,14 @@
-var childProcess = require('child_process');
+import * as childProcess from 'child_process';
+import {fileURLToPath} from "url";
 
-try {
+export const runZola = function (args) {
     if (process.platform === 'win32') {
-        childProcess.execFileSync("bin/zola.exe", process.argv.slice(2), {stdio: "inherit"})
+        childProcess.execFileSync("bin/zola.exe", args, {stdio: "inherit"})
     } else {
-        childProcess.execFileSync("bin/zola", process.argv.slice(2), {stdio: "inherit"})
+        childProcess.execFileSync("bin/zola", args, {stdio: "inherit"})
     }
-} catch (e) {
-
 }
 
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    runZola(process.argv.slice(2));
+}

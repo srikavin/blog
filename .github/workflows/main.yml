@@ -5,15 +5,15 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Build
-      run: | 
-        npm install
-        npm run build
-    - name: shalzz/zola-deploy-action
-      uses: shalzz/zola-deploy-action@v0.12.0
-      env:
-        # Target branch
-        PAGES_BRANCH: gh-pages
-        # Provide personal access token
-        TOKEN: ${{ secrets.TOKEN }}
+      - uses: actions/checkout@master
+      - name: Build
+        run: |
+          npm install
+          npm run build
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: public
+          CLEAN: true
