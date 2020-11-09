@@ -8,6 +8,8 @@ Posts
 
 {% block content %}
 
-{{ posts::list(pages=section.pages) }}
+<div class="page-container">
+    {{ posts::list(pages=section.pages) }}
+</div>
 
 {% endblock content %}

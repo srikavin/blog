@@ -2,20 +2,12 @@
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.20), 0 5px 5px rgba(0, 0, 0, 0.22);
 }
 
-.blog-preview-list {
-  max-width: 60vw;
-  width: 60vw;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 .blog-preview {
   position: relative;
   margin-bottom: 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   transition: box-shadow .3s;
   padding: 8px 16px;
-  width: 60vw;
 
   .blog-header {
     text-align: left;
@@ -32,8 +24,7 @@
     margin-right: 32px;
   }
 
-  max-height: 40vh;
-  height: 500px;
+  max-height: 400px;
   overflow: hidden;
 
   .blog-preview-continue-reading {
