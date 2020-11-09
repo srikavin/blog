@@ -1,112 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-<meta content="nactf 2019 - Dr. J&#x27;s Group Test Randomizer #2: BBOB" property="og:title"/>
-<meta content="article" property="og:type"/>
-<meta content="2019-09-22T17:48:52.836Z" property="og:published_time"/>
-<meta content="2019-09-22T22:03:40.121Z" property="og:modified_time"/>
-<meta content="Srikavin Ramkumar" property="og:author"/>
-<meta content="ctf-writeups" property="og:section"/>
-<meta content="nactf2019" property="og:tag"/>
-<meta content="cryptography" property="og:tag"/>
-<meta content="z3" property="og:tag"/>
-<meta content="/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/" property="og:url"/>
-
-    <title>nactf 2019 - Dr. J&#x27;s Group Test Randomizer #2: BBOB - srikavin.me</title>
-    <link rel="stylesheet" href="/bundle.css">
-</head>
-
-<body>
-<nav>
-    <div class="nav-left">
-        <span>
-            <a href="https://srikavin.me" class="name">Srikavin Ramkumar</a>
-        </span>
-        <span>
-            <a href="/posts" class="nav-link">Posts</a>
-        </span>
-        <span>
-            <a class="nav-link" href="/tags">Tags</a>
-        </span>
-    </div>
-</nav>
-<section class="section">
-    <div class="container">
-        
-
-<div class="blog-container">
-    
-
-
-<div class="blog-header">
-    <h1 class="title">
-        
-        nactf 2019 - Dr. J&#x27;s Group Test Randomizer #2: BBOB
-        
-    </h1>
-    <div class="subtitle">
-                    <span>Posted on
-                        <span class="date" title="Created: 2019-09-22T17:48:52.836Z&#10;Updated: 2019-09-22T22:03:40.121Z">September 22, 2019*
-                        </span>
-
-                        in ctf-writeups
-                        
-                </span>
-    </div>
-    <div class="tags">
-        
-        
-        <a href="&#x2F;tags&#x2F;nactf2019&#x2F;"><span class="tag minimal interactive">nactf2019</span></a>
-        
-        
-        <a href="&#x2F;tags&#x2F;cryptography&#x2F;"><span class="tag minimal interactive">cryptography</span></a>
-        
-        
-        <a href="&#x2F;tags&#x2F;z3&#x2F;"><span class="tag minimal interactive">z3</span></a>
-        
-    </div>
-</div>
-
-
-<div class="blog-content light">
-    <div class="blog-scrollspy">
-        <h1 class="scrollspy-label">Table of Contents</h1>
-        <ul>
-            
-            <li>
-                <a data-target="challenge" href="#challenge">Challenge</a>
-                
-            </li>
-            
-            <li>
-                <a data-target="solution" href="#solution">Solution</a>
-                
-                <ul>
-                    
-                    <li>
-                        <a data-target="full-script" href="#full-script">Full Script</a>
-                        
-                    </li>
-                    
-                </ul>
-                
-            </li>
-            
-        </ul>
-    </div>
-
-    <h1 id="challenge">Challenge</h1>
-<blockquote>
-<p>This is it. The last group test of the year. Dr. J patched his prng again so numbers won't repeat, so I guess 
-Leaf won't get to know the group test pairs ahead of time... oh WEYL. Who knew middle square could make such a good prng?</p>
-<p><code>nc shell.2019.nactf.com 31382</code></p>
-</blockquote>
-<p>We're also given the source of the running application:</p>
-<pre style="background-color:#ffffff;">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width,initial-scale=1" name="viewport"><meta content="nactf 2019 - Dr. J&#x27;s Group Test Randomizer #2: BBOB" property="og:title"><meta content="article" property="og:type"><meta content="2019-09-22T17:48:52.836Z" property="og:published_time"><meta content="2019-09-22T22:03:40.121Z" property="og:modified_time"><meta content="Srikavin Ramkumar" property="og:author"><meta content="ctf-writeups" property="og:section"><meta content="nactf2019" property="og:tag"><meta content="cryptography" property="og:tag"><meta content="z3" property="og:tag"><meta content="/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/" property="og:url"><title>nactf 2019 - Dr. J&#x27;s Group Test Randomizer #2: BBOB - srikavin.me</title><link href="/favicon.png" rel="icon"><link href="/bundle.css" rel="stylesheet"></head><body><nav><div class="nav-left"><span><a href="https://srikavin.me" class="name">Srikavin Ramkumar</a> </span><span><a href="/posts" class="nav-link">Posts</a> </span><span><a href="/tags" class="nav-link">Tags</a></span></div></nav><section class="section"><div class="container"><div class="blog-container"><div class="blog-header"><h1 class="title">nactf 2019 - Dr. J&#x27;s Group Test Randomizer #2: BBOB</h1><div class="subtitle"><span>Posted on <span class="date" title="Created: 2019-09-22T17:48:52.836Z&#10;Updated: 2019-09-22T22:03:40.121Z">September 22, 2019* </span>in ctf-writeups</span></div><div class="tags"><a href="&#x2F;tags&#x2F;nactf2019&#x2F;"><span class="interactive minimal tag">nactf2019</span></a> <a href="&#x2F;tags&#x2F;cryptography&#x2F;"><span class="interactive minimal tag">cryptography</span></a> <a href="&#x2F;tags&#x2F;z3&#x2F;"><span class="interactive minimal tag">z3</span></a></div></div><div class="blog-content light"><div class="blog-scrollspy"><h1 class="scrollspy-label">Table of Contents</h1><ul><li><a href="#challenge" data-target="challenge">Challenge</a></li><li><a href="#solution" data-target="solution">Solution</a><ul><li><a href="#full-script" data-target="full-script">Full Script</a></li></ul></li></ul></div><h1 id="challenge">Challenge</h1><blockquote><p>This is it. The last group test of the year. Dr. J patched his prng again so numbers won't repeat, so I guess Leaf won't get to know the group test pairs ahead of time... oh WEYL. Who knew middle square could make such a good prng?</p><p><code>nc shell.2019.nactf.com 31382</code></p></blockquote><p>We're also given the source of the running application:</p><pre style="background-color:#ffffff;">
 <code><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;stdio.h&gt;
 </span><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;stdint.h&gt;
 </span><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;sodium.h&gt;
@@ -203,10 +95,7 @@ uint64_t</span><span style="color:#323232;"> x </span><span style="font-weight:b
   }
   </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
 }
-</span></code></pre><span id="continue-reading"></span><h1 id="solution">Solution</h1>
-<p>This is solvable mathematically as the lower 32 bits of <code>x</code> are given after each iteration. However, I chose to use <code>z3</code> instead of solving this by hand.</p>
-<p>We only need to implement the <code>nextRand()</code> function in python because the internal state of the PRNG is only changed here:</p>
-<pre style="background-color:#ffffff;">
+</span></code></pre><span id="continue-reading"></span><h1 id="solution">Solution</h1><p>This is solvable mathematically as the lower 32 bits of <code>x</code> are given after each iteration. However, I chose to use <code>z3</code> instead of solving this by hand.</p><p>We only need to implement the <code>nextRand()</code> function in python because the internal state of the PRNG is only changed here:</p><pre style="background-color:#ffffff;">
 <code><span style="color:#323232;">so </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">Solver()
 
 x </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">BitVec(</span><span style="color:#183691;">&#39;x&#39;</span><span style="color:#323232;">, </span><span style="color:#0086b3;">64</span><span style="color:#323232;">)
@@ -221,9 +110,7 @@ w </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="col
     </span><span style="color:#323232;">x </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">x </span><span style="font-weight:bold;color:#a71d5d;">* </span><span style="color:#323232;">x </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#323232;">w
     x </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">LShR(x, </span><span style="color:#0086b3;">32</span><span style="color:#323232;">) </span><span style="font-weight:bold;color:#a71d5d;">| </span><span style="color:#323232;">(x </span><span style="font-weight:bold;color:#a71d5d;">&lt;&lt; </span><span style="color:#0086b3;">32</span><span style="color:#323232;">)  </span><span style="font-style:italic;color:#969896;"># x = b, a
     </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#323232;">Extract(</span><span style="color:#0086b3;">31</span><span style="color:#323232;">, </span><span style="color:#0086b3;">0</span><span style="color:#323232;">, URem(x, </span><span style="color:#0086b3;">1 </span><span style="font-weight:bold;color:#a71d5d;">&lt;&lt; </span><span style="color:#0086b3;">32</span><span style="color:#323232;">))
-</span></code></pre>
-<p>An important thing to note with <code>z3</code> is the python right shift operator (<code>&gt;&gt;</code>) acts as if the bit vector is signed. To treat the bit vector as unsigned, you need to use <code>LShR</code>. After implementing this function, we simply need to constrain the output of the function with <code>z3</code>:</p>
-<pre style="background-color:#ffffff;">
+</span></code></pre><p>An important thing to note with <code>z3</code> is the python right shift operator (<code>&gt;&gt;</code>) acts as if the bit vector is signed. To treat the bit vector as unsigned, you need to use <code>LShR</code>. After implementing this function, we simply need to constrain the output of the function with <code>z3</code>:</p><pre style="background-color:#ffffff;">
 <code><span style="color:#323232;">rand </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">[
     </span><span style="color:#0086b3;">3482268774</span><span style="color:#323232;">,
     </span><span style="color:#0086b3;">3733492975</span><span style="color:#323232;">,
@@ -240,17 +127,12 @@ w </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="col
 generated </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">[BitVecVal(x, </span><span style="color:#0086b3;">32</span><span style="color:#323232;">) </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">x </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#323232;">rand]
 </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">k </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#323232;">generated:
     so.add(nextRand() </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#323232;">k)
-</span></code></pre>
-<p>And finally, we can print out the produced model:</p>
-<pre style="background-color:#ffffff;">
+</span></code></pre><p>And finally, we can print out the produced model:</p><pre style="background-color:#ffffff;">
 <code><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">so.check() </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#323232;">sat:
     </span><span style="color:#62a35c;">print</span><span style="color:#323232;">(so.model())
 </span><span style="font-weight:bold;color:#a71d5d;">else</span><span style="color:#323232;">:
     </span><span style="color:#62a35c;">print</span><span style="color:#323232;">(</span><span style="color:#183691;">&#39;unsat&#39;</span><span style="color:#323232;">)
-</span></code></pre>
-<p>In testing, I found that this would not return the same initial <code>x</code> and <code>w</code> values, but the values produced by the PRNG were correct for at least the next 20 values. After we find the values of <code>x</code> and <code>w</code>, we can use those in the given source in the <code>init_seed()</code> function to get the next 10 numbers.</p>
-<h3 id="full-script">Full Script</h3>
-<pre style="background-color:#ffffff;">
+</span></code></pre><p>In testing, I found that this would not return the same initial <code>x</code> and <code>w</code> values, but the values produced by the PRNG were correct for at least the next 20 values. After we find the values of <code>x</code> and <code>w</code>, we can use those in the given source in the <code>init_seed()</code> function to get the next 10 numbers.</p><h3 id="full-script">Full Script</h3><pre style="background-color:#ffffff;">
 <code><span style="color:#323232;">
 </span><span style="font-weight:bold;color:#a71d5d;">from </span><span style="color:#323232;">z3 </span><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#0086b3;">*
 
@@ -292,27 +174,4 @@ generated </span><span style="font-weight:bold;color:#a71d5d;">= </span><span st
     </span><span style="color:#62a35c;">print</span><span style="color:#323232;">(so.model())
 </span><span style="font-weight:bold;color:#a71d5d;">else</span><span style="color:#323232;">:
     </span><span style="color:#62a35c;">print</span><span style="color:#323232;">(</span><span style="color:#183691;">&#39;unsat&#39;</span><span style="color:#323232;">)
-</span></code></pre>
-</div>
-
-
-</div>
-
-<script src="https://utteranc.es/client.js"
-        repo="srikavin/blog"
-        issue-term="url"
-        label="💬comments"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
-
-    </div>
-</section>
-
-<script src="/bundle.js"></script>
- 
-
-</body>
-
-</html>
+</span></code></pre></div></div><script src="https://utteranc.es/client.js" async crossorigin="anonymous" issue-term="url" label="💬comments" repo="srikavin/blog" theme="github-light"></script></div></section><script src="/bundle.js"></script></body></html>

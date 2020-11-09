@@ -188,7 +188,7 @@ small learning rate:&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# save the metrics
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;json.dump(metrics, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;open&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;metrics.json&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;w&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;model-performance&quot;&gt;Model Performance&lt;&#x2F;h2&gt;
-&lt;p&gt;&lt;object data=&quot;&#x2F;posts&#x2F;uiuctf20-solving-minecraft-captchas&#x2F;5f1c3dd5d7e47a02e27842c7.svg&quot; type=&quot;image&#x2F;svg+xml&quot;&gt;&lt;&#x2F;object&gt;&lt;&#x2F;p&gt;
+&lt;object data=&quot;&#x2F;posts&#x2F;uiuctf20-solving-minecraft-captchas&#x2F;5f1c3dd5d7e47a02e27842c7.svg&quot; type=&quot;image&#x2F;svg+xml&quot;&gt;&lt;&#x2F;object&gt;
 &lt;h1 id=&quot;interfacing-with-the-website&quot;&gt;Interfacing with the Website&lt;&#x2F;h1&gt;
 &lt;p&gt;Now that we have a working model, we just need to connect it to the challenge site. I used BeautifulSoup and requests to 
 parse the HTML to get the image and send the solved captcha:&lt;&#x2F;p&gt;

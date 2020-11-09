@@ -1,93 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     
-    <title>
-google-code-in - Tags
- - srikavin.me</title>
-    <link rel="stylesheet" href="/bundle.css">
-</head>
-
-<body>
-<nav>
-    <div class="nav-left">
-        <span>
-            <a href="https://srikavin.me" class="name">Srikavin Ramkumar</a>
-        </span>
-        <span>
-            <a href="/posts" class="nav-link">Posts</a>
-        </span>
-        <span>
-            <a class="nav-link" href="/tags">Tags</a>
-        </span>
-    </div>
-</nav>
-<section class="section">
-    <div class="container">
-        
-
-<div class="tags-content">
-    <h1>Posts tagged with <span class="tag minimal">google-code-in</span></h1>
-    
-<div class="blog-preview-list">
-    
-    <div class="blog-preview">
-        
-
-<div class="blog-header">
-    <h1 class="title">
-        
-        <a href="/posts/gci-exploiting-a-buffer-overflow-vulnerability/">GCI - Fedora Project - Exploiting a Buffer Overflow Vulnerability</a>
-        
-    </h1>
-    <div class="subtitle">
-                    <span>Posted on
-                        <span class="date" title="Created: 2019-12-15">December 15, 2019
-                        </span>
-
-                        in ctf-writeups
-                        
-                </span>
-    </div>
-    <div class="tags">
-        
-        
-        <a href="&#x2F;tags&#x2F;google-code-in&#x2F;"><span class="tag minimal interactive">google-code-in</span></a>
-        
-        
-        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
-        
-        
-        <a href="&#x2F;tags&#x2F;buffer-overflow&#x2F;"><span class="tag minimal interactive">buffer-overflow</span></a>
-        
-        
-        <a href="&#x2F;tags&#x2F;aslr&#x2F;"><span class="tag minimal interactive">aslr</span></a>
-        
-        
-        <a href="&#x2F;tags&#x2F;rce&#x2F;"><span class="tag minimal interactive">rce</span></a>
-        
-    </div>
-</div>
-
-<div class="blog-content">
-    <h1 id="challenge">Challenge</h1>
-<p>We are given a binary to exploit. By running <code>checksec</code> on it, we see that the binary has the following protections:
-[show-line-numbers]: false</p>
-<pre style="background-color:#ffffff;">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width,initial-scale=1" name="viewport"><title>google-code-in - Tags - srikavin.me</title><link href="/favicon.png" rel="icon"><link href="/bundle.css" rel="stylesheet"></head><body><nav><div class="nav-left"><span><a href="https://srikavin.me" class="name">Srikavin Ramkumar</a> </span><span><a href="/posts" class="nav-link">Posts</a> </span><span><a href="/tags" class="nav-link">Tags</a></span></div></nav><section class="section"><div class="container"><div class="tags-content"><h1>Posts tagged with <span class="minimal tag">google-code-in</span></h1><div class="blog-preview-list"><div class="blog-preview"><div class="blog-header"><h1 class="title"><a href="/posts/gci-exploiting-a-buffer-overflow-vulnerability/">GCI - Fedora Project - Exploiting a Buffer Overflow Vulnerability</a></h1><div class="subtitle"><span>Posted on <span class="date" title="Created: 2019-12-15">December 15, 2019 </span>in ctf-writeups</span></div><div class="tags"><a href="&#x2F;tags&#x2F;google-code-in&#x2F;"><span class="minimal tag interactive">google-code-in</span></a> <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="minimal tag interactive">binary-exploitation</span></a> <a href="&#x2F;tags&#x2F;buffer-overflow&#x2F;"><span class="minimal tag interactive">buffer-overflow</span></a> <a href="&#x2F;tags&#x2F;aslr&#x2F;"><span class="minimal tag interactive">aslr</span></a> <a href="&#x2F;tags&#x2F;rce&#x2F;"><span class="minimal tag interactive">rce</span></a></div></div><div class="blog-content"><h1 id="challenge">Challenge</h1><p>We are given a binary to exploit. By running <code>checksec</code> on it, we see that the binary has the following protections: [show-line-numbers]: false</p><pre style="background-color:#ffffff;">
 <code><span style="color:#323232;">Canary                        : No
 NX                            : Yes
 PIE                           : Yes
 Fortify                       : No
 RelRO                         : Partial
-</span></code></pre>
-<p>Because the binary has NX, we cannot place executable shell code in a buffer and then jump to it. PIE allows the code 
-section of the binary to be located anywhere in memory. This means that we don't know the address of functions within 
-the binary; however, we still know relative offsets.</p>
-<h2 id="reverse-engineering">Reverse Engineering</h2>
-<pre style="background-color:#ffffff;">
+</span></code></pre><p>Because the binary has NX, we cannot place executable shell code in a buffer and then jump to it. PIE allows the code section of the binary to be located anywhere in memory. This means that we don't know the address of functions within the binary; however, we still know relative offsets.</p><h2 id="reverse-engineering">Reverse Engineering</h2><pre style="background-color:#ffffff;">
 <code><span style="color:#323232;">Dump of assembler code for function main:
    0x0000000000001145 &lt;+0&gt;:     push   rbp                                  # Setup Stack
    0x0000000000001146 &lt;+1&gt;:     mov    rbp,rsp                              
@@ -108,23 +25,4 @@ the binary; however, we still know relative offsets.</p>
    0x0000000000001191 &lt;+76&gt;:    leave                                       
    0x0000000000001192 &lt;+77&gt;:    ret                                         
 End of assembler dump.
-</span></code></pre>
-</div>
-
-        <a class="blog-preview-continue-reading" href="/posts/gci-exploiting-a-buffer-overflow-vulnerability/">Continue Reading</a>
-    </div>
-    
-</div>
-
-</div>
-
-
-    </div>
-</section>
-
-<script src="/bundle.js"></script>
- 
-
-</body>
-
-</html>
+</span></code></pre></div><a href="/posts/gci-exploiting-a-buffer-overflow-vulnerability/" class="blog-preview-continue-reading">Continue Reading</a></div></div></div></div></section><script src="/bundle.js"></script></body></html>

