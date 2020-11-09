@@ -4,12 +4,12 @@
 	<link href="/tags/neural-networks/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
-	<updated>2020-07-25T00:00:00+00:00</updated>
+	<updated>2020-11-09T00:00:00+00:00</updated>
 	<id>/tags/neural-networks/atom.xml</id>
 	<entry xml:lang="en">
 		<title>Solving Minecraft Captchas with Neural Networks</title>
 		<published>2020-07-25T00:00:00+00:00</published>
-		<updated>2020-07-25T00:00:00+00:00</updated>
+		<updated>2020-11-09T00:00:00+00:00</updated>
 		<link href="/posts/uiuctf20-solving-minecraft-captchas/" type="text/html"/>
 		<id>/posts/uiuctf20-solving-minecraft-captchas/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -251,7 +251,7 @@ s &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&g
 
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;We can run this script, and after 3-4 minutes, we get the flag:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;uiuctf20-solving-minecraft-captchas&#x2F;5f1c4565d7e47a02e27842d4&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;uiuctf20-solving-minecraft-captchas&#x2F;flag.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;complete-source-code-and-trained-models&quot;&gt;Complete Source Code and Trained Models&lt;&#x2F;h1&gt;
 &lt;p&gt;Available &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;srikavin&#x2F;ctf-writeups&#x2F;tree&#x2F;master&#x2F;uiuctf2020&#x2F;Bot%20Protection%20IV&quot;&gt;here&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;references&quot;&gt;References&lt;&#x2F;h1&gt;
