@@ -1,6 +1,7 @@
 +++
 title = "Solving Minecraft Captchas with Neural Networks"
 date = 2020-07-25
+updated = 2020-11-09
 aliases = ["/posts/5f1c3dfcd7e47a02e27842ca-solving-minecraft-captchas-with-neural-networks"]
 [taxonomies]
 tags = ["uiuctf20", "machine-learning", "neural-networks"]
@@ -294,7 +295,7 @@ while True:
 
 We can run this script, and after 3-4 minutes, we get the flag:
 
-![](5f1c4565d7e47a02e27842d4)
+![](flag.png)
 
 # Complete Source Code and Trained Models
 
