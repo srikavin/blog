@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     
+    <title>
+format-string - Tags
+ - srikavin.me</title>
+    <link rel="stylesheet" href="/bundle.css">
+</head>
+
+<body>
+<nav>
+    <div class="nav-left">
+        <span>
+            <a href="https://srikavin.me" class="name">Srikavin Ramkumar</a>
+        </span>
+        <span>
+            <a href="/posts" class="nav-link">Posts</a>
+        </span>
+        <span>
+            <a class="nav-link" href="/tags">Tags</a>
+        </span>
+    </div>
+</nav>
+<section class="section">
+    <div class="container">
+        
+
+<div class="tags-content">
+    <h1>Posts tagged with <span class="tag minimal">format-string</span></h1>
+    
+<div class="blog-preview-list">
+    
+    <div class="blog-preview">
+        
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        <a href="/posts/nactf-2019-loopy-0/">nactf 2019 - Loopy #0</a>
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2019-09-22T20:39:04.285Z&#10;Updated: 2019-11-24T03:53:01.555Z">September 22, 2019*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;nactf2019&#x2F;"><span class="tag minimal interactive">nactf2019</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="tag minimal interactive">pwntools</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;format-string&#x2F;"><span class="tag minimal interactive">format-string</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;return-oriented-programming&#x2F;"><span class="tag minimal interactive">return-oriented-programming</span></a>
+        
+    </div>
+</div>
+
+<div class="blog-content">
+    <h1 id="challenge">Challenge</h1>
+<blockquote>
+<p>This program is quite short, but has got <code>printf</code> and <code>gets</code> in it! This shouldn't be too hard, right?</p>
+<p>Connect at <code>nc shell.2019.nactf.com 31283</code></p>
+</blockquote>
+<p>We are given the libc used, the binary, and the source code.</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;stdio.h&gt;
+
+</span><span style="font-weight:bold;color:#a71d5d;">void </span><span style="font-weight:bold;color:#795da3;">vuln</span><span style="color:#323232;">()
+{
+	</span><span style="font-weight:bold;color:#a71d5d;">char</span><span style="color:#323232;"> buf[</span><span style="color:#0086b3;">64</span><span style="color:#323232;">];
+	</span><span style="color:#62a35c;">fputs</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Type something&gt;&quot;</span><span style="color:#323232;">, stdout);
+	</span><span style="color:#62a35c;">gets</span><span style="color:#323232;">(buf);
+	</span><span style="color:#62a35c;">fputs</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;You typed: &quot;</span><span style="color:#323232;">, stdout);
+	</span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(buf);
+}
+
+</span><span style="font-weight:bold;color:#a71d5d;">int </span><span style="font-weight:bold;color:#795da3;">main</span><span style="color:#323232;">()
+{
+	</span><span style="font-style:italic;color:#969896;">/* Disable buffering on stdout */
+	</span><span style="color:#62a35c;">setvbuf</span><span style="color:#323232;">(stdout, </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, _IONBF, </span><span style="color:#0086b3;">0</span><span style="color:#323232;">);
+
+	vuln();
+
+	</span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+}
+</span></code></pre>
+</div>
+
+        <a class="blog-preview-continue-reading" href="/posts/nactf-2019-loopy-0/">Continue Reading</a>
+    </div>
+    
+</div>
+
+</div>
+
+
+    </div>
+</section>
+
+<script src="/bundle.js"></script>
+ 
+
+</body>
+
+</html>

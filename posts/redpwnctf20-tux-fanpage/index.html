@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+<meta content="redpwnCTF - tux fanpage" property="og:title"/>
+<meta content="article" property="og:type"/>
+<meta content="2020-06-25" property="og:published_time"/>
+<meta content="Srikavin Ramkumar" property="og:author"/>
+<meta content="ctf-writeups" property="og:section"/>
+<meta content="redpwnctf20" property="og:tag"/>
+<meta content="web" property="og:tag"/>
+<meta content="local-file-inclusion" property="og:tag"/>
+<meta content="/posts/redpwnctf20-tux-fanpage/" property="og:url"/>
+
+    <title>redpwnCTF - tux fanpage - srikavin.me</title>
+    <link rel="stylesheet" href="/bundle.css">
+</head>
+
+<body>
+<nav>
+    <div class="nav-left">
+        <span>
+            <a href="https://srikavin.me" class="name">Srikavin Ramkumar</a>
+        </span>
+        <span>
+            <a href="/posts" class="nav-link">Posts</a>
+        </span>
+        <span>
+            <a class="nav-link" href="/tags">Tags</a>
+        </span>
+    </div>
+</nav>
+<section class="section">
+    <div class="container">
+        
+
+<div class="blog-container">
+    
+
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        redpwnCTF - tux fanpage
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2020-06-25">June 25, 2020
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;redpwnctf20&#x2F;"><span class="tag minimal interactive">redpwnctf20</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;web&#x2F;"><span class="tag minimal interactive">web</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;local-file-inclusion&#x2F;"><span class="tag minimal interactive">local-file-inclusion</span></a>
+        
+    </div>
+</div>
+
+
+<div class="blog-content light">
+    <div class="blog-scrollspy">
+        <h1 class="scrollspy-label">Table of Contents</h1>
+        <ul>
+            
+            <li>
+                <a data-target="challenge" href="#challenge">Challenge</a>
+                
+            </li>
+            
+            <li>
+                <a data-target="local-file-inclusion" href="#local-file-inclusion">Local File Inclusion</a>
+                
+                <ul>
+                    
+                    <li>
+                        <a data-target="express-js-query-parsing" href="#express-js-query-parsing">Express.js Query Parsing</a>
+                        
+                        <ul>
+                            
+                            <li>
+                                <a data-target="nested-arrays" href="#nested-arrays">Nested Arrays</a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </li>
+                    
+                </ul>
+                
+            </li>
+            
+        </ul>
+    </div>
+
+    <h1 id="challenge">Challenge</h1>
+<blockquote>
+<p>My friend made a fanpage for Tux; can you steal the source code for me?</p>
+<p>Site: <a href="http://tux-fanpage.2020.redpwnc.tf">tux-fanpage.2020.redpwnc.tf</a></p>
+</blockquote>
+<p>We're also given the source code:</p>
+<span id="continue-reading"></span><div >
+    <script src="https:&#x2F;&#x2F;gist.github.com&#x2F;srikavin&#x2F;88989ab1c98ab52f94c86593e3d30b5a.js"></script>
+</div>
+<h1 id="local-file-inclusion">Local File Inclusion</h1>
+<p>When we open the site we're greeted by a wonderfully-designed site. The URL also includes a path parameter: <code>https://tux-fanpage.2020.redpwnc.tf/page?path=index.html</code>. Looking at the source code shows us that the path is used to load a file from the file system after a series of checks:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-style:italic;color:#969896;">//Prevent directory traversal attack
+</span><span style="font-weight:bold;color:#a71d5d;">function </span><span style="font-weight:bold;color:#795da3;">preventTraversal</span><span style="color:#323232;">(dir){
+    </span><span style="font-weight:bold;color:#a71d5d;">if</span><span style="color:#323232;">(dir.includes(</span><span style="color:#183691;">&#39;../&#39;</span><span style="color:#323232;">)){
+        </span><span style="font-weight:bold;color:#a71d5d;">let </span><span style="color:#323232;">res </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">dir.replace(</span><span style="color:#183691;">&#39;../&#39;</span><span style="color:#323232;">, </span><span style="color:#183691;">&#39;&#39;</span><span style="color:#323232;">)
+        </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#323232;">preventTraversal(res)
+    }
+
+    </span><span style="font-style:italic;color:#969896;">//In case people want to test locally on windows
+    </span><span style="font-weight:bold;color:#a71d5d;">if</span><span style="color:#323232;">(dir.includes(</span><span style="color:#183691;">&#39;..</span><span style="color:#0086b3;">\\</span><span style="color:#183691;">&#39;</span><span style="color:#323232;">)){
+        </span><span style="font-weight:bold;color:#a71d5d;">let </span><span style="color:#323232;">res </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">dir.replace(</span><span style="color:#183691;">&#39;..</span><span style="color:#0086b3;">\\</span><span style="color:#183691;">&#39;</span><span style="color:#323232;">, </span><span style="color:#183691;">&#39;&#39;</span><span style="color:#323232;">)
+        </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#323232;">preventTraversal(res)
+    }
+    </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#323232;">dir
+}
+
+</span><span style="font-style:italic;color:#969896;">//Get absolute path from relative path
+</span><span style="font-weight:bold;color:#a71d5d;">function </span><span style="font-weight:bold;color:#795da3;">prepare</span><span style="color:#323232;">(dir){
+    </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#323232;">path.resolve(</span><span style="color:#183691;">&#39;./public/&#39; </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#323232;">dir)
+}
+
+</span><span style="font-style:italic;color:#969896;">//Strip leading characters
+</span><span style="font-weight:bold;color:#a71d5d;">function </span><span style="font-weight:bold;color:#795da3;">strip</span><span style="color:#323232;">(dir){
+    </span><span style="font-weight:bold;color:#a71d5d;">const </span><span style="color:#323232;">regex </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#183691;">/</span><span style="font-weight:bold;color:#a71d5d;">^</span><span style="color:#0086b3;">[a-z0-9]</span><span style="font-weight:bold;color:#a71d5d;">$</span><span style="color:#183691;">/</span><span style="font-weight:bold;color:#a71d5d;">im
+
+    </span><span style="font-style:italic;color:#969896;">//Remove first character if not alphanumeric
+    </span><span style="font-weight:bold;color:#a71d5d;">if</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">regex.test(dir[</span><span style="color:#0086b3;">0</span><span style="color:#323232;">])){
+        </span><span style="font-weight:bold;color:#a71d5d;">if</span><span style="color:#323232;">(dir.length </span><span style="font-weight:bold;color:#a71d5d;">&gt; </span><span style="color:#0086b3;">0</span><span style="color:#323232;">){
+            </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#323232;">strip(dir.slice(</span><span style="color:#0086b3;">1</span><span style="color:#323232;">))
+        }
+        </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#183691;">&#39;&#39;
+    </span><span style="color:#323232;">}
+
+    </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#323232;">dir
+}
+</span></code></pre>
+<p>There's no clear way to bypass these checks. </p>
+<h2 id="express-js-query-parsing">Express.js Query Parsing</h2>
+<p>Express, <a href="https://expressjs.com/en/api.html#app.settings.table">by default</a>, uses the npm package <a href="https://www.npmjs.com/package/qs"><code>qs</code></a> to decode query parameters. </p>
+<p>qs can parse certain query parameters into strings and objects. However, the parameters we choose need to pass the validation. Using an object fails when reaching <code>preventTraversal</code> because <code>includes</code> is not a function on objects. Using an array works, but <code>../</code> is still removed from the array in <code>preventTraversal</code></p>
+<h3 id="nested-arrays">Nested Arrays</h3>
+<p>Using a nested array bypasses the 'includes<code>check because a string cannot equal an array (even in Javascript). This leads to the final solution:</code>https://tux-fanpage.2020.redpwnc.tf/page?path[0]=a&amp;path[1][1]=../../../index.js`, and we find the flag:</p>
+<p><code>flag{tr4v3rsal_Tim3}</code></p>
+
+</div>
+
+
+</div>
+
+<script src="https://utteranc.es/client.js"
+        repo="srikavin/blog"
+        issue-term="url"
+        label="💬comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+    </div>
+</section>
+
+<script src="/bundle.js"></script>
+ 
+
+</body>
+
+</html>

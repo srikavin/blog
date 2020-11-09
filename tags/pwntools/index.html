@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     
+    <title>
+pwntools - Tags
+ - srikavin.me</title>
+    <link rel="stylesheet" href="/bundle.css">
+</head>
+
+<body>
+<nav>
+    <div class="nav-left">
+        <span>
+            <a href="https://srikavin.me" class="name">Srikavin Ramkumar</a>
+        </span>
+        <span>
+            <a href="/posts" class="nav-link">Posts</a>
+        </span>
+        <span>
+            <a class="nav-link" href="/tags">Tags</a>
+        </span>
+    </div>
+</nav>
+<section class="section">
+    <div class="container">
+        
+
+<div class="tags-content">
+    <h1>Posts tagged with <span class="tag minimal">pwntools</span></h1>
+    
+<div class="blog-preview-list">
+    
+    <div class="blog-preview">
+        
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        <a href="/posts/pwnable-tw-applestore/">pwnable.tw - applestore</a>
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2020-08-27&#10;Updated: 2020-11-06">August 27, 2020*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;pwnable-tw&#x2F;"><span class="tag minimal interactive">pwnable.tw</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="tag minimal interactive">pwntools</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;rce&#x2F;"><span class="tag minimal interactive">rce</span></a>
+        
+    </div>
+</div>
+
+<div class="blog-content">
+    <h1 id="challenge">Challenge</h1>
+<blockquote>
+<p>tomcr00se rooted the galaxy S5, but we need you to jailbreak the iPhone8!</p>
+<p>nc chall.pwnable.tw 10104</p>
+</blockquote>
+<p>We're also given a <a href="https://pwnable.tw/static/chall/applestore">binary</a> and 
+<a href="https://pwnable.tw/static/libc/libc_32.so.6">libc</a> shared executable.</p>
+<h1 id="reversing">Reversing</h1>
+<p>When reversing binaries, I usually run the binary and compare its execution alongside the disassemby+pseudocode. 
+When we run the given binary, we're greeted by a menu with 6 options:</p>
+
+</div>
+
+        <a class="blog-preview-continue-reading" href="/posts/pwnable-tw-applestore/">Continue Reading</a>
+    </div>
+    
+    <div class="blog-preview">
+        
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        <a href="/posts/pwnable-kr-toddler-s-bottle/">pwnable.kr - Toddler&#x27;s Bottle</a>
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2020-04-27T12:59:37.396Z&#10;Updated: 2020-04-27T13:02:48.347Z">April 27, 2020*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;pwnable-kr&#x2F;"><span class="tag minimal interactive">pwnable.kr</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;buffer-overflow&#x2F;"><span class="tag minimal interactive">buffer-overflow</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="tag minimal interactive">pwntools</span></a>
+        
+    </div>
+</div>
+
+<div class="blog-content">
+    <h1 id="fd-1pt">fd - 1pt</h1>
+<h2 id="challenge">Challenge</h2>
+<blockquote>
+<p>Mommy! what is a file descriptor in Linux?</p>
+<p>ssh fd@pwnable.kr -p2222 (pw:guest)</p>
+</blockquote>
+<h2 id="source-code">Source Code</h2>
+<p>After ssh-ing into the server with the given details, we can view the source code of the challenge by running <code>cat fd.c</code>:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;stdio.h&gt;
+</span><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;stdlib.h&gt;
+</span><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;string.h&gt;
+</span><span style="font-weight:bold;color:#a71d5d;">char</span><span style="color:#323232;"> buf[</span><span style="color:#0086b3;">32</span><span style="color:#323232;">];
+</span><span style="font-weight:bold;color:#a71d5d;">int </span><span style="font-weight:bold;color:#795da3;">main</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">int </span><span style="color:#323232;">argc, </span><span style="font-weight:bold;color:#a71d5d;">char* </span><span style="color:#323232;">argv[], </span><span style="font-weight:bold;color:#a71d5d;">char* </span><span style="color:#323232;">envp[]){
+        </span><span style="font-weight:bold;color:#a71d5d;">if</span><span style="color:#323232;">(argc</span><span style="font-weight:bold;color:#a71d5d;">&lt;</span><span style="color:#0086b3;">2</span><span style="color:#323232;">){
+                </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;pass argv[1] a number</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">);
+                </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+        }
+        </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> fd </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">atoi</span><span style="color:#323232;">( argv[</span><span style="color:#0086b3;">1</span><span style="color:#323232;">] ) </span><span style="font-weight:bold;color:#a71d5d;">- </span><span style="color:#0086b3;">0x1234</span><span style="color:#323232;">;
+        </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> len </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+        len </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">read(fd, buf, </span><span style="color:#0086b3;">32</span><span style="color:#323232;">);
+        </span><span style="font-weight:bold;color:#a71d5d;">if</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#62a35c;">strcmp</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;LETMEWIN</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">, buf)){
+                </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;good job :)</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">);
+                </span><span style="color:#62a35c;">system</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;/bin/cat flag&quot;</span><span style="color:#323232;">);
+                </span><span style="color:#62a35c;">exit</span><span style="color:#323232;">(</span><span style="color:#0086b3;">0</span><span style="color:#323232;">);
+        }
+        </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;learn about Linux file IO</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">);
+        </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+}
+</span></code></pre>
+</div>
+
+        <a class="blog-preview-continue-reading" href="/posts/pwnable-kr-toddler-s-bottle/">Continue Reading</a>
+    </div>
+    
+    <div class="blog-preview">
+        
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        <a href="/posts/pwnable-tw-seethefile/">pwnable.tw - seethefile</a>
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2020-03-29T01:23:36.608Z&#10;Updated: 2020-03-30T08:23:31.139Z">March 29, 2020*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;pwnable-tw&#x2F;"><span class="tag minimal interactive">pwnable.tw</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;file-stream-oriented-programming&#x2F;"><span class="tag minimal interactive">file-stream-oriented-programming</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="tag minimal interactive">pwntools</span></a>
+        
+    </div>
+</div>
+
+<div class="blog-content">
+    <h1 id="challenge">Challenge</h1>
+<blockquote>
+<p>Can you see anything?</p>
+<p>Get a shell for me.</p>
+<p><code>nc chall.pwnable.tw 10200</code></p>
+<p><a href="https://pwnable.tw/static/chall/seethefile">seethefile</a></p>
+<p><a href="https://pwnable.tw/static/libc/libc_32.so.6">libc.so</a></p>
+</blockquote>
+<h1 id="background">Background</h1>
+<h2 id="io-file-plus">_IO_FILE_plus</h2>
+<p>Files are internally represented using the <a href="https://elixir.bootlin.com/glibc/glibc-2.23/source/libio/libioP.h#L342"><code>_IO_FILE_plus</code></a> struct in glibc:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">struct </span><span style="color:#323232;">_IO_FILE_plus
+{
+  _IO_FILE file;
+  </span><span style="font-weight:bold;color:#a71d5d;">const struct </span><span style="color:#323232;">_IO_jump_t *vtable;
+};
+</span></code></pre>
+</div>
+
+        <a class="blog-preview-continue-reading" href="/posts/pwnable-tw-seethefile/">Continue Reading</a>
+    </div>
+    
+    <div class="blog-preview">
+        
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        <a href="/posts/pwnable-tw-tcache-tear/">pwnable.tw - Tcache Tear</a>
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2020-02-23T07:19:49.665Z&#10;Updated: 2020-03-02T18:52:31.838Z">February 23, 2020*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;pwnable-tw&#x2F;"><span class="tag minimal interactive">pwnable.tw</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;heap-exploitation&#x2F;"><span class="tag minimal interactive">heap-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="tag minimal interactive">pwntools</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;double-free&#x2F;"><span class="tag minimal interactive">double-free</span></a>
+        
+    </div>
+</div>
+
+<div class="blog-content">
+    <h1 id="challenge">Challenge</h1>
+<blockquote>
+<p>Make tcache great again !</p>
+<p><code>nc chall.pwnable.tw 10207</code></p>
+<p><a href="https://pwnable.tw/static/chall/tcache_tear">tcache_tear</a></p>
+<p><a href="https://pwnable.tw/static/libc/libc-18292bd12d37bfaf58e8dded9db7f1f5da1192cb.so">libc.so</a></p>
+</blockquote>
+<h1 id="background">Background</h1>
+<p>Per-thread cache (tcache) is an optimization enabled in versions of <code>libc</code> after 2.26. To increase heap performance, 
+security checks are limited within the tcache implementation. Tcache is implemented using two important internal structures:</p>
+
+</div>
+
+        <a class="blog-preview-continue-reading" href="/posts/pwnable-tw-tcache-tear/">Continue Reading</a>
+    </div>
+    
+    <div class="blog-preview">
+        
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        <a href="/posts/pwnable-tw-silver-bullet/">pwnable.tw - silver bullet</a>
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2020-02-01T22:31:07.835Z&#10;Updated: 2020-02-04T19:12:43.206Z">February  1, 2020*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;pwnable-tw&#x2F;"><span class="tag minimal interactive">pwnable.tw</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;return-oriented-programming&#x2F;"><span class="tag minimal interactive">return-oriented-programming</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="tag minimal interactive">pwntools</span></a>
+        
+    </div>
+</div>
+
+<div class="blog-content">
+    <h1 id="challenge">Challenge</h1>
+<blockquote>
+<p>Please kill the werewolf with silver bullet!</p>
+<p><code>nc chall.pwnable.tw 10103</code></p>
+</blockquote>
+<p>We are also provided a binary and the libc used on the server.</p>
+<h1 id="solution">Solution</h1>
+<p>When running the binary, we can see that we have four options:</p>
+<p><img src="/posts/pwnable-tw-silver-bullet/5d0810548487900bf40e47d5.png" alt="" /></p>
+<p>The provided binary was not stripped, so reversing was easy with Ghidra.</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">void </span><span style="font-weight:bold;color:#795da3;">create_bullet</span><span style="color:#323232;">(bullet </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">bullet)
+{
+  </span><span style="color:#0086b3;">size_t</span><span style="color:#323232;"> size;
+  
+  </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(bullet-&gt;description[</span><span style="color:#0086b3;">0</span><span style="color:#323232;">] </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#183691;">&#39;</span><span style="color:#0086b3;">\0</span><span style="color:#183691;">&#39;</span><span style="color:#323232;">) {
+    </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Give me your description of bullet :&quot;</span><span style="color:#323232;">,</span><span style="color:#0086b3;">0</span><span style="color:#323232;">);
+    read_input((</span><span style="font-weight:bold;color:#a71d5d;">char *</span><span style="color:#323232;">)bullet,</span><span style="color:#0086b3;">0x30</span><span style="color:#323232;">);
+    size </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">strlen</span><span style="color:#323232;">((</span><span style="font-weight:bold;color:#a71d5d;">char *</span><span style="color:#323232;">)bullet);
+    </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Your power is : </span><span style="color:#0086b3;">%u\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">,size);
+    bullet-&gt;power </span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#323232;"> size;
+    </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Good luck !!&quot;</span><span style="color:#323232;">);
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">else </span><span style="color:#323232;">{
+    </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;You have been created the Bullet !&quot;</span><span style="color:#323232;">);
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">return</span><span style="color:#323232;">;
+}
+</span></code></pre>
+</div>
+
+        <a class="blog-preview-continue-reading" href="/posts/pwnable-tw-silver-bullet/">Continue Reading</a>
+    </div>
+    
+    <div class="blog-preview">
+        
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        <a href="/posts/pwnable-tw-hacknote/">pwnable.tw - hacknote</a>
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2020-01-12T19:40:43.176Z&#10;Updated: 2020-03-23T05:57:18.669Z">January 12, 2020*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;pwnable-tw&#x2F;"><span class="tag minimal interactive">pwnable.tw</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;heap-exploitation&#x2F;"><span class="tag minimal interactive">heap-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;use-after-free&#x2F;"><span class="tag minimal interactive">use-after-free</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="tag minimal interactive">pwntools</span></a>
+        
+    </div>
+</div>
+
+<div class="blog-content">
+    <h1 id="challenge">Challenge</h1>
+<blockquote>
+<p>A good Hacker should always take good notes!</p>
+<p><code>nc chall.pwnable.tw 10102</code></p>
+</blockquote>
+<p>We are also provided a binary and the libc used on the server.</p>
+<h1 id="solution">Solution</h1>
+<p>When running the binary, we can see four options:</p>
+<p><img src="/posts/pwnable-tw-hacknote/5d07df70508cb0091260f634.png" alt="" /></p>
+<h2 id="understanding-the-binary">Understanding the binary</h2>
+<p>When reversing the binary, we can use the shown options to help identify functions used. I reversed the binary in Ghidra, 
+and the following are the cleaned up decompilation output from the binary.</p>
+
+</div>
+
+        <a class="blog-preview-continue-reading" href="/posts/pwnable-tw-hacknote/">Continue Reading</a>
+    </div>
+    
+    <div class="blog-preview">
+        
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        <a href="/posts/pwnable-tw-start/">pwnable.tw - start</a>
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2019-11-22T18:30:01.515Z&#10;Updated: 2019-11-23T19:32:29.189Z">November 22, 2019*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;pwnable-tw&#x2F;"><span class="tag minimal interactive">pwnable.tw</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="tag minimal interactive">pwntools</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;shellcode&#x2F;"><span class="tag minimal interactive">shellcode</span></a>
+        
+    </div>
+</div>
+
+<div class="blog-content">
+    <p>We are given a linux binary. To start off, lets run <code>checksec</code> on it:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">Arch:     i386-32-little
+RELRO:    No RELRO
+Stack:    No canary found
+NX:       NX disabled
+PIE:      No PIE (0x8048000)
+</span></code></pre>
+<p>It looks like NX is disabled, so if needed, we can place and execute shell code from the stack. To understand how this 
+binary works, I opened it with <code>Ghidra</code>. There are only two functions, <code>_entry</code> and <code>_exit</code>. Let's look at <code>_entry</code> first. 
+Although the decompilation is mostly useless, the disassembly is more than enough.</p>
+<p><img src="/posts/pwnable-tw-start/5cff109009821b08235e212a.png" alt="" /></p>
+<p>We can see two <code>int 0x80</code>s that are syscalls. Looking at the value of <code>eax</code> and by referencing a 
+<a href="https://www.informatik.htw-dresden.de/%7Ebeck/ASM/syscall_list.html">32-bit syscall table</a>, we can identify them. The 
+reversed syscalls are shown in comments in the above screenshot. It's also clear that we control <code>EIP</code> due to the large 
+<code> read</code> syscall that will overflow into the save return address on the stack.</p>
+<p>As we saw earlier, the <code>NX</code> bit is disabled, so we can jump to our shellcode. To do so, we need to leak a stack address 
+to identify where to jump to. Using <a href="https://github.com/pwndbg/pwndbg">pwndbg</a>, it's easy to watch the stack during 
+execution.</p>
+
+</div>
+
+        <a class="blog-preview-continue-reading" href="/posts/pwnable-tw-start/">Continue Reading</a>
+    </div>
+    
+    <div class="blog-preview">
+        
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        <a href="/posts/nactf-2019-loopy-0/">nactf 2019 - Loopy #0</a>
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2019-09-22T20:39:04.285Z&#10;Updated: 2019-11-24T03:53:01.555Z">September 22, 2019*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;nactf2019&#x2F;"><span class="tag minimal interactive">nactf2019</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="tag minimal interactive">pwntools</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;format-string&#x2F;"><span class="tag minimal interactive">format-string</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;return-oriented-programming&#x2F;"><span class="tag minimal interactive">return-oriented-programming</span></a>
+        
+    </div>
+</div>
+
+<div class="blog-content">
+    <h1 id="challenge">Challenge</h1>
+<blockquote>
+<p>This program is quite short, but has got <code>printf</code> and <code>gets</code> in it! This shouldn't be too hard, right?</p>
+<p>Connect at <code>nc shell.2019.nactf.com 31283</code></p>
+</blockquote>
+<p>We are given the libc used, the binary, and the source code.</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;stdio.h&gt;
+
+</span><span style="font-weight:bold;color:#a71d5d;">void </span><span style="font-weight:bold;color:#795da3;">vuln</span><span style="color:#323232;">()
+{
+	</span><span style="font-weight:bold;color:#a71d5d;">char</span><span style="color:#323232;"> buf[</span><span style="color:#0086b3;">64</span><span style="color:#323232;">];
+	</span><span style="color:#62a35c;">fputs</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Type something&gt;&quot;</span><span style="color:#323232;">, stdout);
+	</span><span style="color:#62a35c;">gets</span><span style="color:#323232;">(buf);
+	</span><span style="color:#62a35c;">fputs</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;You typed: &quot;</span><span style="color:#323232;">, stdout);
+	</span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(buf);
+}
+
+</span><span style="font-weight:bold;color:#a71d5d;">int </span><span style="font-weight:bold;color:#795da3;">main</span><span style="color:#323232;">()
+{
+	</span><span style="font-style:italic;color:#969896;">/* Disable buffering on stdout */
+	</span><span style="color:#62a35c;">setvbuf</span><span style="color:#323232;">(stdout, </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, _IONBF, </span><span style="color:#0086b3;">0</span><span style="color:#323232;">);
+
+	vuln();
+
+	</span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+}
+</span></code></pre>
+</div>
+
+        <a class="blog-preview-continue-reading" href="/posts/nactf-2019-loopy-0/">Continue Reading</a>
+    </div>
+    
+    <div class="blog-preview">
+        
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        <a href="/posts/pwnable-tw-orw/">pwnable.tw - orw</a>
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2019-06-11T19:45:48.202Z&#10;Updated: 2019-09-15T19:37:08.225Z">June 11, 2019*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;pwnable-tw&#x2F;"><span class="tag minimal interactive">pwnable.tw</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="tag minimal interactive">pwntools</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;assembly&#x2F;"><span class="tag minimal interactive">assembly</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;shellcode&#x2F;"><span class="tag minimal interactive">shellcode</span></a>
+        
+    </div>
+</div>
+
+<div class="blog-content">
+    <h1 id="challenge">Challenge</h1>
+<blockquote>
+<p>Read the flag from <code>/home/orw/flag</code>.</p>
+<p>Only open read write syscall are allowed to use.</p>
+<p><code>nc chall.pwnable.tw 10001</code></p>
+</blockquote>
+<h1 id="solution">Solution</h1>
+<p>The binary simply reads in 200 bytes and then jumps to its address, after using <code>prctl</code> to prevent calling <code>execve</code>:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">int </span><span style="font-weight:bold;color:#795da3;">main</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">void</span><span style="color:#323232;">) {
+  orw_seccomp();
+  </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Give my your shellcode:&quot;</span><span style="color:#323232;">);
+  read(</span><span style="color:#0086b3;">0</span><span style="color:#323232;">,shellcode,</span><span style="color:#0086b3;">200</span><span style="color:#323232;">);
+  (</span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">(code </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">)shellcode)();
+  </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+}
+</span></code></pre>
+<p>By using <code>strace</code>, we see that <code>orw_seccomp</code> calls <code>prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, {len = 12, filter = 0x400000020})</code>.<br />
+Based on this and the challenge description, it is clear that we cannot use a <code>execve</code> shell code like in the 
+<a href="https://srikavin.me/blog/posts/5cfff3292569df08a43d04cc-pwnabletw-start">previous challenge</a>.</p>
+<p>To assemble shellcode, I used an <a href="https://defuse.ca/online-x86-assembler.htm">online x86 assembler</a> rather than setting 
+up nasm. We know that the flag is located in <code>/home/orw/flag</code>. Our shellcode needs to accomplish the following:</p>
+
+</div>
+
+        <a class="blog-preview-continue-reading" href="/posts/pwnable-tw-orw/">Continue Reading</a>
+    </div>
+    
+</div>
+
+</div>
+
+
+    </div>
+</section>
+
+<script src="/bundle.js"></script>
+ 
+
+</body>
+
+</html>

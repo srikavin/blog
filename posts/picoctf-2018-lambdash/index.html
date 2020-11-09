@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+<meta content="picoCTF 2018 - Lambdash" property="og:title"/>
+<meta content="article" property="og:type"/>
+<meta content="2018-10-18T14:08:16.365Z" property="og:published_time"/>
+<meta content="2019-02-09T07:15:03.393Z" property="og:modified_time"/>
+<meta content="Srikavin Ramkumar" property="og:author"/>
+<meta content="ctf-writeups" property="og:section"/>
+<meta content="picoctf18" property="og:tag"/>
+<meta content="web" property="og:tag"/>
+<meta content="/posts/picoctf-2018-lambdash/" property="og:url"/>
+
+    <title>picoCTF 2018 - Lambdash - srikavin.me</title>
+    <link rel="stylesheet" href="/bundle.css">
+</head>
+
+<body>
+<nav>
+    <div class="nav-left">
+        <span>
+            <a href="https://srikavin.me" class="name">Srikavin Ramkumar</a>
+        </span>
+        <span>
+            <a href="/posts" class="nav-link">Posts</a>
+        </span>
+        <span>
+            <a class="nav-link" href="/tags">Tags</a>
+        </span>
+    </div>
+</nav>
+<section class="section">
+    <div class="container">
+        
+
+<div class="blog-container">
+    
+
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        picoCTF 2018 - Lambdash
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2018-10-18T14:08:16.365Z&#10;Updated: 2019-02-09T07:15:03.393Z">October 18, 2018*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;picoctf18&#x2F;"><span class="tag minimal interactive">picoctf18</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;web&#x2F;"><span class="tag minimal interactive">web</span></a>
+        
+    </div>
+</div>
+
+
+<div class="blog-content light">
+    <div class="blog-scrollspy">
+        <h1 class="scrollspy-label">Table of Contents</h1>
+        <ul>
+            
+            <li>
+                <a data-target="problem" href="#problem">Problem</a>
+                
+            </li>
+            
+            <li>
+                <a data-target="solution" href="#solution">Solution</a>
+                
+            </li>
+            
+        </ul>
+    </div>
+
+    <h1 id="problem">Problem</h1>
+<blockquote>
+<p>C? Who uses that anymore. If we really want to be secure, we should all start learning lambda calculus. http://2018shell2.picoctf.com:41367</p>
+</blockquote>
+<h1 id="solution">Solution</h1>
+<p>An extremely large payload to the interpreter results in an <code>node.js</code> error message</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">PayloadTooLargeError: request entity too large
+    at readStream (/problems/lambdash-3_0_867a993b23b277b2e144cc3e2d73f6e4/node_modules/raw-body/index.js:155:17)
+    at getRawBody (/problems/lambdash-3_0_867a993b23b277b2e144cc3e2d73f6e4/node_modules/raw-body/index.js:108:12)
+    at read (/problems/lambdash-3_0_867a993b23b277b2e144cc3e2d73f6e4/node_modules/body-parser/lib/read.js:77:3)
+    at urlencodedParser (/problems/lambdash-3_0_867a993b23b277b2e144cc3e2d73f6e4/node_modules/body-parser/lib/types/urlencoded.js:116:5)
+    at Layer.handle [as handle_request] (/problems/lambdash-3_0_867a993b23b277b2e144cc3e2d73f6e4/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/problems/lambdash-3_0_867a993b23b277b2e144cc3e2d73f6e4/node_modules/express/lib/router/index.js:317:13)
+    at /problems/lambdash-3_0_867a993b23b277b2e144cc3e2d73f6e4/node_modules/express/lib/router/index.js:284:7
+    at Function.process_params (/problems/lambdash-3_0_867a993b23b277b2e144cc3e2d73f6e4/node_modules/express/lib/router/index.js:335:12)
+    at next (/problems/lambdash-3_0_867a993b23b277b2e144cc3e2d73f6e4/node_modules/express/lib/router/index.js:275:10)
+    at expressInit (/problems/lambdash-3_0_867a993b23b277b2e144cc3e2d73f6e4/node_modules/express/lib/middleware/init.js:40:5)
+</span></code></pre><span id="continue-reading"></span>
+<p>We can access <code>/problems/lambdash-3_0_867a993b23b277b2e144cc3e2d73f6e4</code> through the shell server. After looking through 
+the source code, we can see multiple <code>console.log</code> statements. I thought that these would likely be saved somewhere. After 
+running <code>top</code> on the shell server, I found that there were multiple instances of lambdash running. After cding to the home 
+directory, there is a hidden directory named <code>.forever</code>. Inside, there are multiple log files. Grepping these for <code>picoCTF</code> 
+gives us the flag: <code>picoCTF{1_white_lie_and_your_proto_gets_pwnd_4679389f}</code></p>
+
+</div>
+
+
+</div>
+
+<script src="https://utteranc.es/client.js"
+        repo="srikavin/blog"
+        issue-term="url"
+        label="💬comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+    </div>
+</section>
+
+<script src="/bundle.js"></script>
+ 
+
+</body>
+
+</html>

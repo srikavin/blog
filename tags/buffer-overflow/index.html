@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     
+    <title>
+buffer-overflow - Tags
+ - srikavin.me</title>
+    <link rel="stylesheet" href="/bundle.css">
+</head>
+
+<body>
+<nav>
+    <div class="nav-left">
+        <span>
+            <a href="https://srikavin.me" class="name">Srikavin Ramkumar</a>
+        </span>
+        <span>
+            <a href="/posts" class="nav-link">Posts</a>
+        </span>
+        <span>
+            <a class="nav-link" href="/tags">Tags</a>
+        </span>
+    </div>
+</nav>
+<section class="section">
+    <div class="container">
+        
+
+<div class="tags-content">
+    <h1>Posts tagged with <span class="tag minimal">buffer-overflow</span></h1>
+    
+<div class="blog-preview-list">
+    
+    <div class="blog-preview">
+        
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        <a href="/posts/pwnable-kr-toddler-s-bottle/">pwnable.kr - Toddler&#x27;s Bottle</a>
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2020-04-27T12:59:37.396Z&#10;Updated: 2020-04-27T13:02:48.347Z">April 27, 2020*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;pwnable-kr&#x2F;"><span class="tag minimal interactive">pwnable.kr</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;buffer-overflow&#x2F;"><span class="tag minimal interactive">buffer-overflow</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="tag minimal interactive">pwntools</span></a>
+        
+    </div>
+</div>
+
+<div class="blog-content">
+    <h1 id="fd-1pt">fd - 1pt</h1>
+<h2 id="challenge">Challenge</h2>
+<blockquote>
+<p>Mommy! what is a file descriptor in Linux?</p>
+<p>ssh fd@pwnable.kr -p2222 (pw:guest)</p>
+</blockquote>
+<h2 id="source-code">Source Code</h2>
+<p>After ssh-ing into the server with the given details, we can view the source code of the challenge by running <code>cat fd.c</code>:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;stdio.h&gt;
+</span><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;stdlib.h&gt;
+</span><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;string.h&gt;
+</span><span style="font-weight:bold;color:#a71d5d;">char</span><span style="color:#323232;"> buf[</span><span style="color:#0086b3;">32</span><span style="color:#323232;">];
+</span><span style="font-weight:bold;color:#a71d5d;">int </span><span style="font-weight:bold;color:#795da3;">main</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">int </span><span style="color:#323232;">argc, </span><span style="font-weight:bold;color:#a71d5d;">char* </span><span style="color:#323232;">argv[], </span><span style="font-weight:bold;color:#a71d5d;">char* </span><span style="color:#323232;">envp[]){
+        </span><span style="font-weight:bold;color:#a71d5d;">if</span><span style="color:#323232;">(argc</span><span style="font-weight:bold;color:#a71d5d;">&lt;</span><span style="color:#0086b3;">2</span><span style="color:#323232;">){
+                </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;pass argv[1] a number</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">);
+                </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+        }
+        </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> fd </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">atoi</span><span style="color:#323232;">( argv[</span><span style="color:#0086b3;">1</span><span style="color:#323232;">] ) </span><span style="font-weight:bold;color:#a71d5d;">- </span><span style="color:#0086b3;">0x1234</span><span style="color:#323232;">;
+        </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> len </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+        len </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">read(fd, buf, </span><span style="color:#0086b3;">32</span><span style="color:#323232;">);
+        </span><span style="font-weight:bold;color:#a71d5d;">if</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#62a35c;">strcmp</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;LETMEWIN</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">, buf)){
+                </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;good job :)</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">);
+                </span><span style="color:#62a35c;">system</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;/bin/cat flag&quot;</span><span style="color:#323232;">);
+                </span><span style="color:#62a35c;">exit</span><span style="color:#323232;">(</span><span style="color:#0086b3;">0</span><span style="color:#323232;">);
+        }
+        </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;learn about Linux file IO</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">);
+        </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+}
+</span></code></pre>
+</div>
+
+        <a class="blog-preview-continue-reading" href="/posts/pwnable-kr-toddler-s-bottle/">Continue Reading</a>
+    </div>
+    
+    <div class="blog-preview">
+        
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        <a href="/posts/gci-exploiting-a-buffer-overflow-vulnerability/">GCI - Fedora Project - Exploiting a Buffer Overflow Vulnerability</a>
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2019-12-15">December 15, 2019
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;google-code-in&#x2F;"><span class="tag minimal interactive">google-code-in</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;buffer-overflow&#x2F;"><span class="tag minimal interactive">buffer-overflow</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;aslr&#x2F;"><span class="tag minimal interactive">aslr</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;rce&#x2F;"><span class="tag minimal interactive">rce</span></a>
+        
+    </div>
+</div>
+
+<div class="blog-content">
+    <h1 id="challenge">Challenge</h1>
+<p>We are given a binary to exploit. By running <code>checksec</code> on it, we see that the binary has the following protections:
+[show-line-numbers]: false</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">Canary                        : No
+NX                            : Yes
+PIE                           : Yes
+Fortify                       : No
+RelRO                         : Partial
+</span></code></pre>
+<p>Because the binary has NX, we cannot place executable shell code in a buffer and then jump to it. PIE allows the code 
+section of the binary to be located anywhere in memory. This means that we don't know the address of functions within 
+the binary; however, we still know relative offsets.</p>
+<h2 id="reverse-engineering">Reverse Engineering</h2>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">Dump of assembler code for function main:
+   0x0000000000001145 &lt;+0&gt;:     push   rbp                                  # Setup Stack
+   0x0000000000001146 &lt;+1&gt;:     mov    rbp,rsp                              
+   0x0000000000001149 &lt;+4&gt;:     sub    rsp,0x110                            # Allocate 0x110 bytes on stack
+   0x0000000000001150 &lt;+11&gt;:    mov    DWORD PTR [rbp-0x104],edi            # Copies edi into stack offset 0x104
+   0x0000000000001156 &lt;+17&gt;:    mov    QWORD PTR [rbp-0x110],rsi            # Copies rsi into stack offset 0x110
+   0x000000000000115d &lt;+24&gt;:    mov    rax,QWORD PTR [rbp-0x110]            # Copies value of pointer into rax
+   0x0000000000001164 &lt;+31&gt;:    add    rax,0x8                              # Adds size_t
+   0x0000000000001168 &lt;+35&gt;:    mov    rdx,QWORD PTR [rax]                  # Copies the value of the pointer [rax + 8] into rdx
+   0x000000000000116b &lt;+38&gt;:    lea    rax,[rbp-0x100]                      # Loads the address of [rbp - 0x100] into rax
+   0x0000000000001172 &lt;+45&gt;:    mov    rsi,rdx                              # rsi = rdx
+   0x0000000000001175 &lt;+48&gt;:    mov    rdi,rax                              # rdi = rax
+   0x0000000000001178 &lt;+51&gt;:    call   0x1030 &lt;strcpy@plt&gt;                  # Calls strcpy(rsi, rdi) ; strcpy ([rbp - 0x100], argv[1])
+   0x000000000000117d &lt;+56&gt;:    lea    rax,[rbp-0x100]                      # Loads address of [rbp-0x100] into rax
+   0x0000000000001184 &lt;+63&gt;:    mov    rdi,rax                              # rdi = rax
+   0x0000000000001187 &lt;+66&gt;:    call   0x1040 &lt;puts@plt&gt;                    # puts(rdi)
+   0x000000000000118c &lt;+71&gt;:    mov    eax,0x0                              # return 0
+   0x0000000000001191 &lt;+76&gt;:    leave                                       
+   0x0000000000001192 &lt;+77&gt;:    ret                                         
+End of assembler dump.
+</span></code></pre>
+</div>
+
+        <a class="blog-preview-continue-reading" href="/posts/gci-exploiting-a-buffer-overflow-vulnerability/">Continue Reading</a>
+    </div>
+    
+</div>
+
+</div>
+
+
+    </div>
+</section>
+
+<script src="/bundle.js"></script>
+ 
+
+</body>
+
+</html>

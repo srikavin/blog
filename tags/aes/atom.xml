@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title> - aes</title>
+	<link href="/tags/aes/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="/"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2018-12-28T23:10:12.884+00:00</updated>
+	<id>/tags/aes/atom.xml</id>
+	<entry xml:lang="en">
+		<title>picoCTF 2018 - eleCTRic</title>
+		<published>2018-10-13T02:36:19.176+00:00</published>
+		<updated>2018-12-28T23:10:12.884+00:00</updated>
+		<link href="/posts/picoctf-2018-electric/" type="text/html"/>
+		<id>/posts/picoctf-2018-electric/</id>
+		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;quot;You came across a custom server that Dr Xernon&#x27;s company eleCTRic Ltd uses. It seems to be storing some encrypted files. Connect with &lt;code&gt;nc 2018shell2.picoctf.com 15037&lt;&#x2F;code&gt;. Can you get us the flag?&amp;quot; &lt;a href=&quot;https:&#x2F;&#x2F;2018shell2.picoctf.com&#x2F;static&#x2F;61d78e61c2bd099775499bba7edc1d62&#x2F;eleCTRic.py&quot;&gt;Source&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h1 id=&quot;solution&quot;&gt;Solution&lt;&#x2F;h1&gt;
+&lt;p&gt;The title makes a clear reference to &lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Block_cipher_mode_of_operation#Counter_(CTR)&quot;&gt;AES-CTR&lt;&#x2F;a&gt;. 
+We can see that this mode of AES requires a unique nonce for each encrypted value to remain cryptographically secure. 
+If we look at the problem&#x27;s source code, we can see that the counter remains constant for all values. 
+This breaks the encryption used and we are able to reveal the keystream and encrypt arbritary data.&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;AESCipher&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;object&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;):
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#62a35c;&quot;&gt;__init__&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(self):
+        self.bs &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;32
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;random &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;Random.new()
+        self.key &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;random.read(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;AES&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;.block_size)
+        self.ctr &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;random.read(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;AES&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;.block_size)
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;encrypt&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(self, raw):
+        cipher &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;AES.new(self.key, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;AES&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;MODE_CTR&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, counter&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=lambda&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;: self.ctr)
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;cipher.encrypt(raw).encode(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;base64&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;).replace(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-electric&#x2F;5bc12eb5b7c5001b74f57e49.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;AES-CTR simply XORS the plaintext with the keystream (a value derived from the key and the counter).&lt;&#x2F;p&gt;
+&lt;p&gt;To understand the exploit, it is important to know the following XOR rules (where ⊕ indicates XOR):
+$$
+a \oplus a = 0 \
+a \oplus b = b \oplus a \
+(a \oplus b) \oplus c = (c \oplus b) \oplus a
+$$&lt;&#x2F;p&gt;
+&lt;p&gt;AES-CTR can be understood as the following, where F is some deterministic function:&lt;&#x2F;p&gt;
+&lt;p&gt;$$
+C = P \oplus F(key, nonce)
+$$ &lt;&#x2F;p&gt;
+&lt;p&gt;Given the following:
+$$
+P_1 = \text{plaintext 1} \
+C_1 = \text{ciphertext 1} \
+P_2 = \text{ciphertext 2}
+$$
+It is possible to find $C_2$.&lt;&#x2F;p&gt;
+&lt;p&gt;$$
+C_1=P_1 \oplus F(key, nonce)\
+$$
+We can rearrange the equation to the following:
+$$
+C_1 \oplus P_1 = F(key, nonce)
+$$
+Then we can subsitute $C_1 \oplus P_1$ for $F(key, nonce)$
+$$
+C_2 = P_2 \oplus F(key,nonce)\
+C_2 = P_2 \oplus C_1 \oplus P_1
+$$&lt;&#x2F;p&gt;
+&lt;p&gt;We are able to arbitrarily encrypt any data we want if we have two cipher texts with the same nonce.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;solve-script&quot;&gt;Solve Script&lt;&#x2F;h2&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;base64 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;b64decode, b64encode
+
+flag_file &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# The value to encrypt
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;known_plaintext &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;ABCDEFGHABCDEFGHABCDEFGHABCD&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;.txt&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;known_cipher_b64 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;d8bImO+u0C2MOOfGkfdOoHfGyJjvrtAtjDjnxvrFcZw=&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# The encrypted version of known_plaintext
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;known_cipher &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;b64decode(known_cipher_b64)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;known_cipher length &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;% &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(known_cipher))
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;#Encryption and decryption are symmetric operations; encrypting a ciphertext will reveal its value
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;encrypt&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(key, plaintext):
+    ret &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;bytearray&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;()
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(plaintext)):
+        ret.append(key[i&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;%&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(key)] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;^ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;ord&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(plaintext[i]))
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ret
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;#Calculate the key-stream from the known cipher and the known plaintext
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;key &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;bytearray&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;()
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;32&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;):
+    key.append(known_cipher[i] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;^ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;ord&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(known_plaintext[i]))
+
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;key &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;% &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;key)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;key length &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;% &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(key))
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;#Verify the encryption remains the same for the known_plaintext
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(b64encode(encrypt(key, known_plaintext)))
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;#Print actual encrypted text
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(b64encode(encrypt(key, flag_file)))
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;</content>
+	</entry>
+</feed>

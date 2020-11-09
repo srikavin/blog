@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+<meta content="ångstromCTF - LeetTube" property="og:title"/>
+<meta content="article" property="og:type"/>
+<meta content="2020-03-18T23:36:12.437Z" property="og:published_time"/>
+<meta content="2020-03-29T02:10:25.394Z" property="og:modified_time"/>
+<meta content="Srikavin Ramkumar" property="og:author"/>
+<meta content="ctf-writeups" property="og:section"/>
+<meta content="angstromctf2020" property="og:tag"/>
+<meta content="web" property="og:tag"/>
+<meta content="local-file-inclusion" property="og:tag"/>
+<meta content="/posts/angstromctf-leettube/" property="og:url"/>
+
+    <title>ångstromCTF - LeetTube - srikavin.me</title>
+    <link rel="stylesheet" href="/bundle.css">
+</head>
+
+<body>
+<nav>
+    <div class="nav-left">
+        <span>
+            <a href="https://srikavin.me" class="name">Srikavin Ramkumar</a>
+        </span>
+        <span>
+            <a href="/posts" class="nav-link">Posts</a>
+        </span>
+        <span>
+            <a class="nav-link" href="/tags">Tags</a>
+        </span>
+    </div>
+</nav>
+<section class="section">
+    <div class="container">
+        
+
+<div class="blog-container">
+    
+
+
+<div class="blog-header">
+    <h1 class="title">
+        
+        ångstromCTF - LeetTube
+        
+    </h1>
+    <div class="subtitle">
+                    <span>Posted on
+                        <span class="date" title="Created: 2020-03-18T23:36:12.437Z&#10;Updated: 2020-03-29T02:10:25.394Z">March 18, 2020*
+                        </span>
+
+                        in ctf-writeups
+                        
+                </span>
+    </div>
+    <div class="tags">
+        
+        
+        <a href="&#x2F;tags&#x2F;angstromctf2020&#x2F;"><span class="tag minimal interactive">angstromctf2020</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;web&#x2F;"><span class="tag minimal interactive">web</span></a>
+        
+        
+        <a href="&#x2F;tags&#x2F;local-file-inclusion&#x2F;"><span class="tag minimal interactive">local-file-inclusion</span></a>
+        
+    </div>
+</div>
+
+
+<div class="blog-content light">
+    <div class="blog-scrollspy">
+        <h1 class="scrollspy-label">Table of Contents</h1>
+        <ul>
+            
+            <li>
+                <a data-target="challenge" href="#challenge">Challenge</a>
+                
+                <ul>
+                    
+                    <li>
+                        <a data-target="local-file-inclusion" href="#local-file-inclusion">Local File Inclusion?</a>
+                        
+                        <ul>
+                            
+                            <li>
+                                <a data-target="bypassing-nginx-waf" href="#bypassing-nginx-waf">Bypassing Nginx WAF</a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="leettube-more-like-leaktube" href="#leettube-more-like-leaktube">LeetTube? More like LeakTube</a>
+                        
+                    </li>
+                    
+                    <li>
+                        <a data-target="finding-the-flag" href="#finding-the-flag">Finding the Flag</a>
+                        
+                    </li>
+                    
+                </ul>
+                
+            </li>
+            
+        </ul>
+    </div>
+
+    <h1 id="challenge">Challenge</h1>
+<blockquote>
+<p>I developed a new video streaming service just for hackers. Learn all about viruses, IP addresses, and more on 
+<a href="https://leettube.2020.chall.actf.co/">LeetTube</a>! Here's the <a href="https://files.actf.co/5fb7188c18fde9206e4a43f5c817b4a9db6ee784366b65033904a2538d0d1782/leettube.py">source code</a> 
+and the <a href="https://files.actf.co/929adf47a8fe915cc89618c9f4ec38068cc08525087171832cdd3c9c3f6db897/Dockerfile">Dockerfile</a>.</p>
+<p>Note: the server is also running behind NGINX.</p>
+</blockquote>
+<p><img src="/posts/angstromctf-leettube/5e72b03ad6d41508cf61f794.png" alt="" /></p>
+<p>The application is simple enough--It serves videos and has both public and unlisted videos. 
+The Dockerfile uses <code>FROM kmh11/python3.1</code>, which is weird because <a href="https://www.python.org/download/releases/3.1/">Python 3.1</a> 
+was released nearly 11 years ago.  To ensure the name wasn't misleading, I ended up verifying the Python binary in the 
+docker image, but I didn't find any related vulnerabilities. However, there is a noticeable vulnerability in how paths 
+are handled.</p>
+<span id="continue-reading"></span><pre style="background-color:#ffffff;">
+<code><span style="font-style:italic;color:#969896;">#!/usr/bin/env python
+</span><span style="font-weight:bold;color:#a71d5d;">from </span><span style="color:#323232;">http.server </span><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#323232;">HTTPServer, BaseHTTPRequestHandler
+</span><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#323232;">urllib.parse
+</span><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#323232;">os
+
+videos </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">[]
+</span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">file </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#323232;">os.listdir(</span><span style="color:#183691;">&#39;videos&#39;</span><span style="color:#323232;">):
+	os.chmod(</span><span style="color:#183691;">&#39;videos/&#39;</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#323232;">file, </span><span style="color:#0086b3;">0o600</span><span style="color:#323232;">)
+	videos.append({</span><span style="color:#183691;">&#39;title&#39;</span><span style="color:#323232;">: file.split(</span><span style="color:#183691;">&#39;.&#39;</span><span style="color:#323232;">)[</span><span style="color:#0086b3;">0</span><span style="color:#323232;">], </span><span style="color:#183691;">&#39;path&#39;</span><span style="color:#323232;">: </span><span style="color:#183691;">&#39;videos/&#39;</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#323232;">file, </span><span style="color:#183691;">&#39;content&#39;</span><span style="color:#323232;">: </span><span style="color:#62a35c;">open</span><span style="color:#323232;">(</span><span style="color:#183691;">&#39;videos/&#39;</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#323232;">file, </span><span style="color:#183691;">&#39;rb&#39;</span><span style="color:#323232;">).read()})
+published </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">[]
+</span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">video </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#323232;">videos:
+	</span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">video[</span><span style="color:#183691;">&#39;title&#39;</span><span style="color:#323232;">].startswith(</span><span style="color:#183691;">&#39;UNPUBLISHED&#39;</span><span style="color:#323232;">): os.chmod(video[</span><span style="color:#183691;">&#39;path&#39;</span><span style="color:#323232;">], </span><span style="color:#0086b3;">0</span><span style="color:#323232;">) </span><span style="font-style:italic;color:#969896;"># make sure you can&#39;t just guess the filename
+	</span><span style="font-weight:bold;color:#a71d5d;">else</span><span style="color:#323232;">: published.append(video)
+
+</span><span style="font-weight:bold;color:#a71d5d;">class </span><span style="color:#0086b3;">RequestHandler</span><span style="color:#323232;">(</span><span style="color:#0086b3;">BaseHTTPRequestHandler</span><span style="color:#323232;">):
+	</span><span style="font-weight:bold;color:#a71d5d;">def </span><span style="font-weight:bold;color:#323232;">do_GET</span><span style="color:#323232;">(self):
+		</span><span style="font-weight:bold;color:#a71d5d;">try</span><span style="color:#323232;">:
+			self.path </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">urllib.parse.unquote(self.path)
+			</span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">self.path.startswith(</span><span style="color:#183691;">&#39;/videos/&#39;</span><span style="color:#323232;">):
+				file </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">os.path.abspath(</span><span style="color:#183691;">&#39;.&#39;</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#323232;">self.path)
+				</span><span style="font-weight:bold;color:#a71d5d;">try</span><span style="color:#323232;">: video </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#62a35c;">open</span><span style="color:#323232;">(file, </span><span style="color:#183691;">&#39;rb&#39;</span><span style="color:#323232;">, </span><span style="color:#0086b3;">0</span><span style="color:#323232;">)
+				</span><span style="font-weight:bold;color:#a71d5d;">except </span><span style="color:#0086b3;">OSError</span><span style="color:#323232;">:
+					self.send_response(</span><span style="color:#0086b3;">404</span><span style="color:#323232;">)
+					self.end_headers()
+					</span><span style="font-weight:bold;color:#a71d5d;">return
+				</span><span style="color:#323232;">reqrange </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">self.headers.get(</span><span style="color:#183691;">&#39;Range&#39;</span><span style="color:#323232;">, </span><span style="color:#183691;">&#39;bytes 0-&#39;</span><span style="color:#323232;">)
+				ranges </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">list</span><span style="color:#323232;">(</span><span style="color:#0086b3;">int</span><span style="color:#323232;">(i) </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">i </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#323232;">reqrange[</span><span style="color:#0086b3;">6</span><span style="color:#323232;">:].split(</span><span style="color:#183691;">&#39;-&#39;</span><span style="color:#323232;">) </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">i)
+				</span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#62a35c;">len</span><span style="color:#323232;">(ranges) </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#0086b3;">1</span><span style="color:#323232;">: ranges.append(ranges[</span><span style="color:#0086b3;">0</span><span style="color:#323232;">]</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#0086b3;">65536</span><span style="color:#323232;">)
+				</span><span style="font-weight:bold;color:#a71d5d;">try</span><span style="color:#323232;">:
+					video.seek(ranges[</span><span style="color:#0086b3;">0</span><span style="color:#323232;">])
+					content </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">video.read(ranges[</span><span style="color:#0086b3;">1</span><span style="color:#323232;">]</span><span style="font-weight:bold;color:#a71d5d;">-</span><span style="color:#323232;">ranges[</span><span style="color:#0086b3;">0</span><span style="color:#323232;">]</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#0086b3;">1</span><span style="color:#323232;">)
+				</span><span style="font-weight:bold;color:#a71d5d;">except</span><span style="color:#323232;">:
+					self.send_response(</span><span style="color:#0086b3;">404</span><span style="color:#323232;">)
+					self.end_headers()
+					</span><span style="font-weight:bold;color:#a71d5d;">return
+				</span><span style="color:#323232;">self.send_response(</span><span style="color:#0086b3;">206</span><span style="color:#323232;">)
+				self.send_header(</span><span style="color:#183691;">&#39;Accept-Ranges&#39;</span><span style="color:#323232;">, </span><span style="color:#183691;">&#39;bytes&#39;</span><span style="color:#323232;">)
+				self.send_header(</span><span style="color:#183691;">&#39;Content-Type&#39;</span><span style="color:#323232;">, </span><span style="color:#183691;">&#39;video/mp4&#39;</span><span style="color:#323232;">)
+				self.send_header(</span><span style="color:#183691;">&#39;Content-Range&#39;</span><span style="color:#323232;">, </span><span style="color:#183691;">&#39;bytes &#39;</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#0086b3;">str</span><span style="color:#323232;">(ranges[</span><span style="color:#0086b3;">0</span><span style="color:#323232;">])</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#183691;">&#39;-&#39;</span><span style="font-weight:bold;color:#a71d5d;">+
+					</span><span style="color:#0086b3;">str</span><span style="color:#323232;">(ranges[</span><span style="color:#0086b3;">0</span><span style="color:#323232;">]</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#62a35c;">len</span><span style="color:#323232;">(content)</span><span style="font-weight:bold;color:#a71d5d;">-</span><span style="color:#0086b3;">1</span><span style="color:#323232;">)</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#183691;">&#39;/&#39;</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#0086b3;">str</span><span style="color:#323232;">(os.path.getsize(file)))
+				self.end_headers()
+				self.wfile.write(content)
+			</span><span style="font-weight:bold;color:#a71d5d;">elif </span><span style="color:#323232;">self.path </span><span style="font-weight:bold;color:#a71d5d;">== </span><span style="color:#183691;">&#39;/&#39;</span><span style="color:#323232;">:
+				self.send_response(</span><span style="color:#0086b3;">200</span><span style="color:#323232;">)
+				self.send_header(</span><span style="color:#183691;">&#39;Content-Type&#39;</span><span style="color:#323232;">, </span><span style="color:#183691;">&#39;text/html&#39;</span><span style="color:#323232;">)
+				self.end_headers()
+				self.wfile.write((</span><span style="color:#183691;">&quot;&quot;&quot;
+&lt;style&gt;
+body {
+	background-color: black;
+	color: #00e33d;
+	font-family: monospace;
+	max-width: 30em;
+	font-size: 1.5em;
+	margin: 2em auto;
+}
+&lt;/style&gt;
+&lt;h1&gt;LeetTube&lt;/h1&gt;
+&lt;p&gt;There are &lt;strong&gt;&quot;&quot;&quot;</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#0086b3;">str</span><span style="color:#323232;">(</span><span style="color:#62a35c;">len</span><span style="color:#323232;">(published))</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#183691;">&quot;&lt;/strong&gt; published video&quot;</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#323232;">(</span><span style="color:#183691;">&#39;s&#39; </span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#62a35c;">len</span><span style="color:#323232;">(published) </span><span style="font-weight:bold;color:#a71d5d;">&gt; </span><span style="color:#0086b3;">1 </span><span style="font-weight:bold;color:#a71d5d;">else </span><span style="color:#183691;">&#39;&#39;</span><span style="color:#323232;">)</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#183691;">&quot; and </span><span style="background-color:#f5f5f5;font-weight:bold;color:#b52a1d;">
+</span><span style="font-weight:bold;color:#a71d5d;">&lt;</span><span style="color:#323232;">strong</span><span style="font-weight:bold;color:#a71d5d;">&gt;</span><span style="color:#183691;">&quot;+str(len(videos)-len(published))+&quot;</span><span style="font-weight:bold;color:#a71d5d;">&lt;/</span><span style="color:#323232;">strong</span><span style="font-weight:bold;color:#a71d5d;">&gt; </span><span style="color:#323232;">unpublished video</span><span style="color:#183691;">&quot;+(&#39;s&#39; if len(videos)-len(published) &gt; 1 else </span><span style="background-color:#f5f5f5;font-weight:bold;color:#b52a1d;">
+</span><span style="color:#183691;">&#39;&#39;</span><span style="color:#323232;">)</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#183691;">&quot;.&lt;/p&gt;&quot;</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#183691;">&#39;&#39;</span><span style="color:#323232;">.join(</span><span style="color:#183691;">&quot;&lt;h2&gt;&quot;</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#323232;">video[</span><span style="color:#183691;">&quot;title&quot;</span><span style="color:#323232;">]</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#183691;">&quot;&lt;/h2&gt;&lt;video controls src=</span><span style="color:#0086b3;">\&quot;</span><span style="color:#183691;">&quot;</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#323232;">video[</span><span style="color:#183691;">&quot;path&quot;</span><span style="color:#323232;">]</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#183691;">&quot;</span><span style="color:#0086b3;">\&quot;</span><span style="color:#183691;">&gt;&lt;/video&gt;&quot; </span><span style="font-weight:bold;color:#a71d5d;">for </span><span style="color:#323232;">video </span><span style="font-weight:bold;color:#a71d5d;">in </span><span style="color:#323232;">published))
+.encode(</span><span style="color:#183691;">&#39;utf-8&#39;</span><span style="color:#323232;">)</span><span style="background-color:#f5f5f5;font-weight:bold;color:#b52a1d;">)</span><span style="color:#323232;">
+			</span><span style="font-weight:bold;color:#a71d5d;">else</span><span style="color:#323232;">:
+				self.send_response(</span><span style="color:#0086b3;">404</span><span style="color:#323232;">)
+				self.end_headers()
+		</span><span style="font-weight:bold;color:#a71d5d;">except</span><span style="color:#323232;">:
+			self.send_response(</span><span style="color:#0086b3;">500</span><span style="color:#323232;">)
+			self.end_headers()
+
+httpd </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">HTTPServer((</span><span style="color:#183691;">&#39;&#39;</span><span style="color:#323232;">, </span><span style="color:#0086b3;">8000</span><span style="color:#323232;">), RequestHandler)
+httpd.serve_forever()
+</span></code></pre><h2 id="local-file-inclusion">Local File Inclusion?</h2>
+<p>It adds the user-supplied path to the base path:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">self.path </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">urllib.parse.unquote(self.path)
+</span><span style="font-weight:bold;color:#a71d5d;">if </span><span style="color:#323232;">self.path.startswith(</span><span style="color:#183691;">&#39;/videos/&#39;</span><span style="color:#323232;">):
+	file </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">os.path.abspath(</span><span style="color:#183691;">&#39;.&#39;</span><span style="font-weight:bold;color:#a71d5d;">+</span><span style="color:#323232;">self.path)
+</span></code></pre>
+<p>This means if we send <code>/videos/../../../etc/passwd</code>, we should receive the passwd file.</p>
+<h3 id="bypassing-nginx-waf">Bypassing Nginx WAF</h3>
+<p>Unfortunately, Nginx blocks the request:</p>
+<p><img src="/posts/angstromctf-leettube/5e72b1a3d6d41508cf61f797.png" alt="" /></p>
+<p>My team was stuck at this point for nearly an entire day. After reading the 
+<a href="https://docs.python.org/3/library/http.server.html">documentation</a> for <code>BaseHTTPRequestHandler</code>, I realized that it 
+didn't have a <code>query</code> variable. This meant that <code>self.path</code> included the query parameters. However, this application did 
+not process the query string. </p>
+<p>This means we can do the following: <code>https://leettube.2020.chall.actf.co/videos/../?/../../</code>. Nginx will treat the last 
+two <code>../</code>s as part of the query parameter, while LeetTube will happily include it into the path and resolve the path 
+to <code>./../</code>.</p>
+<h2 id="leettube-more-like-leaktube">LeetTube? More like LeakTube</h2>
+<p>We don't know the name of the flag, and even if we did, we can't read it directly due to the <code>chmod</code> at the beginning of 
+the script. An interesting target is <code>/proc/self/</code>. We initially tried to read files from <code>/proc/self/fd</code>, but we didn't 
+receive any output. </p>
+<p>The psuedofile <code>/proc/self/mem</code> contains the memory of the calling program. Luckily, we can seek into the file at an 
+arbitrary location using the <code>Range</code> header. By reading <code>/proc/self/maps</code>, we can find the address of the Python heap:</p>
+<p><img src="/posts/angstromctf-leettube/5e72b392d6d41508cf61f799.png" alt="" /></p>
+<p>In the Python heap, only UTF-8 strings containing the name of the loaded files were present. From here, we decided to 
+dump other areas of the Python process's memory. We found the contents of the video files in an anonymous memory page:</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#323232;">curl --path-as-is &#39;https://leettube.2020.chall.actf.co/videos/../?/../../proc/self/mem&#39; -H &quot;Range: bytes $(python3 -c &#39;print(f&quot;{0x7f4d4c225000}-{0x7f4d4cae6000}&quot;)&#39;)&quot; --output memory.dump
+</span></code></pre><h2 id="finding-the-flag">Finding the Flag</h2>
+<p>We're looking for the <code>.mp4</code> file containing the flag. The MP4 header is <code> 66 74 79 70</code> at offset <code>4</code>. From this we can 
+search for these characters and extract the file. We get a video with the flag:</p>
+<p><img src="/posts/angstromctf-leettube/5e72b4d1d6d41508cf61f79b.png" alt="" /></p>
+
+</div>
+
+
+</div>
+
+<script src="https://utteranc.es/client.js"
+        repo="srikavin/blog"
+        issue-term="url"
+        label="💬comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+    </div>
+</section>
+
+<script src="/bundle.js"></script>
+ 
+
+</body>
+
+</html>

