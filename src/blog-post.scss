@@ -50,23 +50,6 @@
   background: #c6d0d9;
 }
 
-.blog-content {
-  h1, h2, h3 {
-    margin-left: -22px;
-  }
-}
-
-h1 .permalink, h2 .permalink, h3 .permalink {
-  display: inline-block;
-  visibility: hidden;
-  width: 22px;
-  margin: 0;
-}
-
-h1:hover .permalink, h2:hover .permalink, h3:hover, .permalink {
-  visibility: visible;
-}
-
 .blog-container {
   max-width: 850px;
   width: 60vw;
@@ -92,8 +75,17 @@ h1:hover .permalink, h2:hover .permalink, h3:hover, .permalink {
   margin-left: 50%;
   transform: translateX(-50%);
   min-width: 100%;
+  border-radius: 2px;
+  border-width: 1px;
+  border-style: solid;
 }
 
+.blog-content :not(pre) > code {
+  border-radius: 4px;
+  border-width: 1px;
+  border-style: solid;
+  padding: 1px 4px;
+}
 
 .blog-content.light blockquote {
   border-left-width: 2px;

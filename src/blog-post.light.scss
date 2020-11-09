@@ -1,6 +1,16 @@
-.blog-content blockquote {
-  border-left-color: #fce88c;
-  background: #fcf5d9;
+.blog-content {
+  blockquote {
+    border-left-color: #fce88c;
+    background: #fcf5d9;
+  }
+
+  > pre {
+    border-color: #ccc;
+  }
+
+  :not(pre) > code {
+    border-color: #ccc;
+  }
 }
 
 .tag {
