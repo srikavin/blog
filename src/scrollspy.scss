@@ -1,3 +1,9 @@
+.blog-scrollspy:hover {
+  z-index: 100;
+  overflow-y: auto;
+  opacity: 1;
+}
+
 .blog-scrollspy {
   @media screen and (min-width: 1200px) {
     position: fixed;
@@ -9,17 +15,7 @@
     overflow-y: hidden;
     font-size: 14px;
     color: inherit;
-
-    > ul:hover {
-      z-index: 100;
-      overflow-y: auto;
-      opacity: 1;
-    }
-
-    > ul {
-      opacity: 0.5;
-      transition: opacity 0.5s;
-    }
+    opacity: 0.5;
 
     .value {
       padding-left: 4px;
