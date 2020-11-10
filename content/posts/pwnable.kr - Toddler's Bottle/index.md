@@ -99,7 +99,7 @@ int main(int argc, char* argv[]){
 ### Stack Frames
 The stack stores local variables and function parameters and is used to pass parameters with certain calling conventions. This diagram (taken from [Wikipedia](https://en.wikipedia.org/wiki/Call_stack)) shows an example stack layout:
 
-svg(path="5ea6d67bcea15a083827d578.svg")
+{{ svg(path="5ea6d67bcea15a083827d578.svg") }}
 
 
 ### gets

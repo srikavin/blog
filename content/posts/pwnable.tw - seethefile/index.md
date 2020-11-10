@@ -483,7 +483,7 @@ exit(payload)
 This diagram displays my payload (on the right) alongside the corresponding structures. The `_IO_jump_t` and the 
 `_IO_FILE` structs are overlaid on each other.
 
-svg(path="5e81a81b4304800866d6917b.svg")
+{{ svg(path="5e81a81b4304800866d6917b.svg") }}
 
 ## Final Script
 

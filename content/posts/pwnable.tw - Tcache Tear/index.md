@@ -51,7 +51,7 @@ This structure is placed within the user area of a chunk when it is freed, i.e. 
 
 The below diagram depicts normal operation of tcache with the given initial conditions.
 
-svg(path="5e5d5509c800e40a7578f781.svg")
+{{ svg(path="5e5d5509c800e40a7578f781.svg") }}
 
 # Reversing
 First, we have to reverse the binary, which isn't too difficult with Ghidra.
@@ -130,11 +130,11 @@ We are able to `malloc` arbitrary sizes (under 0x100) and `free` the last alloca
 
 The given tcache implementation has no checks to detect double frees. Consider the following initial state:
 
-svg(path="5e5d5542c800e40a7578f783.svg")
+{{ svg(path="5e5d5542c800e40a7578f783.svg") }}
 
 If we call `free(0x603260)` twice, we add the `tcache_entry` to the free list again, which results in a circular list:
 
-svg(path="5e5d5552c800e40a7578f785.svg")
+{{ svg(path="5e5d5552c800e40a7578f785.svg") }}
 
 If we call `malloc` now with the same size as the double freed chunk, we will receive that chunk again. If we are able 
 to write in the chunk, we can overwrite the `next` pointer because libc does not expect the chunk to be in use. Then, 
@@ -145,7 +145,7 @@ to write in the chunk, we can overwrite the `next` pointer because libc does not
 We can abuse this double free to force malloc to return an arbitrary pointer to any memory location. Because the binary 
 allows us to write to the location returned by malloc, we have arbitrary write:
 
-svg(path="5e5d5571c800e40a7578f787.svg")
+{{ svg(path="5e5d5571c800e40a7578f787.svg") }}
 
 ## Leaking libc
 
@@ -154,7 +154,7 @@ or `__malloc_hook` with a call to system.
 
 The internal representation of a free `chunk` is something similar to:
 
-svg(path="5e5d558bc800e40a7578f789.svg")
+{{ svg(path="5e5d558bc800e40a7578f789.svg") }}
 
 Unsorted bins are a circularly linked list. This means that in an unsorted bin with a single chunk, the chunk will have 
 its `fwd` and `bck` pointers set to the address of the unsorted bin. If we are able to read either the `fwd` or `bck` 

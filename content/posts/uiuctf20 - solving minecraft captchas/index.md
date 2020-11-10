@@ -227,7 +227,7 @@ json.dump(metrics, open('metrics.json', 'w'))
 
 ## Model Performance
 
-{{svg(path="5f1c3dd5d7e47a02e27842c7.svg")}}
+{{ svg(path="5f1c3dd5d7e47a02e27842c7.svg") }}
 
 # Interfacing with the Website
 
