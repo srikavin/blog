@@ -427,7 +427,7 @@ end of the &lt;code&gt;filename&lt;&#x2F;code&gt; buffer.&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;overview&quot;&gt;Overview&lt;&#x2F;h2&gt;
 &lt;p&gt;This diagram displays my payload (on the right) alongside the corresponding structures. The &lt;code&gt;_IO_jump_t&lt;&#x2F;code&gt; and the 
 &lt;code&gt;_IO_FILE&lt;&#x2F;code&gt; structs are overlaid on each other.&lt;&#x2F;p&gt;
-&lt;p&gt;svg(path=&amp;quot;5e81a81b4304800866d6917b.svg&amp;quot;)&lt;&#x2F;p&gt;
+&lt;object data=&quot;&#x2F;posts&#x2F;pwnable-tw-seethefile&#x2F;5e81a81b4304800866d6917b.svg&quot; type=&quot;image&#x2F;svg+xml&quot;&gt;&lt;&#x2F;object&gt;
 &lt;h2 id=&quot;final-script&quot;&gt;Final Script&lt;&#x2F;h2&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
 &lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;pwn &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;*
