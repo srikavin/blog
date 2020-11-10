@@ -83,7 +83,7 @@
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;background&quot;&gt;Background&lt;&#x2F;h2&gt;
 &lt;h3 id=&quot;stack-frames&quot;&gt;Stack Frames&lt;&#x2F;h3&gt;
 &lt;p&gt;The stack stores local variables and function parameters and is used to pass parameters with certain calling conventions. This diagram (taken from &lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Call_stack&quot;&gt;Wikipedia&lt;&#x2F;a&gt;) shows an example stack layout:&lt;&#x2F;p&gt;
-&lt;p&gt;svg(path=&amp;quot;5ea6d67bcea15a083827d578.svg&amp;quot;)&lt;&#x2F;p&gt;
+&lt;object data=&quot;&#x2F;posts&#x2F;pwnable-kr-toddler-s-bottle&#x2F;5ea6d67bcea15a083827d578.svg&quot; type=&quot;image&#x2F;svg+xml&quot;&gt;&lt;&#x2F;object&gt;
 &lt;h3 id=&quot;gets&quot;&gt;gets&lt;&#x2F;h3&gt;
 &lt;p&gt;The function &lt;code&gt;gets&lt;&#x2F;code&gt; is insecure and allows for buffer overflows when used because it only stops at new lines or EOF. The manpage for gets (&lt;code&gt;man gets&lt;&#x2F;code&gt;) says this:&lt;&#x2F;p&gt;
 &lt;blockquote&gt;

@@ -41,7 +41,7 @@ security checks are limited within the tcache implementation. Tcache is implemen
 &lt;p&gt;This structure is placed within the user area of a chunk when it is freed, i.e. it is placed at the address returned by &lt;code&gt;malloc&lt;&#x2F;code&gt;. This has some security implications.&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;behind-the-scenes-tcache&quot;&gt;Behind the Scenes: tcache&lt;&#x2F;h1&gt;
 &lt;p&gt;The below diagram depicts normal operation of tcache with the given initial conditions.&lt;&#x2F;p&gt;
-&lt;p&gt;svg(path=&amp;quot;5e5d5509c800e40a7578f781.svg&amp;quot;)&lt;&#x2F;p&gt;
+&lt;object data=&quot;&#x2F;posts&#x2F;pwnable-tw-tcache-tear&#x2F;5e5d5509c800e40a7578f781.svg&quot; type=&quot;image&#x2F;svg+xml&quot;&gt;&lt;&#x2F;object&gt;
 &lt;h1 id=&quot;reversing&quot;&gt;Reversing&lt;&#x2F;h1&gt;
 &lt;p&gt;First, we have to reverse the binary, which isn&#x27;t too difficult with Ghidra.&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
@@ -108,21 +108,21 @@ LAB_00400c75:
 &lt;h1 id=&quot;attacks&quot;&gt;Attacks&lt;&#x2F;h1&gt;
 &lt;h2 id=&quot;circular-list&quot;&gt;Circular List&lt;&#x2F;h2&gt;
 &lt;p&gt;The given tcache implementation has no checks to detect double frees. Consider the following initial state:&lt;&#x2F;p&gt;
-&lt;p&gt;svg(path=&amp;quot;5e5d5542c800e40a7578f783.svg&amp;quot;)&lt;&#x2F;p&gt;
+&lt;object data=&quot;&#x2F;posts&#x2F;pwnable-tw-tcache-tear&#x2F;5e5d5542c800e40a7578f783.svg&quot; type=&quot;image&#x2F;svg+xml&quot;&gt;&lt;&#x2F;object&gt;
 &lt;p&gt;If we call &lt;code&gt;free(0x603260)&lt;&#x2F;code&gt; twice, we add the &lt;code&gt;tcache_entry&lt;&#x2F;code&gt; to the free list again, which results in a circular list:&lt;&#x2F;p&gt;
-&lt;p&gt;svg(path=&amp;quot;5e5d5552c800e40a7578f785.svg&amp;quot;)&lt;&#x2F;p&gt;
+&lt;object data=&quot;&#x2F;posts&#x2F;pwnable-tw-tcache-tear&#x2F;5e5d5552c800e40a7578f785.svg&quot; type=&quot;image&#x2F;svg+xml&quot;&gt;&lt;&#x2F;object&gt;
 &lt;p&gt;If we call &lt;code&gt;malloc&lt;&#x2F;code&gt; now with the same size as the double freed chunk, we will receive that chunk again. If we are able 
 to write in the chunk, we can overwrite the &lt;code&gt;next&lt;&#x2F;code&gt; pointer because libc does not expect the chunk to be in use. Then, 
 &lt;code&gt;malloc&lt;&#x2F;code&gt; will return the written address + 0x10 due to the chunk header.&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;achieving-arbitrary-write&quot;&gt;Achieving Arbitrary Write&lt;&#x2F;h2&gt;
 &lt;p&gt;We can abuse this double free to force malloc to return an arbitrary pointer to any memory location. Because the binary 
 allows us to write to the location returned by malloc, we have arbitrary write:&lt;&#x2F;p&gt;
-&lt;p&gt;svg(path=&amp;quot;5e5d5571c800e40a7578f787.svg&amp;quot;)&lt;&#x2F;p&gt;
+&lt;object data=&quot;&#x2F;posts&#x2F;pwnable-tw-tcache-tear&#x2F;5e5d5571c800e40a7578f787.svg&quot; type=&quot;image&#x2F;svg+xml&quot;&gt;&lt;&#x2F;object&gt;
 &lt;h2 id=&quot;leaking-libc&quot;&gt;Leaking libc&lt;&#x2F;h2&gt;
 &lt;p&gt;Even with the arbitrary write, we don&#x27;t have anything to write to. Leaking libc will allow us to overwrite &lt;code&gt;__free_hook&lt;&#x2F;code&gt; 
 or &lt;code&gt;__malloc_hook&lt;&#x2F;code&gt; with a call to system. &lt;&#x2F;p&gt;
 &lt;p&gt;The internal representation of a free &lt;code&gt;chunk&lt;&#x2F;code&gt; is something similar to:&lt;&#x2F;p&gt;
-&lt;p&gt;svg(path=&amp;quot;5e5d558bc800e40a7578f789.svg&amp;quot;)&lt;&#x2F;p&gt;
+&lt;object data=&quot;&#x2F;posts&#x2F;pwnable-tw-tcache-tear&#x2F;5e5d558bc800e40a7578f789.svg&quot; type=&quot;image&#x2F;svg+xml&quot;&gt;&lt;&#x2F;object&gt;
 &lt;p&gt;Unsorted bins are a circularly linked list. This means that in an unsorted bin with a single chunk, the chunk will have 
 its &lt;code&gt;fwd&lt;&#x2F;code&gt; and &lt;code&gt;bck&lt;&#x2F;code&gt; pointers set to the address of the unsorted bin. If we are able to read either the &lt;code&gt;fwd&lt;&#x2F;code&gt; or &lt;code&gt;bck&lt;&#x2F;code&gt; 
 pointer, we have an address with a known offset from libc.&lt;&#x2F;p&gt;
