@@ -1547,9 +1547,9 @@ security checks are limited within the tcache implementation. Tcache is implemen
 &lt;p&gt;There is maximum number of entries and bins within the tcache that are defined at compile time.&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;tcache-entry&quot;&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;bminor&#x2F;glibc&#x2F;blob&#x2F;release&#x2F;2.27&#x2F;master&#x2F;malloc&#x2F;malloc.c#L2904&quot;&gt;tcache_entry&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
-&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;typedef struct tcache_entry
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;typedef struct&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; tcache_entry
 {
-  struct tcache_entry *next;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;struct&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; tcache_entry &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;next;
 } tcache_entry;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;This structure is placed within the user area of a chunk when it is freed, i.e. it is placed at the address returned by &lt;code&gt;malloc&lt;&#x2F;code&gt;. This has some security implications.&lt;&#x2F;p&gt;
@@ -1559,61 +1559,59 @@ security checks are limited within the tcache implementation. Tcache is implemen
 &lt;h1 id=&quot;reversing&quot;&gt;Reversing&lt;&#x2F;h1&gt;
 &lt;p&gt;First, we have to reverse the binary, which isn&#x27;t too difficult with Ghidra.&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
-&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;void main(void)
-
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
 {
   longlong input;
-  uint i;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;uint&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; i;
   
   set_alarm();
-  printf(&amp;quot;Name:&amp;quot;);
-  read(buffer,0x20);
-  i = 0;
-  do {
-    while( true ) {
-      while( true ) {
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Name:&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  read(buffer,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x20&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;do &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;while&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;( &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;true &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;while&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;( &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;true &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
         print_menu();
-        input = read_ll();
-        if (input != 2) break;
-        if (i &amp;lt; 8) {
-          free(malloced);
-          i = i + 1;
+        input &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;read_ll();
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(input &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;break&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+        &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;8&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;free&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(malloced);
+          i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; i &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
         }
       }
-      if (2 &amp;lt; input) break;
-      if (input == 1) {
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;2 &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; input) &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;break&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(input &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
         malloc_m();
       }
-      else {
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;else &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;{
 LAB_00400c75:
-        puts(&amp;quot;Invalid choice&amp;quot;);
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Invalid choice&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
       }
     }
-    if (input != 3) {
-      if (input == 4) {
-                    &#x2F;* WARNING: Subroutine does not return *&#x2F;
-        exit(0);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(input &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;!= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(input &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;== &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;4&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+                    &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;&#x2F;* WARNING: Subroutine does not return *&#x2F;
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;exit&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
       }
-      goto LAB_00400c75;
+      &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;goto&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt; LAB_00400c75;
     }
     print_buffer();
-  } while( true );
+  } &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;while&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;( &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;true &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
 }
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
-&lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;void malloc_m(void)
-
+&lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;malloc_m&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
 {
   ulong size;
   
-  printf(&amp;quot;Size:&amp;quot;);
-  size = read_ll();
-  if (size &amp;lt; 0x100) {
-    malloced = malloc(size);
-    printf(&amp;quot;Data:&amp;quot;);
-    read((char *)malloced,(int)size - 0x10);
-    puts(&amp;quot;Done !&amp;quot;);
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Size:&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+  size &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;read_ll();
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(size &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x100&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;) {
+    malloced &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;malloc&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(size);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;printf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Data:&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    read((&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;char *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)malloced,(&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)size &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;- &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;0x10&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#62a35c;&quot;&gt;puts&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;quot;Done !&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;);
   }
-  return;
+  &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;;
 }
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;The binary reads &lt;code&gt;0x20&lt;&#x2F;code&gt; bytes into a global buffer. Then, it displays a menu:&lt;&#x2F;p&gt;
