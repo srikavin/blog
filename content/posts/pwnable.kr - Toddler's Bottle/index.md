@@ -18,7 +18,7 @@ categories = ["ctf-writeups"]
 
 After ssh-ing into the server with the given details, we can view the source code of the challenge by running `cat fd.c`:
 
-```cpp
+```c
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -72,7 +72,7 @@ echo LETMEWIN | ./fd $(python -c "print 0x1234 + 0")
 
 ## Source Code
 
-```cpp
+```c
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

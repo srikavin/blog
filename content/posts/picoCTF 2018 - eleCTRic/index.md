@@ -18,7 +18,7 @@ We can see that this mode of AES requires a unique nonce for each encrypted valu
 If we look at the problem's source code, we can see that the counter remains constant for all values. 
 This breaks the encryption used and we are able to reveal the keystream and encrypt arbritary data.
 
-```Python
+```python
 class AESCipher(object):
     def __init__(self):
         self.bs = 32

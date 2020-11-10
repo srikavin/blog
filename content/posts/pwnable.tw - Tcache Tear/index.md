@@ -38,7 +38,7 @@ There is maximum number of entries and bins within the tcache that are defined a
 
 ## [tcache_entry](https://github.com/bminor/glibc/blob/release/2.27/master/malloc/malloc.c#L2904)
 
-```#c
+```c
 typedef struct tcache_entry
 {
   struct tcache_entry *next;
@@ -56,9 +56,8 @@ The below diagram depicts normal operation of tcache with the given initial cond
 # Reversing
 First, we have to reverse the binary, which isn't too difficult with Ghidra.
 
-```#c
+```c
 void main(void)
-
 {
   longlong input;
   uint i;
@@ -99,9 +98,8 @@ LAB_00400c75:
 }
 ```
 
-```#c
+```c
 void malloc_m(void)
-
 {
   ulong size;
   

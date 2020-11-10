@@ -84,7 +84,7 @@ void handler(void) {
 
 The `my_read` function simply reads n characters into the specified buffer.  The `list` function prints out a list of products:
 
-```cpp
+```c
 void list(void) {
   puts("=== Device List ===");
   printf("%d: iPhone 6 - $%d\n",1,199);
@@ -108,7 +108,7 @@ each node in the list:
 ## Checkout
 The checkout function is interesting and contains a clear vulnerability:
 
-```cpp
+```c
 void checkout(void) {
   int iVar1;
   int in_GS_OFFSET;
