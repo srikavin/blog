@@ -1,7 +1,7 @@
 +++
 title = "pwnable.tw - applestore"
 description = """
-Writeup of pwnable.tw's applestore challenge. We abuse a stack-based buffer overflow to gain remote code \
+Writeup of pwnable.tw's 'applestore' challenge. We abuse a stack-based buffer overflow to gain remote code \
 execution by overlaying the stack frame on top of the Global Offset Table. \
 """
 date = 2020-08-27

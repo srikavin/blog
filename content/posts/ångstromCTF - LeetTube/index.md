@@ -1,5 +1,9 @@
 +++
 title = "ångstromCTF - LeetTube"
+description = """
+Writeup of ångstromCTF 2020's 'LeetTube' challenge. We abuse a URI parser differential between NGINX\
+and Python 3.1's BaseHTTPRequestHandler to leak process memory through a path traversal vulnerability. \
+"""
 date = 2020-03-18T23:36:12.437Z
 updated = 2020-03-29T02:10:25.394Z
 aliases = ["/posts/5e72b06cd6d41508cf61f796-angstromctf-leettube"]

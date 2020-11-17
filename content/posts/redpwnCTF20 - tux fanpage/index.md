@@ -1,5 +1,9 @@
 +++
 title = "redpwnCTF - tux fanpage"
+description = """
+Writeup of redpwnCTF 2020's 'tux fanpage' challenge. We abuse Express's default query parsing behavior \
+to bypass checks and trigger a path traversal vulnerability. \
+"""
 date = 2020-06-25
 aliases = ["/posts/5ef4cb041d3e7302fc8a3416-redpwnctf-tux-fanpage"]
 [taxonomies]
