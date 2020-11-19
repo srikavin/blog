@@ -1,4 +1,6 @@
 {% set rel = page.relative_path | split(pat="/") | slice(end=-1) | join(sep="/") -%}
 {% set rel = "content/" ~ rel ~ "/" ~ path -%}
 
-<object data="{{page.permalink | safe}}{{path | safe}}" type="image/svg+xml"></object>
+{% set data = load_data(path=rel, format="plain") %}
+
+{{ data | safe}}
