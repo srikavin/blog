@@ -17,6 +17,10 @@
         <lastmod>2020-03-29T02:10:25.394Z</lastmod>
     </url>
     <url>
+        <loc>/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/</loc>
+        <lastmod>2020-12-13</lastmod>
+    </url>
+    <url>
         <loc>/posts/gci-exploiting-a-buffer-overflow-vulnerability/</loc>
         <lastmod>2019-12-15</lastmod>
     </url>
@@ -124,6 +128,9 @@
         <loc>/tags/angstromctf2020/</loc>
     </url>
     <url>
+        <loc>/tags/asisctf20/</loc>
+    </url>
+    <url>
         <loc>/tags/aslr/</loc>
     </url>
     <url>
@@ -170,6 +177,9 @@
     </url>
     <url>
         <loc>/tags/overthewire/</loc>
+    </url>
+    <url>
+        <loc>/tags/php/</loc>
     </url>
     <url>
         <loc>/tags/picoctf18/</loc>
