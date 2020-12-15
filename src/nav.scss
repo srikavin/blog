@@ -5,11 +5,17 @@ nav {
 }
 
 nav .nav-left {
+  left: 32px;
+}
+
+nav .nav-right {
+  right: 32px;
+}
+
+nav .nav-left, nav .nav-right {
+  font-size: 16px;
   position: absolute;
   top: 16px;
-  left: 32px;
-  font-size: 16px;
-
   .name {
     font-size: 24px;
     width: auto;
