@@ -7,7 +7,7 @@
 	<updated>2020-12-13T00:00:00+00:00</updated>
 	<id>/tags/web/atom.xml</id>
 	<entry xml:lang="en">
-		<title>Abusing PHP Constants, Temporary Uploads, and FastCGI</title>
+		<title>Abusing PHP Constants, Temporary Uploads, and FastCGI to Bypass Restrictions</title>
 		<published>2020-12-13T00:00:00+00:00</published>
 		<updated>2020-12-13T00:00:00+00:00</updated>
 		<link href="/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/" type="text/html"/>
