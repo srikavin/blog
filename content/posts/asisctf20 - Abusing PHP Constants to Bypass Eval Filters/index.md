@@ -7,7 +7,7 @@ using a TCP socket. \
 """
 date = 2020-12-13
 [taxonomies]
-tags = ["asisctf20", "web", "php", "rce"]
+tags = ["asisctf-finals2020", "web", "php", "rce"]
 categories = ["ctf-writeups"]
 +++
 
