@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 	<title> - file-stream-oriented-programming</title>
-	<link href="/tags/file-stream-oriented-programming/atom.xml" rel="self" type="application/atom+xml"/>
-  <link href="/"/>
+	<link href="https://blog.srikavin.me/tags/file-stream-oriented-programming/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2020-03-30T08:23:31.139+00:00</updated>
-	<id>/tags/file-stream-oriented-programming/atom.xml</id>
+	<id>https://blog.srikavin.me/tags/file-stream-oriented-programming/atom.xml</id>
 	<entry xml:lang="en">
 		<title>pwnable.tw - seethefile</title>
 		<published>2020-03-29T01:23:36.608+00:00</published>
 		<updated>2020-03-30T08:23:31.139+00:00</updated>
-		<link href="/posts/pwnable-tw-seethefile/" type="text/html"/>
-		<id>/posts/pwnable-tw-seethefile/</id>
+		<link href="https://blog.srikavin.me/posts/pwnable-tw-seethefile/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/pwnable-tw-seethefile/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Can you see anything?&lt;&#x2F;p&gt;
@@ -157,7 +157,7 @@ fake &lt;code&gt;FILE&lt;&#x2F;code&gt; struct:&lt;&#x2F;p&gt;
 }
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;Running this test program gives us a shell and then segfaults:
-&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-seethefile&#x2F;5e80319b0f5e61083b61b4a9.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-seethefile&#x2F;5e80319b0f5e61083b61b4a9.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;reversing&quot;&gt;Reversing&lt;&#x2F;h1&gt;
 &lt;p&gt;Reversing the program is made easy by cross-referencing the program&#x27;s behavior with Ghidra.&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;main&quot;&gt;main&lt;&#x2F;h2&gt;
@@ -343,7 +343,7 @@ gdb.attach(r)
 &lt;p&gt;If we want to get a shell, we need to know the address of &lt;code&gt;system&lt;&#x2F;code&gt; in memory. We can use the psuedo-file &lt;code&gt;&#x2F;proc&#x2F;self&#x2F;maps&lt;&#x2F;code&gt;
 which contains a list of loaded memory regions of the reading process. On the remote service, we need to call &lt;code&gt;readfile&lt;&#x2F;code&gt;
 twice because libc&#x27;s entry appears in the second set of 400 characters:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-seethefile&#x2F;5e8193f54304800866d69179.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-seethefile&#x2F;5e8193f54304800866d69179.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;This would translate to the following in the exploit script:&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
 &lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;openfile(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&#x2F;proc&#x2F;self&#x2F;maps&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
@@ -492,7 +492,7 @@ file &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot
 r.interactive()
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;Running this gives us a shell on the remote server:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-seethefile&#x2F;5e81ac654304800866d6917d.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-seethefile&#x2F;5e81ac654304800866d6917d.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;further-reading&quot;&gt;Further Reading&lt;&#x2F;h1&gt;
 &lt;p&gt;These are some resources I found helpful while solving this challenge.&lt;&#x2F;p&gt;
 &lt;ol&gt;

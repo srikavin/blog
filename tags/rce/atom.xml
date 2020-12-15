@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 	<title> - rce</title>
-	<link href="/tags/rce/atom.xml" rel="self" type="application/atom+xml"/>
-  <link href="/"/>
+	<link href="https://blog.srikavin.me/tags/rce/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2020-12-13T00:00:00+00:00</updated>
-	<id>/tags/rce/atom.xml</id>
+	<id>https://blog.srikavin.me/tags/rce/atom.xml</id>
 	<entry xml:lang="en">
 		<title>Abusing PHP Constants, Temporary Uploads, and FastCGI to Bypass Restrictions</title>
 		<published>2020-12-13T00:00:00+00:00</published>
 		<updated>2020-12-13T00:00:00+00:00</updated>
-		<link href="/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/" type="text/html"/>
-		<id>/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/</id>
+		<link href="https://blog.srikavin.me/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Can you obtain the more &lt;a href=&quot;https:&#x2F;&#x2F;securesecrets.asisctf.com&#x2F;Y0U_CANT_GUESS_THIS_5TUPLFGSGZYWXOKHINMBDWCKAGERCQJV.php&quot;&gt;secure&lt;&#x2F;a&gt;
 secret? Even with all those filters? I don&#x27;t think so :)&lt;&#x2F;p&gt;
 &lt;&#x2F;blockquote&gt;
-&lt;p&gt;We also have the &lt;a href=&quot;&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;configs.zip&quot;&gt;configuration files&lt;&#x2F;a&gt; from the previous challenge &lt;code&gt;Less Secure Secrets&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;We also have the &lt;a href=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;configs.zip&quot;&gt;configuration files&lt;&#x2F;a&gt; from the previous challenge &lt;code&gt;Less Secure Secrets&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
 &lt;p&gt;When we visit the given link, we see that the page prints out the source code of the current page:&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
 &lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#63a35c;&quot;&gt;html&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;&amp;gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#63a35c;&quot;&gt;head&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;&amp;gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#63a35c;&quot;&gt;head&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;&amp;gt;
@@ -111,11 +111,11 @@ caught by the set error handler and execution is stopped.&lt;&#x2F;p&gt;
 &lt;p&gt;PHP has globally defined constants. Using &lt;a href=&quot;https:&#x2F;&#x2F;www.php.net&#x2F;manual&#x2F;en&#x2F;function.get-defined-constants.php&quot;&gt;&lt;code&gt;get_defined_constants&lt;&#x2F;code&gt;&lt;&#x2F;a&gt;,
 we can get a list of all defined constants and their values. Since we can&#x27;t call this function on the remote server, I ran
 it locally using the provided Docker setup. &lt;&#x2F;p&gt;
-&lt;p&gt;Now that we have &lt;a href=&quot;&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;constants.txt&quot;&gt;a list of constants mappings&lt;&#x2F;a&gt;, we need to use them to construct a string.
+&lt;p&gt;Now that we have &lt;a href=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;constants.txt&quot;&gt;a list of constants mappings&lt;&#x2F;a&gt;, we need to use them to construct a string.
 Since we have both integer and string constants, we can index into a string constant using an integer constant. 
 For example, since &lt;code&gt;LIBXML_NOENT =&amp;gt; int(2)&lt;&#x2F;code&gt; and &lt;code&gt;LIBXML_LOADED_VERSION =&amp;gt; string(5) &amp;quot;20910&amp;quot;&lt;&#x2F;code&gt;, we can execute 
 &lt;code&gt;LIBXML_LOADED_VERSION[LIBXML_NOENT]&lt;&#x2F;code&gt; to get the character &#x27;9&#x27;.&lt;&#x2F;p&gt;
-&lt;p&gt;I wrote &lt;a href=&quot;&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;create_mappings.py&quot;&gt;a script&lt;&#x2F;a&gt; to create a mapping between letters and numbers to a version represented by constants. 
+&lt;p&gt;I wrote &lt;a href=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;create_mappings.py&quot;&gt;a script&lt;&#x2F;a&gt; to create a mapping between letters and numbers to a version represented by constants. 
 Not all characters were present within the string constants, but a large portion could be mapped to.&lt;&#x2F;p&gt;
 &lt;p&gt;We can now include arbitrary local files.&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;racing-upload-deletion&quot;&gt;Racing Upload Deletion&lt;&#x2F;h2&gt;
@@ -164,7 +164,7 @@ foreach($it as $f) {
     echo $f-&amp;gt;getFileName() . &amp;quot; &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#63a35c;&quot;&gt;br&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;&#x2F;&amp;gt;&amp;quot;;
 }
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;uploaded_files.png&quot; alt=&quot;Screenshot of uploaded files&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;uploaded_files.png&quot; alt=&quot;Screenshot of uploaded files&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;This doesn&#x27;t let us do much since we can only list files.&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;abusing-fastcgi-over-tcp-sockets&quot;&gt;Abusing FastCGI over TCP Sockets&lt;&#x2F;h2&gt;
 &lt;blockquote&gt;
@@ -228,15 +228,15 @@ $content &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;I URI encoded the script and stuck it into the &lt;code&gt;real_eval&lt;&#x2F;code&gt; parameter and included our &lt;code&gt;dicedicedice.php&lt;&#x2F;code&gt; script. Now, we 
 just have to send the FastCGI request as the POST body, and we will get the flag back in the response:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;flag.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;flag.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="en">
 		<title>pwnable.tw - applestore</title>
 		<published>2020-08-27T00:00:00+00:00</published>
 		<updated>2020-11-06T00:00:00+00:00</updated>
-		<link href="/posts/pwnable-tw-applestore/" type="text/html"/>
-		<id>/posts/pwnable-tw-applestore/</id>
+		<link href="https://blog.srikavin.me/posts/pwnable-tw-applestore/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/pwnable-tw-applestore/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;tomcr00se rooted the galaxy S5, but we need you to jailbreak the iPhone8!&lt;&#x2F;p&gt;
@@ -248,7 +248,7 @@ just have to send the FastCGI request as the POST body, and we will get the flag
 &lt;p&gt;When reversing binaries, I usually run the binary and compare its execution alongside the disassemby+pseudocode. 
 When we run the given binary, we&#x27;re greeted by a menu with 6 options:&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-applestore&#x2F;5f4789fe5f6cee02e28f044e.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-applestore&#x2F;5f4789fe5f6cee02e28f044e.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;Going through and reversing each function isn&#x27;t too difficult. The application allows us to view products, 
 add, remove, and list items in our cart, and checkout.&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;input-handler&quot;&gt;Input Handler&lt;&#x2F;h2&gt;
@@ -312,7 +312,7 @@ to handle input:&lt;&#x2F;p&gt;
 remove an item. The &lt;code&gt;delete&lt;&#x2F;code&gt; function allows us to specify the index to delete, while &lt;code&gt;add&lt;&#x2F;code&gt; inserts a new item at the end of the linked list.&lt;&#x2F;p&gt;
 &lt;p&gt;The head node of the list is stored in a global variable named &lt;code&gt;myCart&lt;&#x2F;code&gt;. I defined the following struct to represent 
 each node in the list:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-applestore&#x2F;5f478a235f6cee02e28f0450.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-applestore&#x2F;5f478a235f6cee02e28f0450.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;checkout&quot;&gt;Checkout&lt;&#x2F;h2&gt;
 &lt;p&gt;The checkout function is interesting and contains a clear vulnerability:&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
@@ -501,7 +501,7 @@ includes &lt;code&gt;;&#x2F;bin&#x2F;sh;&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
 
 r.interactive()
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-applestore&#x2F;5f478a755f6cee02e28f0458.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-applestore&#x2F;5f478a755f6cee02e28f0458.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;full-script&quot;&gt;Full script&lt;&#x2F;h1&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
 &lt;code&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;#!&#x2F;usr&#x2F;bin&#x2F;env python3
@@ -591,8 +591,8 @@ r.interactive()
 		<title>GCI - Fedora Project - Exploiting a Buffer Overflow Vulnerability</title>
 		<published>2019-12-15T00:00:00+00:00</published>
 		<updated>2019-12-15T00:00:00+00:00</updated>
-		<link href="/posts/gci-exploiting-a-buffer-overflow-vulnerability/" type="text/html"/>
-		<id>/posts/gci-exploiting-a-buffer-overflow-vulnerability/</id>
+		<link href="https://blog.srikavin.me/posts/gci-exploiting-a-buffer-overflow-vulnerability/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/gci-exploiting-a-buffer-overflow-vulnerability/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;p&gt;We are given a binary to exploit. By running &lt;code&gt;checksec&lt;&#x2F;code&gt; on it, we see that the binary has the following protections:
 [show-line-numbers]: false&lt;&#x2F;p&gt;
@@ -634,7 +634,7 @@ End of assembler dump.
 &lt;p&gt;Now that we have an understanding of what the binary does, we can construct a payload to get code execution. Since the canary is not enabled, we can overwrite the return address. However, because of PIE and ASLR, we don&#x27;t have any clear targets to jump to.&lt;&#x2F;p&gt;
 &lt;h3 id=&quot;where-do-we-jump&quot;&gt;Where do we jump?&lt;&#x2F;h3&gt;
 &lt;p&gt;The binary is dynamically linked and uses the system libc. We can find targets within the binary, when jumped to, result in a call to &lt;code&gt;execve(&amp;quot;&#x2F;bin&#x2F;sh&amp;quot;, NULL, NULL)&lt;&#x2F;code&gt; and lead to &amp;quot;a shell&amp;quot;.  The tool &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;david942j&#x2F;one_gadget&quot;&gt;one_gadget&lt;&#x2F;a&gt; finds offsets to these one gadgets within a given libc binary. Running &lt;code&gt;one_gadget libc.so.6&lt;&#x2F;code&gt; gives the following output:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;gci-exploiting-a-buffer-overflow-vulnerability&#x2F;5df7042c0898260951d4389c.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;gci-exploiting-a-buffer-overflow-vulnerability&#x2F;5df7042c0898260951d4389c.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;However, we don&#x27;t know the base address that libc is loaded at.&lt;&#x2F;p&gt;
 &lt;h3 id=&quot;how&quot;&gt;How?&lt;&#x2F;h3&gt;
 &lt;p&gt;Generally, the libc runtime handles initializes itself before calling &lt;code&gt;main&lt;&#x2F;code&gt;. This means that when &lt;code&gt;main&lt;&#x2F;code&gt; returns, we end up within libc. In fact, in this &lt;a href=&quot;https:&#x2F;&#x2F;asciinema.org&#x2F;a&#x2F;JRs1KT1HQCoDUSDAmW1r6CCcC&quot;&gt;asciinema&lt;&#x2F;a&gt;, we see that &lt;code&gt;main&lt;&#x2F;code&gt; returns to &lt;code&gt;__libc_start_main&lt;&#x2F;code&gt; within libc. &lt;&#x2F;p&gt;
@@ -665,8 +665,8 @@ End of assembler dump.
 		<title>picoCTF 2018 - Flaskcards and Freedom</title>
 		<published>2018-10-12T21:02:44.420+00:00</published>
 		<updated>2018-10-12T22:55:27.216+00:00</updated>
-		<link href="/posts/picoctf-2018-flaskcards-and-freedom/" type="text/html"/>
-		<id>/posts/picoctf-2018-flaskcards-and-freedom/</id>
+		<link href="https://blog.srikavin.me/posts/picoctf-2018-flaskcards-and-freedom/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/picoctf-2018-flaskcards-and-freedom/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&amp;quot;There seem to be a few more files stored on the flash card server but we can&#x27;t login. Can you?&amp;quot;&lt;&#x2F;p&gt;
@@ -674,19 +674,19 @@ End of assembler dump.
 &lt;h1 id=&quot;solution&quot;&gt;Solution&lt;&#x2F;h1&gt;
 &lt;p&gt;The site appears to be the same as the previous flaskcard challenges &lt;code&gt;Flaskcards Skeleton Key&lt;&#x2F;code&gt; and  &lt;code&gt;Flaskcards.&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;When we create an account, we are presented with the following screen:
-&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc10c83f1882e545d7f430a.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc10c83f1882e545d7f430a.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;We can try server side injection. If we type in &lt;code&gt;{{1+1}}&lt;&#x2F;code&gt;, the webpage displays &lt;code&gt;2&lt;&#x2F;code&gt;.  Any values in double brackets is being executed on the server. After trying to find hidden variables, such as &lt;code&gt;config&lt;&#x2F;code&gt;, &lt;code&gt;flag&lt;&#x2F;code&gt;, etc; I decided to look for a remote code execution vulnerability. &lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc114c3b7c5001b74f57e35.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc114c3b7c5001b74f57e35.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;We can list all of the loaded classes by calling &lt;code&gt;__subclasses__&lt;&#x2F;code&gt; on the base object class. To do this, I used the &lt;code&gt;mro&lt;&#x2F;code&gt; method, which lists all of the superclasses, including &lt;code&gt;object&lt;&#x2F;code&gt;. Calling this on a string gives easy access to the base object class.&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc114f6b7c5001b74f57e37.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc114f6b7c5001b74f57e37.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;The object class is index &lt;code&gt;1&lt;&#x2F;code&gt; when calling &lt;code&gt;&#x27;&#x27;.__class__.mro()&lt;&#x2F;code&gt;. So we can access the subclasses of object by injecting &lt;code&gt;&#x27;&#x27;.__class__.mro()[1].__subclasses__()&lt;&#x2F;code&gt;. This results in a lot of output.&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc11620b7c5001b74f57e39.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc11620b7c5001b74f57e39.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;After cleaning up the output, I found that &lt;code&gt;&amp;lt;class &#x27;subprocess.Popen&#x27;&amp;gt;&lt;&#x2F;code&gt; was index 48.&lt;&#x2F;p&gt;
 &lt;p&gt;From there it is possible to run &lt;code&gt;ls&lt;&#x2F;code&gt; with &lt;code&gt;{{&#x27;&#x27;.__class__.mro()[1].__subclasses__()[48]([&#x27;ls&#x27;], stdout=-1).communicate()}}&lt;&#x2F;code&gt;. Running with &lt;code&gt;-1&lt;&#x2F;code&gt; results in the output being returned as a tuple:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc11752b7c5001b74f57e3c.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc11752b7c5001b74f57e3c.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;Calling &lt;code&gt;ls&lt;&#x2F;code&gt; lists the files in the directory. All that&#x27;s left is to call &lt;code&gt;cat flag&lt;&#x2F;code&gt; with &lt;code&gt;{{&#x27;&#x27;.__class__.mro()[1].__subclasses__()[380]([&#x27;cat&#x27;, &#x27;flag&#x27;], stdout=-1).communicate()}}&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc117aab7c5001b74f57e3e.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc117aab7c5001b74f57e3e.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
 </feed>

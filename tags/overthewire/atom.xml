@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 	<title> - overthewire</title>
-	<link href="/tags/overthewire/atom.xml" rel="self" type="application/atom+xml"/>
-  <link href="/"/>
+	<link href="https://blog.srikavin.me/tags/overthewire/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2019-09-22T19:49:29.442+00:00</updated>
-	<id>/tags/overthewire/atom.xml</id>
+	<id>https://blog.srikavin.me/tags/overthewire/atom.xml</id>
 	<entry xml:lang="en">
 		<title>overthewire - bandit</title>
 		<published>2019-06-20T17:35:22.906+00:00</published>
 		<updated>2019-09-22T19:49:29.442+00:00</updated>
-		<link href="/posts/overthewire-bandit/" type="text/html"/>
-		<id>/posts/overthewire-bandit/</id>
+		<link href="https://blog.srikavin.me/posts/overthewire-bandit/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/overthewire-bandit/</id>
 		<content type="html">&lt;h1 id=&quot;level-0&quot;&gt;Level 0&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;The password for the next level is stored in a file called &lt;code&gt;readme&lt;&#x2F;code&gt; located in the home directory. Use this password 
@@ -24,9 +24,9 @@ and continue the game.&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;The password was given to be &lt;code&gt;bandit0&lt;&#x2F;code&gt;. After connecting to the server, we can list the files in the directory using &lt;code&gt;ls&lt;&#x2F;code&gt;. &lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;overthewire-bandit&#x2F;5d0bbac125fe1409b2e399ac.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;overthewire-bandit&#x2F;5d0bbac125fe1409b2e399ac.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;Now, we can read the contents of &lt;code&gt;readme&lt;&#x2F;code&gt; using &lt;code&gt;cat readme&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;overthewire-bandit&#x2F;5d0bbae225fe1409b2e399ae.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;overthewire-bandit&#x2F;5d0bbae225fe1409b2e399ae.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;The &lt;code&gt;readme&lt;&#x2F;code&gt; contained the password for level 1: &lt;code&gt;boJ9jbbUNNfktd78OOpsqOltutMc3MY1&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;level-1&quot;&gt;Level 1&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
@@ -42,9 +42,9 @@ and continue the game.&lt;&#x2F;p&gt;
 -
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;If we try to do &lt;code&gt;cat -&lt;&#x2F;code&gt;, we would be passing in &lt;code&gt;stdin&lt;&#x2F;code&gt; to &lt;code&gt;cat&lt;&#x2F;code&gt;. This results in &lt;code&gt;cat&lt;&#x2F;code&gt; simply mirroring any input given to it:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;overthewire-bandit&#x2F;5d0bbc0e25fe1409b2e399b0.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;overthewire-bandit&#x2F;5d0bbc0e25fe1409b2e399b0.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;To be able to access the file, we can use a relative path, such as &lt;code&gt;.&#x2F;-&lt;&#x2F;code&gt;, or an absolute path, such as &lt;code&gt;&#x2F;home&#x2F;bandit1&#x2F;-&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;overthewire-bandit&#x2F;5d0bbc6925fe1409b2e399b2.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;overthewire-bandit&#x2F;5d0bbc6925fe1409b2e399b2.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;The password for the next level is &lt;code&gt;CV1DtqXWVFXTvM2F0k09SHz0YwRINYA9&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;level-2&quot;&gt;Level 2&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
@@ -52,10 +52,10 @@ and continue the game.&lt;&#x2F;p&gt;
 &lt;&#x2F;blockquote&gt;
 &lt;p&gt;This is a similar challenge to the last level. If we simply try &lt;code&gt;cat spaces in this filename&lt;&#x2F;code&gt;, it will attempt to read 4 
 different files each named &lt;code&gt;spaces&lt;&#x2F;code&gt;, &lt;code&gt;in&lt;&#x2F;code&gt;, &lt;code&gt;this&lt;&#x2F;code&gt;, &lt;code&gt;filename&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;overthewire-bandit&#x2F;5d0bbd2125fe1409b2e399b4.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;overthewire-bandit&#x2F;5d0bbd2125fe1409b2e399b4.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;However, if we put the file name in quotes: &lt;code&gt;cat &amp;quot;spaces in this filename&amp;quot;&lt;&#x2F;code&gt; or simply use tab completion: 
 &lt;code&gt;cat spaces\ in\ this\ filename&lt;&#x2F;code&gt;, we will have no problems in reading the file:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;overthewire-bandit&#x2F;5d0bbd7c25fe1409b2e399b6.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;overthewire-bandit&#x2F;5d0bbd7c25fe1409b2e399b6.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;The password for level 3 is &lt;code&gt;UmHadQclWmgdLOKQ3YNgjWxGoRMb5luK&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;level-3&quot;&gt;Level 3&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
@@ -63,10 +63,10 @@ different files each named &lt;code&gt;spaces&lt;&#x2F;code&gt;, &lt;code&gt;in&
 &lt;&#x2F;blockquote&gt;
 &lt;p&gt;Like normal, we can run &lt;code&gt;ls&lt;&#x2F;code&gt; within the home directory. We see the &lt;code&gt;inhere&lt;&#x2F;code&gt; directory and can use &lt;code&gt;cd inhere&lt;&#x2F;code&gt; to change 
 our current directory to &lt;code&gt;inhere&lt;&#x2F;code&gt;. If we run &lt;code&gt;ls&lt;&#x2F;code&gt; again, we don&#x27;t see any files:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;overthewire-bandit&#x2F;5d0bbe2d25fe1409b2e399b8.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;overthewire-bandit&#x2F;5d0bbe2d25fe1409b2e399b8.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;Since the challenge told us there is a hidden file in this directory, we can use &lt;code&gt;ls -a&lt;&#x2F;code&gt; to list all files in the current 
 directory. You can find more options by using &lt;code&gt;man ls&lt;&#x2F;code&gt;. If we read the hidden file, we get the password to level 4:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;overthewire-bandit&#x2F;5d0bbea925fe1409b2e399ba.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;overthewire-bandit&#x2F;5d0bbea925fe1409b2e399ba.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;The password to level 4 is &lt;code&gt;pIwrPrtPN36QITSp3EQaw936yaFoFgAB&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;level-4&quot;&gt;Level 4&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
@@ -75,7 +75,7 @@ terminal is messed up, try the “reset” command.&lt;&#x2F;p&gt;
 &lt;&#x2F;blockquote&gt;
 &lt;p&gt;Like the last level, we can &lt;code&gt;cd&lt;&#x2F;code&gt; into &lt;code&gt;inhere&lt;&#x2F;code&gt; and run &lt;code&gt;ls&lt;&#x2F;code&gt;. We see multiple files starting with &lt;code&gt;-&lt;&#x2F;code&gt;. We could use 
 &lt;code&gt;cat .&#x2F;*&lt;&#x2F;code&gt; to print out all of these files, but to identify the correct file, we can use the &lt;code&gt;file&lt;&#x2F;code&gt; command:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;overthewire-bandit&#x2F;5d0bc01425fe1409b2e399bc.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;overthewire-bandit&#x2F;5d0bc01425fe1409b2e399bc.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;The password to level 5 is &lt;code&gt;koReBOKuIDDepwhWk7jZC0RTdopnAYKh&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;level-5&quot;&gt;Level 5&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;

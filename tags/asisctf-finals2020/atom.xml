@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 	<title> - asisctf-finals2020</title>
-	<link href="/tags/asisctf-finals2020/atom.xml" rel="self" type="application/atom+xml"/>
-  <link href="/"/>
+	<link href="https://blog.srikavin.me/tags/asisctf-finals2020/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2020-12-13T00:00:00+00:00</updated>
-	<id>/tags/asisctf-finals2020/atom.xml</id>
+	<id>https://blog.srikavin.me/tags/asisctf-finals2020/atom.xml</id>
 	<entry xml:lang="en">
 		<title>Abusing PHP Constants, Temporary Uploads, and FastCGI to Bypass Restrictions</title>
 		<published>2020-12-13T00:00:00+00:00</published>
 		<updated>2020-12-13T00:00:00+00:00</updated>
-		<link href="/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/" type="text/html"/>
-		<id>/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/</id>
+		<link href="https://blog.srikavin.me/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Can you obtain the more &lt;a href=&quot;https:&#x2F;&#x2F;securesecrets.asisctf.com&#x2F;Y0U_CANT_GUESS_THIS_5TUPLFGSGZYWXOKHINMBDWCKAGERCQJV.php&quot;&gt;secure&lt;&#x2F;a&gt;
 secret? Even with all those filters? I don&#x27;t think so :)&lt;&#x2F;p&gt;
 &lt;&#x2F;blockquote&gt;
-&lt;p&gt;We also have the &lt;a href=&quot;&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;configs.zip&quot;&gt;configuration files&lt;&#x2F;a&gt; from the previous challenge &lt;code&gt;Less Secure Secrets&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;We also have the &lt;a href=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;configs.zip&quot;&gt;configuration files&lt;&#x2F;a&gt; from the previous challenge &lt;code&gt;Less Secure Secrets&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
 &lt;p&gt;When we visit the given link, we see that the page prints out the source code of the current page:&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
 &lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#63a35c;&quot;&gt;html&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;&amp;gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#63a35c;&quot;&gt;head&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;&amp;gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#63a35c;&quot;&gt;head&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;&amp;gt;
@@ -111,11 +111,11 @@ caught by the set error handler and execution is stopped.&lt;&#x2F;p&gt;
 &lt;p&gt;PHP has globally defined constants. Using &lt;a href=&quot;https:&#x2F;&#x2F;www.php.net&#x2F;manual&#x2F;en&#x2F;function.get-defined-constants.php&quot;&gt;&lt;code&gt;get_defined_constants&lt;&#x2F;code&gt;&lt;&#x2F;a&gt;,
 we can get a list of all defined constants and their values. Since we can&#x27;t call this function on the remote server, I ran
 it locally using the provided Docker setup. &lt;&#x2F;p&gt;
-&lt;p&gt;Now that we have &lt;a href=&quot;&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;constants.txt&quot;&gt;a list of constants mappings&lt;&#x2F;a&gt;, we need to use them to construct a string.
+&lt;p&gt;Now that we have &lt;a href=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;constants.txt&quot;&gt;a list of constants mappings&lt;&#x2F;a&gt;, we need to use them to construct a string.
 Since we have both integer and string constants, we can index into a string constant using an integer constant. 
 For example, since &lt;code&gt;LIBXML_NOENT =&amp;gt; int(2)&lt;&#x2F;code&gt; and &lt;code&gt;LIBXML_LOADED_VERSION =&amp;gt; string(5) &amp;quot;20910&amp;quot;&lt;&#x2F;code&gt;, we can execute 
 &lt;code&gt;LIBXML_LOADED_VERSION[LIBXML_NOENT]&lt;&#x2F;code&gt; to get the character &#x27;9&#x27;.&lt;&#x2F;p&gt;
-&lt;p&gt;I wrote &lt;a href=&quot;&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;create_mappings.py&quot;&gt;a script&lt;&#x2F;a&gt; to create a mapping between letters and numbers to a version represented by constants. 
+&lt;p&gt;I wrote &lt;a href=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;create_mappings.py&quot;&gt;a script&lt;&#x2F;a&gt; to create a mapping between letters and numbers to a version represented by constants. 
 Not all characters were present within the string constants, but a large portion could be mapped to.&lt;&#x2F;p&gt;
 &lt;p&gt;We can now include arbitrary local files.&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;racing-upload-deletion&quot;&gt;Racing Upload Deletion&lt;&#x2F;h2&gt;
@@ -164,7 +164,7 @@ foreach($it as $f) {
     echo $f-&amp;gt;getFileName() . &amp;quot; &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#63a35c;&quot;&gt;br&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;&#x2F;&amp;gt;&amp;quot;;
 }
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;uploaded_files.png&quot; alt=&quot;Screenshot of uploaded files&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;uploaded_files.png&quot; alt=&quot;Screenshot of uploaded files&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;This doesn&#x27;t let us do much since we can only list files.&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;abusing-fastcgi-over-tcp-sockets&quot;&gt;Abusing FastCGI over TCP Sockets&lt;&#x2F;h2&gt;
 &lt;blockquote&gt;
@@ -228,7 +228,7 @@ $content &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;I URI encoded the script and stuck it into the &lt;code&gt;real_eval&lt;&#x2F;code&gt; parameter and included our &lt;code&gt;dicedicedice.php&lt;&#x2F;code&gt; script. Now, we 
 just have to send the FastCGI request as the POST body, and we will get the flag back in the response:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;flag.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;flag.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
 </feed>

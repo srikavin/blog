@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 	<title> - aslr</title>
-	<link href="/tags/aslr/atom.xml" rel="self" type="application/atom+xml"/>
-  <link href="/"/>
+	<link href="https://blog.srikavin.me/tags/aslr/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2019-12-15T00:00:00+00:00</updated>
-	<id>/tags/aslr/atom.xml</id>
+	<id>https://blog.srikavin.me/tags/aslr/atom.xml</id>
 	<entry xml:lang="en">
 		<title>GCI - Fedora Project - Exploiting a Buffer Overflow Vulnerability</title>
 		<published>2019-12-15T00:00:00+00:00</published>
 		<updated>2019-12-15T00:00:00+00:00</updated>
-		<link href="/posts/gci-exploiting-a-buffer-overflow-vulnerability/" type="text/html"/>
-		<id>/posts/gci-exploiting-a-buffer-overflow-vulnerability/</id>
+		<link href="https://blog.srikavin.me/posts/gci-exploiting-a-buffer-overflow-vulnerability/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/gci-exploiting-a-buffer-overflow-vulnerability/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;p&gt;We are given a binary to exploit. By running &lt;code&gt;checksec&lt;&#x2F;code&gt; on it, we see that the binary has the following protections:
 [show-line-numbers]: false&lt;&#x2F;p&gt;
@@ -53,7 +53,7 @@ End of assembler dump.
 &lt;p&gt;Now that we have an understanding of what the binary does, we can construct a payload to get code execution. Since the canary is not enabled, we can overwrite the return address. However, because of PIE and ASLR, we don&#x27;t have any clear targets to jump to.&lt;&#x2F;p&gt;
 &lt;h3 id=&quot;where-do-we-jump&quot;&gt;Where do we jump?&lt;&#x2F;h3&gt;
 &lt;p&gt;The binary is dynamically linked and uses the system libc. We can find targets within the binary, when jumped to, result in a call to &lt;code&gt;execve(&amp;quot;&#x2F;bin&#x2F;sh&amp;quot;, NULL, NULL)&lt;&#x2F;code&gt; and lead to &amp;quot;a shell&amp;quot;.  The tool &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;david942j&#x2F;one_gadget&quot;&gt;one_gadget&lt;&#x2F;a&gt; finds offsets to these one gadgets within a given libc binary. Running &lt;code&gt;one_gadget libc.so.6&lt;&#x2F;code&gt; gives the following output:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;gci-exploiting-a-buffer-overflow-vulnerability&#x2F;5df7042c0898260951d4389c.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;gci-exploiting-a-buffer-overflow-vulnerability&#x2F;5df7042c0898260951d4389c.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;However, we don&#x27;t know the base address that libc is loaded at.&lt;&#x2F;p&gt;
 &lt;h3 id=&quot;how&quot;&gt;How?&lt;&#x2F;h3&gt;
 &lt;p&gt;Generally, the libc runtime handles initializes itself before calling &lt;code&gt;main&lt;&#x2F;code&gt;. This means that when &lt;code&gt;main&lt;&#x2F;code&gt; returns, we end up within libc. In fact, in this &lt;a href=&quot;https:&#x2F;&#x2F;asciinema.org&#x2F;a&#x2F;JRs1KT1HQCoDUSDAmW1r6CCcC&quot;&gt;asciinema&lt;&#x2F;a&gt;, we see that &lt;code&gt;main&lt;&#x2F;code&gt; returns to &lt;code&gt;__libc_start_main&lt;&#x2F;code&gt; within libc. &lt;&#x2F;p&gt;

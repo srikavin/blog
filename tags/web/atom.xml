@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 	<title> - web</title>
-	<link href="/tags/web/atom.xml" rel="self" type="application/atom+xml"/>
-  <link href="/"/>
+	<link href="https://blog.srikavin.me/tags/web/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2020-12-13T00:00:00+00:00</updated>
-	<id>/tags/web/atom.xml</id>
+	<id>https://blog.srikavin.me/tags/web/atom.xml</id>
 	<entry xml:lang="en">
 		<title>Abusing PHP Constants, Temporary Uploads, and FastCGI to Bypass Restrictions</title>
 		<published>2020-12-13T00:00:00+00:00</published>
 		<updated>2020-12-13T00:00:00+00:00</updated>
-		<link href="/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/" type="text/html"/>
-		<id>/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/</id>
+		<link href="https://blog.srikavin.me/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Can you obtain the more &lt;a href=&quot;https:&#x2F;&#x2F;securesecrets.asisctf.com&#x2F;Y0U_CANT_GUESS_THIS_5TUPLFGSGZYWXOKHINMBDWCKAGERCQJV.php&quot;&gt;secure&lt;&#x2F;a&gt;
 secret? Even with all those filters? I don&#x27;t think so :)&lt;&#x2F;p&gt;
 &lt;&#x2F;blockquote&gt;
-&lt;p&gt;We also have the &lt;a href=&quot;&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;configs.zip&quot;&gt;configuration files&lt;&#x2F;a&gt; from the previous challenge &lt;code&gt;Less Secure Secrets&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;We also have the &lt;a href=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;configs.zip&quot;&gt;configuration files&lt;&#x2F;a&gt; from the previous challenge &lt;code&gt;Less Secure Secrets&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
 &lt;p&gt;When we visit the given link, we see that the page prints out the source code of the current page:&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
 &lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#63a35c;&quot;&gt;html&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;&amp;gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#63a35c;&quot;&gt;head&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;&amp;gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#63a35c;&quot;&gt;head&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;&amp;gt;
@@ -111,11 +111,11 @@ caught by the set error handler and execution is stopped.&lt;&#x2F;p&gt;
 &lt;p&gt;PHP has globally defined constants. Using &lt;a href=&quot;https:&#x2F;&#x2F;www.php.net&#x2F;manual&#x2F;en&#x2F;function.get-defined-constants.php&quot;&gt;&lt;code&gt;get_defined_constants&lt;&#x2F;code&gt;&lt;&#x2F;a&gt;,
 we can get a list of all defined constants and their values. Since we can&#x27;t call this function on the remote server, I ran
 it locally using the provided Docker setup. &lt;&#x2F;p&gt;
-&lt;p&gt;Now that we have &lt;a href=&quot;&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;constants.txt&quot;&gt;a list of constants mappings&lt;&#x2F;a&gt;, we need to use them to construct a string.
+&lt;p&gt;Now that we have &lt;a href=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;constants.txt&quot;&gt;a list of constants mappings&lt;&#x2F;a&gt;, we need to use them to construct a string.
 Since we have both integer and string constants, we can index into a string constant using an integer constant. 
 For example, since &lt;code&gt;LIBXML_NOENT =&amp;gt; int(2)&lt;&#x2F;code&gt; and &lt;code&gt;LIBXML_LOADED_VERSION =&amp;gt; string(5) &amp;quot;20910&amp;quot;&lt;&#x2F;code&gt;, we can execute 
 &lt;code&gt;LIBXML_LOADED_VERSION[LIBXML_NOENT]&lt;&#x2F;code&gt; to get the character &#x27;9&#x27;.&lt;&#x2F;p&gt;
-&lt;p&gt;I wrote &lt;a href=&quot;&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;create_mappings.py&quot;&gt;a script&lt;&#x2F;a&gt; to create a mapping between letters and numbers to a version represented by constants. 
+&lt;p&gt;I wrote &lt;a href=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;create_mappings.py&quot;&gt;a script&lt;&#x2F;a&gt; to create a mapping between letters and numbers to a version represented by constants. 
 Not all characters were present within the string constants, but a large portion could be mapped to.&lt;&#x2F;p&gt;
 &lt;p&gt;We can now include arbitrary local files.&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;racing-upload-deletion&quot;&gt;Racing Upload Deletion&lt;&#x2F;h2&gt;
@@ -164,7 +164,7 @@ foreach($it as $f) {
     echo $f-&amp;gt;getFileName() . &amp;quot; &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#63a35c;&quot;&gt;br&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;&#x2F;&amp;gt;&amp;quot;;
 }
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;uploaded_files.png&quot; alt=&quot;Screenshot of uploaded files&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;uploaded_files.png&quot; alt=&quot;Screenshot of uploaded files&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;This doesn&#x27;t let us do much since we can only list files.&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;abusing-fastcgi-over-tcp-sockets&quot;&gt;Abusing FastCGI over TCP Sockets&lt;&#x2F;h2&gt;
 &lt;blockquote&gt;
@@ -228,15 +228,15 @@ $content &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;I URI encoded the script and stuck it into the &lt;code&gt;real_eval&lt;&#x2F;code&gt; parameter and included our &lt;code&gt;dicedicedice.php&lt;&#x2F;code&gt; script. Now, we 
 just have to send the FastCGI request as the POST body, and we will get the flag back in the response:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;flag.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;asisctf20-abusing-php-constants-to-bypass-eval-filters&#x2F;flag.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="en">
 		<title>redpwnCTF - tux fanpage</title>
 		<published>2020-06-25T00:00:00+00:00</published>
 		<updated>2020-06-25T00:00:00+00:00</updated>
-		<link href="/posts/redpwnctf20-tux-fanpage/" type="text/html"/>
-		<id>/posts/redpwnctf20-tux-fanpage/</id>
+		<link href="https://blog.srikavin.me/posts/redpwnctf20-tux-fanpage/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/redpwnctf20-tux-fanpage/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;My friend made a fanpage for Tux; can you steal the source code for me?&lt;&#x2F;p&gt;
@@ -297,8 +297,8 @@ just have to send the FastCGI request as the POST body, and we will get the flag
 		<title>ångstromCTF - LeetTube</title>
 		<published>2020-03-18T23:36:12.437+00:00</published>
 		<updated>2020-03-29T02:10:25.394+00:00</updated>
-		<link href="/posts/angstromctf-leettube/" type="text/html"/>
-		<id>/posts/angstromctf-leettube/</id>
+		<link href="https://blog.srikavin.me/posts/angstromctf-leettube/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/angstromctf-leettube/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;I developed a new video streaming service just for hackers. Learn all about viruses, IP addresses, and more on 
@@ -306,7 +306,7 @@ just have to send the FastCGI request as the POST body, and we will get the flag
 and the &lt;a href=&quot;https:&#x2F;&#x2F;files.actf.co&#x2F;929adf47a8fe915cc89618c9f4ec38068cc08525087171832cdd3c9c3f6db897&#x2F;Dockerfile&quot;&gt;Dockerfile&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
 &lt;p&gt;Note: the server is also running behind NGINX.&lt;&#x2F;p&gt;
 &lt;&#x2F;blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;angstromctf-leettube&#x2F;5e72b03ad6d41508cf61f794.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;angstromctf-leettube&#x2F;5e72b03ad6d41508cf61f794.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;The application is simple enough--It serves videos and has both public and unlisted videos. 
 The Dockerfile uses &lt;code&gt;FROM kmh11&#x2F;python3.1&lt;&#x2F;code&gt;, which is weird because &lt;a href=&quot;https:&#x2F;&#x2F;www.python.org&#x2F;download&#x2F;releases&#x2F;3.1&#x2F;&quot;&gt;Python 3.1&lt;&#x2F;a&gt; 
 was released nearly 11 years ago.  To ensure the name wasn&#x27;t misleading, I ended up verifying the Python binary in the 
@@ -394,7 +394,7 @@ httpd.serve_forever()
 &lt;p&gt;This means if we send &lt;code&gt;&#x2F;videos&#x2F;..&#x2F;..&#x2F;..&#x2F;etc&#x2F;passwd&lt;&#x2F;code&gt;, we should receive the passwd file.&lt;&#x2F;p&gt;
 &lt;h3 id=&quot;bypassing-nginx-waf&quot;&gt;Bypassing Nginx WAF&lt;&#x2F;h3&gt;
 &lt;p&gt;Unfortunately, Nginx blocks the request:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;angstromctf-leettube&#x2F;5e72b1a3d6d41508cf61f797.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;angstromctf-leettube&#x2F;5e72b1a3d6d41508cf61f797.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;My team was stuck at this point for nearly an entire day. After reading the 
 &lt;a href=&quot;https:&#x2F;&#x2F;docs.python.org&#x2F;3&#x2F;library&#x2F;http.server.html&quot;&gt;documentation&lt;&#x2F;a&gt; for &lt;code&gt;BaseHTTPRequestHandler&lt;&#x2F;code&gt;, I realized that it 
 didn&#x27;t have a &lt;code&gt;query&lt;&#x2F;code&gt; variable. This meant that &lt;code&gt;self.path&lt;&#x2F;code&gt; included the query parameters. However, this application did 
@@ -408,7 +408,7 @@ the script. An interesting target is &lt;code&gt;&#x2F;proc&#x2F;self&#x2F;&lt;&
 receive any output. &lt;&#x2F;p&gt;
 &lt;p&gt;The psuedofile &lt;code&gt;&#x2F;proc&#x2F;self&#x2F;mem&lt;&#x2F;code&gt; contains the memory of the calling program. Luckily, we can seek into the file at an 
 arbitrary location using the &lt;code&gt;Range&lt;&#x2F;code&gt; header. By reading &lt;code&gt;&#x2F;proc&#x2F;self&#x2F;maps&lt;&#x2F;code&gt;, we can find the address of the Python heap:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;angstromctf-leettube&#x2F;5e72b392d6d41508cf61f799.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;angstromctf-leettube&#x2F;5e72b392d6d41508cf61f799.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;In the Python heap, only UTF-8 strings containing the name of the loaded files were present. From here, we decided to 
 dump other areas of the Python process&#x27;s memory. We found the contents of the video files in an anonymous memory page:&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
@@ -416,15 +416,15 @@ dump other areas of the Python process&#x27;s memory. We found the contents of t
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;finding-the-flag&quot;&gt;Finding the Flag&lt;&#x2F;h2&gt;
 &lt;p&gt;We&#x27;re looking for the &lt;code&gt;.mp4&lt;&#x2F;code&gt; file containing the flag. The MP4 header is &lt;code&gt; 66 74 79 70&lt;&#x2F;code&gt; at offset &lt;code&gt;4&lt;&#x2F;code&gt;. From this we can 
 search for these characters and extract the file. We get a video with the flag:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;angstromctf-leettube&#x2F;5e72b4d1d6d41508cf61f79b.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;angstromctf-leettube&#x2F;5e72b4d1d6d41508cf61f79b.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="en">
 		<title>picoCTF 2019 - Java Script Kiddie 2</title>
 		<published>2019-10-12T22:48:41.356+00:00</published>
 		<updated>2019-11-14T04:43:58.202+00:00</updated>
-		<link href="/posts/picoctf-2019-java-script-kiddie-2/" type="text/html"/>
-		<id>/posts/picoctf-2019-java-script-kiddie-2/</id>
+		<link href="https://blog.srikavin.me/posts/picoctf-2019-java-script-kiddie-2/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/picoctf-2019-java-script-kiddie-2/</id>
 		<content type="html">&lt;p&gt;We are given a website, that is nearly identical to Java Script Kiddie 1. The &lt;code&gt;assemble_png&lt;&#x2F;code&gt; function takes in a key of 
 length 32, and manipulates the bytes to decode the &lt;code&gt;src&lt;&#x2F;code&gt; attribute of an image.&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
@@ -520,7 +520,7 @@ character for every two input digits, this occasionally requires manual interven
 }
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;After running this script, we are able to see the decoded image:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2019-java-script-kiddie-2&#x2F;5da2582c0ac7cd093dc392d5.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2019-java-script-kiddie-2&#x2F;5da2582c0ac7cd093dc392d5.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;Decoding the QR code gives us the flag:&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
 &lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;picoCTF{b19be0d3b70ffc63b6367ecf136e853e}
@@ -530,8 +530,8 @@ character for every two input digits, this occasionally requires manual interven
 		<title>picoCTF 2018 - Lambdash</title>
 		<published>2018-10-18T14:08:16.365+00:00</published>
 		<updated>2019-02-09T07:15:03.393+00:00</updated>
-		<link href="/posts/picoctf-2018-lambdash/" type="text/html"/>
-		<id>/posts/picoctf-2018-lambdash/</id>
+		<link href="https://blog.srikavin.me/posts/picoctf-2018-lambdash/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/picoctf-2018-lambdash/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;C? Who uses that anymore. If we really want to be secure, we should all start learning lambda calculus. http:&#x2F;&#x2F;2018shell2.picoctf.com:41367&lt;&#x2F;p&gt;
@@ -562,8 +562,8 @@ gives us the flag: &lt;code&gt;picoCTF{1_white_lie_and_your_proto_gets_pwnd_4679
 		<title>picoCTF 2018 - Flaskcards and Freedom</title>
 		<published>2018-10-12T21:02:44.420+00:00</published>
 		<updated>2018-10-12T22:55:27.216+00:00</updated>
-		<link href="/posts/picoctf-2018-flaskcards-and-freedom/" type="text/html"/>
-		<id>/posts/picoctf-2018-flaskcards-and-freedom/</id>
+		<link href="https://blog.srikavin.me/posts/picoctf-2018-flaskcards-and-freedom/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/picoctf-2018-flaskcards-and-freedom/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&amp;quot;There seem to be a few more files stored on the flash card server but we can&#x27;t login. Can you?&amp;quot;&lt;&#x2F;p&gt;
@@ -571,19 +571,19 @@ gives us the flag: &lt;code&gt;picoCTF{1_white_lie_and_your_proto_gets_pwnd_4679
 &lt;h1 id=&quot;solution&quot;&gt;Solution&lt;&#x2F;h1&gt;
 &lt;p&gt;The site appears to be the same as the previous flaskcard challenges &lt;code&gt;Flaskcards Skeleton Key&lt;&#x2F;code&gt; and  &lt;code&gt;Flaskcards.&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;When we create an account, we are presented with the following screen:
-&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc10c83f1882e545d7f430a.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc10c83f1882e545d7f430a.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;We can try server side injection. If we type in &lt;code&gt;{{1+1}}&lt;&#x2F;code&gt;, the webpage displays &lt;code&gt;2&lt;&#x2F;code&gt;.  Any values in double brackets is being executed on the server. After trying to find hidden variables, such as &lt;code&gt;config&lt;&#x2F;code&gt;, &lt;code&gt;flag&lt;&#x2F;code&gt;, etc; I decided to look for a remote code execution vulnerability. &lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc114c3b7c5001b74f57e35.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc114c3b7c5001b74f57e35.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;We can list all of the loaded classes by calling &lt;code&gt;__subclasses__&lt;&#x2F;code&gt; on the base object class. To do this, I used the &lt;code&gt;mro&lt;&#x2F;code&gt; method, which lists all of the superclasses, including &lt;code&gt;object&lt;&#x2F;code&gt;. Calling this on a string gives easy access to the base object class.&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc114f6b7c5001b74f57e37.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc114f6b7c5001b74f57e37.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;The object class is index &lt;code&gt;1&lt;&#x2F;code&gt; when calling &lt;code&gt;&#x27;&#x27;.__class__.mro()&lt;&#x2F;code&gt;. So we can access the subclasses of object by injecting &lt;code&gt;&#x27;&#x27;.__class__.mro()[1].__subclasses__()&lt;&#x2F;code&gt;. This results in a lot of output.&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc11620b7c5001b74f57e39.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc11620b7c5001b74f57e39.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;After cleaning up the output, I found that &lt;code&gt;&amp;lt;class &#x27;subprocess.Popen&#x27;&amp;gt;&lt;&#x2F;code&gt; was index 48.&lt;&#x2F;p&gt;
 &lt;p&gt;From there it is possible to run &lt;code&gt;ls&lt;&#x2F;code&gt; with &lt;code&gt;{{&#x27;&#x27;.__class__.mro()[1].__subclasses__()[48]([&#x27;ls&#x27;], stdout=-1).communicate()}}&lt;&#x2F;code&gt;. Running with &lt;code&gt;-1&lt;&#x2F;code&gt; results in the output being returned as a tuple:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc11752b7c5001b74f57e3c.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc11752b7c5001b74f57e3c.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;Calling &lt;code&gt;ls&lt;&#x2F;code&gt; lists the files in the directory. All that&#x27;s left is to call &lt;code&gt;cat flag&lt;&#x2F;code&gt; with &lt;code&gt;{{&#x27;&#x27;.__class__.mro()[1].__subclasses__()[380]([&#x27;cat&#x27;, &#x27;flag&#x27;], stdout=-1).communicate()}}&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc117aab7c5001b74f57e3e.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc117aab7c5001b74f57e3e.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
 </feed>

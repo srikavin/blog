@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 	<title> - picoctf19</title>
-	<link href="/tags/picoctf19/atom.xml" rel="self" type="application/atom+xml"/>
-  <link href="/"/>
+	<link href="https://blog.srikavin.me/tags/picoctf19/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2019-11-14T04:43:58.202+00:00</updated>
-	<id>/tags/picoctf19/atom.xml</id>
+	<id>https://blog.srikavin.me/tags/picoctf19/atom.xml</id>
 	<entry xml:lang="en">
 		<title>picoCTF 2019 - Java Script Kiddie 2</title>
 		<published>2019-10-12T22:48:41.356+00:00</published>
 		<updated>2019-11-14T04:43:58.202+00:00</updated>
-		<link href="/posts/picoctf-2019-java-script-kiddie-2/" type="text/html"/>
-		<id>/posts/picoctf-2019-java-script-kiddie-2/</id>
+		<link href="https://blog.srikavin.me/posts/picoctf-2019-java-script-kiddie-2/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/picoctf-2019-java-script-kiddie-2/</id>
 		<content type="html">&lt;p&gt;We are given a website, that is nearly identical to Java Script Kiddie 1. The &lt;code&gt;assemble_png&lt;&#x2F;code&gt; function takes in a key of 
 length 32, and manipulates the bytes to decode the &lt;code&gt;src&lt;&#x2F;code&gt; attribute of an image.&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
@@ -107,7 +107,7 @@ character for every two input digits, this occasionally requires manual interven
 }
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;After running this script, we are able to see the decoded image:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2019-java-script-kiddie-2&#x2F;5da2582c0ac7cd093dc392d5.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2019-java-script-kiddie-2&#x2F;5da2582c0ac7cd093dc392d5.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;Decoding the QR code gives us the flag:&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
 &lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;picoCTF{b19be0d3b70ffc63b6367ecf136e853e}
@@ -117,14 +117,14 @@ character for every two input digits, this occasionally requires manual interven
 		<title>picoCTF 2019 - shark on wire 2</title>
 		<published>2019-10-09T20:23:07.387+00:00</published>
 		<updated>2019-11-14T04:07:08.987+00:00</updated>
-		<link href="/posts/picoctf-2019-shark-on-wire-2/" type="text/html"/>
-		<id>/posts/picoctf-2019-shark-on-wire-2/</id>
+		<link href="https://blog.srikavin.me/posts/picoctf-2019-shark-on-wire-2/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/picoctf-2019-shark-on-wire-2/</id>
 		<content type="html">&lt;p&gt;We are given a packet capture with little description of what to look for. While looking through the UDP streams, I came
 across two packets with the text &lt;code&gt;start&lt;&#x2F;code&gt; and &lt;code&gt;end&lt;&#x2F;code&gt; within in the data section:&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;strong&gt;Packet 1104:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2019-shark-on-wire-2&#x2F;5d9e3cb26bac7409ac9e7359.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2019-shark-on-wire-2&#x2F;5d9e3cb26bac7409ac9e7359.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;strong&gt;Packet 1303:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2019-shark-on-wire-2&#x2F;5d9e3cf96bac7409ac9e735b.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2019-shark-on-wire-2&#x2F;5d9e3cf96bac7409ac9e735b.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;The only bytes changing between the start packet (#1104) and the next UDP packet (#1106) were the data field, checksums, 
 and the source port. I noticed that the difference between the source ports of these two packets (5112 - 5000 = 112) was 
 the ASCII code for the letter &lt;code&gt;p&lt;&#x2F;code&gt;. I repeated this for all the UDP packets (excluding MDNS queries) and found the 

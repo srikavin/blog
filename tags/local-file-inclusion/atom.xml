@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 	<title> - local-file-inclusion</title>
-	<link href="/tags/local-file-inclusion/atom.xml" rel="self" type="application/atom+xml"/>
-  <link href="/"/>
+	<link href="https://blog.srikavin.me/tags/local-file-inclusion/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2020-06-25T00:00:00+00:00</updated>
-	<id>/tags/local-file-inclusion/atom.xml</id>
+	<id>https://blog.srikavin.me/tags/local-file-inclusion/atom.xml</id>
 	<entry xml:lang="en">
 		<title>redpwnCTF - tux fanpage</title>
 		<published>2020-06-25T00:00:00+00:00</published>
 		<updated>2020-06-25T00:00:00+00:00</updated>
-		<link href="/posts/redpwnctf20-tux-fanpage/" type="text/html"/>
-		<id>/posts/redpwnctf20-tux-fanpage/</id>
+		<link href="https://blog.srikavin.me/posts/redpwnctf20-tux-fanpage/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/redpwnctf20-tux-fanpage/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;My friend made a fanpage for Tux; can you steal the source code for me?&lt;&#x2F;p&gt;
@@ -72,8 +72,8 @@
 		<title>ångstromCTF - LeetTube</title>
 		<published>2020-03-18T23:36:12.437+00:00</published>
 		<updated>2020-03-29T02:10:25.394+00:00</updated>
-		<link href="/posts/angstromctf-leettube/" type="text/html"/>
-		<id>/posts/angstromctf-leettube/</id>
+		<link href="https://blog.srikavin.me/posts/angstromctf-leettube/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/angstromctf-leettube/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;I developed a new video streaming service just for hackers. Learn all about viruses, IP addresses, and more on 
@@ -81,7 +81,7 @@
 and the &lt;a href=&quot;https:&#x2F;&#x2F;files.actf.co&#x2F;929adf47a8fe915cc89618c9f4ec38068cc08525087171832cdd3c9c3f6db897&#x2F;Dockerfile&quot;&gt;Dockerfile&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
 &lt;p&gt;Note: the server is also running behind NGINX.&lt;&#x2F;p&gt;
 &lt;&#x2F;blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;angstromctf-leettube&#x2F;5e72b03ad6d41508cf61f794.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;angstromctf-leettube&#x2F;5e72b03ad6d41508cf61f794.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;The application is simple enough--It serves videos and has both public and unlisted videos. 
 The Dockerfile uses &lt;code&gt;FROM kmh11&#x2F;python3.1&lt;&#x2F;code&gt;, which is weird because &lt;a href=&quot;https:&#x2F;&#x2F;www.python.org&#x2F;download&#x2F;releases&#x2F;3.1&#x2F;&quot;&gt;Python 3.1&lt;&#x2F;a&gt; 
 was released nearly 11 years ago.  To ensure the name wasn&#x27;t misleading, I ended up verifying the Python binary in the 
@@ -169,7 +169,7 @@ httpd.serve_forever()
 &lt;p&gt;This means if we send &lt;code&gt;&#x2F;videos&#x2F;..&#x2F;..&#x2F;..&#x2F;etc&#x2F;passwd&lt;&#x2F;code&gt;, we should receive the passwd file.&lt;&#x2F;p&gt;
 &lt;h3 id=&quot;bypassing-nginx-waf&quot;&gt;Bypassing Nginx WAF&lt;&#x2F;h3&gt;
 &lt;p&gt;Unfortunately, Nginx blocks the request:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;angstromctf-leettube&#x2F;5e72b1a3d6d41508cf61f797.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;angstromctf-leettube&#x2F;5e72b1a3d6d41508cf61f797.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;My team was stuck at this point for nearly an entire day. After reading the 
 &lt;a href=&quot;https:&#x2F;&#x2F;docs.python.org&#x2F;3&#x2F;library&#x2F;http.server.html&quot;&gt;documentation&lt;&#x2F;a&gt; for &lt;code&gt;BaseHTTPRequestHandler&lt;&#x2F;code&gt;, I realized that it 
 didn&#x27;t have a &lt;code&gt;query&lt;&#x2F;code&gt; variable. This meant that &lt;code&gt;self.path&lt;&#x2F;code&gt; included the query parameters. However, this application did 
@@ -183,7 +183,7 @@ the script. An interesting target is &lt;code&gt;&#x2F;proc&#x2F;self&#x2F;&lt;&
 receive any output. &lt;&#x2F;p&gt;
 &lt;p&gt;The psuedofile &lt;code&gt;&#x2F;proc&#x2F;self&#x2F;mem&lt;&#x2F;code&gt; contains the memory of the calling program. Luckily, we can seek into the file at an 
 arbitrary location using the &lt;code&gt;Range&lt;&#x2F;code&gt; header. By reading &lt;code&gt;&#x2F;proc&#x2F;self&#x2F;maps&lt;&#x2F;code&gt;, we can find the address of the Python heap:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;angstromctf-leettube&#x2F;5e72b392d6d41508cf61f799.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;angstromctf-leettube&#x2F;5e72b392d6d41508cf61f799.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;In the Python heap, only UTF-8 strings containing the name of the loaded files were present. From here, we decided to 
 dump other areas of the Python process&#x27;s memory. We found the contents of the video files in an anonymous memory page:&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
@@ -191,7 +191,7 @@ dump other areas of the Python process&#x27;s memory. We found the contents of t
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;finding-the-flag&quot;&gt;Finding the Flag&lt;&#x2F;h2&gt;
 &lt;p&gt;We&#x27;re looking for the &lt;code&gt;.mp4&lt;&#x2F;code&gt; file containing the flag. The MP4 header is &lt;code&gt; 66 74 79 70&lt;&#x2F;code&gt; at offset &lt;code&gt;4&lt;&#x2F;code&gt;. From this we can 
 search for these characters and extract the file. We get a video with the flag:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;angstromctf-leettube&#x2F;5e72b4d1d6d41508cf61f79b.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;angstromctf-leettube&#x2F;5e72b4d1d6d41508cf61f79b.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
 </feed>

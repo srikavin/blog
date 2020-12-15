@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 	<title> - nactf2019</title>
-	<link href="/tags/nactf2019/atom.xml" rel="self" type="application/atom+xml"/>
-  <link href="/"/>
+	<link href="https://blog.srikavin.me/tags/nactf2019/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2019-11-24T03:53:01.555+00:00</updated>
-	<id>/tags/nactf2019/atom.xml</id>
+	<id>https://blog.srikavin.me/tags/nactf2019/atom.xml</id>
 	<entry xml:lang="en">
 		<title>nactf 2019 - Loopy #0</title>
 		<published>2019-09-22T20:39:04.285+00:00</published>
 		<updated>2019-11-24T03:53:01.555+00:00</updated>
-		<link href="/posts/nactf-2019-loopy-0/" type="text/html"/>
-		<id>/posts/nactf-2019-loopy-0/</id>
+		<link href="https://blog.srikavin.me/posts/nactf-2019-loopy-0/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/nactf-2019-loopy-0/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;This program is quite short, but has got &lt;code&gt;printf&lt;&#x2F;code&gt; and &lt;code&gt;gets&lt;&#x2F;code&gt; in it! This shouldn&#x27;t be too hard, right?&lt;&#x2F;p&gt;
@@ -45,7 +45,7 @@ this, we need to leak the base address that &lt;code&gt;libc&lt;&#x2F;code&gt; i
 &lt;h2 id=&quot;leaking-libc&quot;&gt;Leaking libc&lt;&#x2F;h2&gt;
 &lt;p&gt;To leak &lt;code&gt;libc&lt;&#x2F;code&gt;, we can use the format string vulnerability to read from the GOT. By trial and error, we see that the 
 stack offset to &lt;code&gt;buf&lt;&#x2F;code&gt; with &lt;code&gt;printf&lt;&#x2F;code&gt; is 4: &lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;nactf-2019-loopy-0&#x2F;5d87da366e58ed23d8620866.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;nactf-2019-loopy-0&#x2F;5d87da366e58ed23d8620866.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;So, we can use &lt;code&gt;%4$s&lt;&#x2F;code&gt; to read the fourth value on the stack as a string. Since we control this value, we can read 
 arbitrary addresses.&lt;&#x2F;p&gt;
 &lt;p&gt;To read the value of &lt;code&gt;puts&lt;&#x2F;code&gt; in the GOT (address is &lt;code&gt;0x804c010&lt;&#x2F;code&gt;), we can do the following:&lt;&#x2F;p&gt;
@@ -148,8 +148,8 @@ r.interactive()
 		<title>nactf 2019 - Dr. J&#x27;s Group Test Randomizer #2: BBOB</title>
 		<published>2019-09-22T17:48:52.836+00:00</published>
 		<updated>2019-09-22T22:03:40.121+00:00</updated>
-		<link href="/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/" type="text/html"/>
-		<id>/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/</id>
+		<link href="https://blog.srikavin.me/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;This is it. The last group test of the year. Dr. J patched his prng again so numbers won&#x27;t repeat, so I guess 

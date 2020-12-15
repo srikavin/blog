@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 	<title> - reversing</title>
-	<link href="/tags/reversing/atom.xml" rel="self" type="application/atom+xml"/>
-  <link href="/"/>
+	<link href="https://blog.srikavin.me/tags/reversing/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2020-06-25T00:00:00+00:00</updated>
-	<id>/tags/reversing/atom.xml</id>
+	<id>https://blog.srikavin.me/tags/reversing/atom.xml</id>
 	<entry xml:lang="en">
 		<title>redpwnCTF - aall</title>
 		<published>2020-06-25T00:00:00+00:00</published>
 		<updated>2020-06-25T00:00:00+00:00</updated>
-		<link href="/posts/redpwnctf20-aall/" type="text/html"/>
-		<id>/posts/redpwnctf20-aall/</id>
+		<link href="https://blog.srikavin.me/posts/redpwnctf20-aall/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/redpwnctf20-aall/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;how many layers of vm are you on&lt;&#x2F;p&gt;
@@ -142,8 +142,8 @@ payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&q
 		<title>picoCTF 2019 - Java Script Kiddie 2</title>
 		<published>2019-10-12T22:48:41.356+00:00</published>
 		<updated>2019-11-14T04:43:58.202+00:00</updated>
-		<link href="/posts/picoctf-2019-java-script-kiddie-2/" type="text/html"/>
-		<id>/posts/picoctf-2019-java-script-kiddie-2/</id>
+		<link href="https://blog.srikavin.me/posts/picoctf-2019-java-script-kiddie-2/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/picoctf-2019-java-script-kiddie-2/</id>
 		<content type="html">&lt;p&gt;We are given a website, that is nearly identical to Java Script Kiddie 1. The &lt;code&gt;assemble_png&lt;&#x2F;code&gt; function takes in a key of 
 length 32, and manipulates the bytes to decode the &lt;code&gt;src&lt;&#x2F;code&gt; attribute of an image.&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
@@ -239,7 +239,7 @@ character for every two input digits, this occasionally requires manual interven
 }
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;After running this script, we are able to see the decoded image:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2019-java-script-kiddie-2&#x2F;5da2582c0ac7cd093dc392d5.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2019-java-script-kiddie-2&#x2F;5da2582c0ac7cd093dc392d5.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;Decoding the QR code gives us the flag:&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
 &lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;picoCTF{b19be0d3b70ffc63b6367ecf136e853e}
@@ -249,8 +249,8 @@ character for every two input digits, this occasionally requires manual interven
 		<title>picoCTF 2018 - circuit123</title>
 		<published>2018-10-17T02:23:29.709+00:00</published>
 		<updated>2018-10-17T02:29:08.242+00:00</updated>
-		<link href="/posts/picoctf-2018-circuit123/" type="text/html"/>
-		<id>/posts/picoctf-2018-circuit123/</id>
+		<link href="https://blog.srikavin.me/posts/picoctf-2018-circuit123/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/picoctf-2018-circuit123/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Can you crack the key to &lt;a href=&quot;https:&#x2F;&#x2F;2018shell2.picoctf.com&#x2F;static&#x2F;27ebc8a7ba2202cfcba1471080e05e2c&#x2F;decrypt.py&quot;&gt;decrypt&lt;&#x2F;a&gt; 
@@ -273,8 +273,8 @@ length of the bit vector, I used a conservative estimate of &lt;code&gt;128&lt;&
 		<title>picoCTF 2018 - be-quick-or-be-dead-3</title>
 		<published>2018-10-16T13:53:29.636+00:00</published>
 		<updated>2018-10-19T00:42:37.752+00:00</updated>
-		<link href="/posts/picoctf-2018-be-quick-or-be-dead-3/" type="text/html"/>
-		<id>/posts/picoctf-2018-be-quick-or-be-dead-3/</id>
+		<link href="https://blog.srikavin.me/posts/picoctf-2018-be-quick-or-be-dead-3/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/picoctf-2018-be-quick-or-be-dead-3/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;As the &lt;a href=&quot;https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v=CTt1vk9nM9c&quot;&gt;song&lt;&#x2F;a&gt; draws closer to the end, another executable 

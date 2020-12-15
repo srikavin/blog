@@ -1,235 +1,235 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>/</loc>
+        <loc>https://blog.srikavin.me/</loc>
     </url>
     <url>
-        <loc>/categories/</loc>
+        <loc>https://blog.srikavin.me/categories/</loc>
     </url>
     <url>
-        <loc>/categories/ctf-writeups/</loc>
+        <loc>https://blog.srikavin.me/categories/ctf-writeups/</loc>
     </url>
     <url>
-        <loc>/posts/</loc>
+        <loc>https://blog.srikavin.me/posts/</loc>
     </url>
     <url>
-        <loc>/posts/angstromctf-leettube/</loc>
+        <loc>https://blog.srikavin.me/posts/angstromctf-leettube/</loc>
         <lastmod>2020-03-29T02:10:25.394Z</lastmod>
     </url>
     <url>
-        <loc>/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/</loc>
+        <loc>https://blog.srikavin.me/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/</loc>
         <lastmod>2020-12-13</lastmod>
     </url>
     <url>
-        <loc>/posts/gci-exploiting-a-buffer-overflow-vulnerability/</loc>
+        <loc>https://blog.srikavin.me/posts/gci-exploiting-a-buffer-overflow-vulnerability/</loc>
         <lastmod>2019-12-15</lastmod>
     </url>
     <url>
-        <loc>/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/</loc>
+        <loc>https://blog.srikavin.me/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/</loc>
         <lastmod>2019-09-22T22:03:40.121Z</lastmod>
     </url>
     <url>
-        <loc>/posts/nactf-2019-loopy-0/</loc>
+        <loc>https://blog.srikavin.me/posts/nactf-2019-loopy-0/</loc>
         <lastmod>2019-11-24T03:53:01.555Z</lastmod>
     </url>
     <url>
-        <loc>/posts/overthewire-bandit/</loc>
+        <loc>https://blog.srikavin.me/posts/overthewire-bandit/</loc>
         <lastmod>2019-09-22T19:49:29.442Z</lastmod>
     </url>
     <url>
-        <loc>/posts/picoctf-2018-be-quick-or-be-dead-3/</loc>
+        <loc>https://blog.srikavin.me/posts/picoctf-2018-be-quick-or-be-dead-3/</loc>
         <lastmod>2018-10-19T00:42:37.752Z</lastmod>
     </url>
     <url>
-        <loc>/posts/picoctf-2018-circuit123/</loc>
+        <loc>https://blog.srikavin.me/posts/picoctf-2018-circuit123/</loc>
         <lastmod>2018-10-17T02:29:08.242Z</lastmod>
     </url>
     <url>
-        <loc>/posts/picoctf-2018-dog-or-frog/</loc>
+        <loc>https://blog.srikavin.me/posts/picoctf-2018-dog-or-frog/</loc>
         <lastmod>2018-10-14T06:43:05.105Z</lastmod>
     </url>
     <url>
-        <loc>/posts/picoctf-2018-electric/</loc>
+        <loc>https://blog.srikavin.me/posts/picoctf-2018-electric/</loc>
         <lastmod>2018-12-28T23:10:12.884Z</lastmod>
     </url>
     <url>
-        <loc>/posts/picoctf-2018-flaskcards-and-freedom/</loc>
+        <loc>https://blog.srikavin.me/posts/picoctf-2018-flaskcards-and-freedom/</loc>
         <lastmod>2018-10-12T22:55:27.216Z</lastmod>
     </url>
     <url>
-        <loc>/posts/picoctf-2018-lambdash/</loc>
+        <loc>https://blog.srikavin.me/posts/picoctf-2018-lambdash/</loc>
         <lastmod>2019-02-09T07:15:03.393Z</lastmod>
     </url>
     <url>
-        <loc>/posts/picoctf-2019-java-script-kiddie-2/</loc>
+        <loc>https://blog.srikavin.me/posts/picoctf-2019-java-script-kiddie-2/</loc>
         <lastmod>2019-11-14T04:43:58.202Z</lastmod>
     </url>
     <url>
-        <loc>/posts/picoctf-2019-shark-on-wire-2/</loc>
+        <loc>https://blog.srikavin.me/posts/picoctf-2019-shark-on-wire-2/</loc>
         <lastmod>2019-11-14T04:07:08.987Z</lastmod>
     </url>
     <url>
-        <loc>/posts/pwnable-kr-toddler-s-bottle/</loc>
+        <loc>https://blog.srikavin.me/posts/pwnable-kr-toddler-s-bottle/</loc>
         <lastmod>2020-04-27T13:02:48.347Z</lastmod>
     </url>
     <url>
-        <loc>/posts/pwnable-tw-applestore/</loc>
+        <loc>https://blog.srikavin.me/posts/pwnable-tw-applestore/</loc>
         <lastmod>2020-11-06</lastmod>
     </url>
     <url>
-        <loc>/posts/pwnable-tw-hacknote/</loc>
+        <loc>https://blog.srikavin.me/posts/pwnable-tw-hacknote/</loc>
         <lastmod>2020-03-23T05:57:18.669Z</lastmod>
     </url>
     <url>
-        <loc>/posts/pwnable-tw-orw/</loc>
+        <loc>https://blog.srikavin.me/posts/pwnable-tw-orw/</loc>
         <lastmod>2019-09-15T19:37:08.225Z</lastmod>
     </url>
     <url>
-        <loc>/posts/pwnable-tw-seethefile/</loc>
+        <loc>https://blog.srikavin.me/posts/pwnable-tw-seethefile/</loc>
         <lastmod>2020-03-30T08:23:31.139Z</lastmod>
     </url>
     <url>
-        <loc>/posts/pwnable-tw-silver-bullet/</loc>
+        <loc>https://blog.srikavin.me/posts/pwnable-tw-silver-bullet/</loc>
         <lastmod>2020-02-04T19:12:43.206Z</lastmod>
     </url>
     <url>
-        <loc>/posts/pwnable-tw-start/</loc>
+        <loc>https://blog.srikavin.me/posts/pwnable-tw-start/</loc>
         <lastmod>2019-11-23T19:32:29.189Z</lastmod>
     </url>
     <url>
-        <loc>/posts/pwnable-tw-tcache-tear/</loc>
+        <loc>https://blog.srikavin.me/posts/pwnable-tw-tcache-tear/</loc>
         <lastmod>2020-03-02T18:52:31.838Z</lastmod>
     </url>
     <url>
-        <loc>/posts/redpwnctf20-aall/</loc>
+        <loc>https://blog.srikavin.me/posts/redpwnctf20-aall/</loc>
         <lastmod>2020-06-25</lastmod>
     </url>
     <url>
-        <loc>/posts/redpwnctf20-tux-fanpage/</loc>
+        <loc>https://blog.srikavin.me/posts/redpwnctf20-tux-fanpage/</loc>
         <lastmod>2020-06-25</lastmod>
     </url>
     <url>
-        <loc>/posts/uiuctf20-solving-minecraft-captchas/</loc>
+        <loc>https://blog.srikavin.me/posts/uiuctf20-solving-minecraft-captchas/</loc>
         <lastmod>2020-11-09</lastmod>
     </url>
     <url>
-        <loc>/tags/</loc>
+        <loc>https://blog.srikavin.me/tags/</loc>
     </url>
     <url>
-        <loc>/tags/adversarial-learning/</loc>
+        <loc>https://blog.srikavin.me/tags/adversarial-learning/</loc>
     </url>
     <url>
-        <loc>/tags/aes-ctr/</loc>
+        <loc>https://blog.srikavin.me/tags/aes-ctr/</loc>
     </url>
     <url>
-        <loc>/tags/aes/</loc>
+        <loc>https://blog.srikavin.me/tags/aes/</loc>
     </url>
     <url>
-        <loc>/tags/angstromctf2020/</loc>
+        <loc>https://blog.srikavin.me/tags/angstromctf2020/</loc>
     </url>
     <url>
-        <loc>/tags/asisctf-finals2020/</loc>
+        <loc>https://blog.srikavin.me/tags/asisctf-finals2020/</loc>
     </url>
     <url>
-        <loc>/tags/aslr/</loc>
+        <loc>https://blog.srikavin.me/tags/aslr/</loc>
     </url>
     <url>
-        <loc>/tags/assembly/</loc>
+        <loc>https://blog.srikavin.me/tags/assembly/</loc>
     </url>
     <url>
-        <loc>/tags/binary-exploitation/</loc>
+        <loc>https://blog.srikavin.me/tags/binary-exploitation/</loc>
     </url>
     <url>
-        <loc>/tags/buffer-overflow/</loc>
+        <loc>https://blog.srikavin.me/tags/buffer-overflow/</loc>
     </url>
     <url>
-        <loc>/tags/cryptography/</loc>
+        <loc>https://blog.srikavin.me/tags/cryptography/</loc>
     </url>
     <url>
-        <loc>/tags/double-free/</loc>
+        <loc>https://blog.srikavin.me/tags/double-free/</loc>
     </url>
     <url>
-        <loc>/tags/file-stream-oriented-programming/</loc>
+        <loc>https://blog.srikavin.me/tags/file-stream-oriented-programming/</loc>
     </url>
     <url>
-        <loc>/tags/format-string/</loc>
+        <loc>https://blog.srikavin.me/tags/format-string/</loc>
     </url>
     <url>
-        <loc>/tags/google-code-in/</loc>
+        <loc>https://blog.srikavin.me/tags/google-code-in/</loc>
     </url>
     <url>
-        <loc>/tags/heap-exploitation/</loc>
+        <loc>https://blog.srikavin.me/tags/heap-exploitation/</loc>
     </url>
     <url>
-        <loc>/tags/javascript/</loc>
+        <loc>https://blog.srikavin.me/tags/javascript/</loc>
     </url>
     <url>
-        <loc>/tags/local-file-inclusion/</loc>
+        <loc>https://blog.srikavin.me/tags/local-file-inclusion/</loc>
     </url>
     <url>
-        <loc>/tags/machine-learning/</loc>
+        <loc>https://blog.srikavin.me/tags/machine-learning/</loc>
     </url>
     <url>
-        <loc>/tags/nactf2019/</loc>
+        <loc>https://blog.srikavin.me/tags/nactf2019/</loc>
     </url>
     <url>
-        <loc>/tags/neural-networks/</loc>
+        <loc>https://blog.srikavin.me/tags/neural-networks/</loc>
     </url>
     <url>
-        <loc>/tags/overthewire/</loc>
+        <loc>https://blog.srikavin.me/tags/overthewire/</loc>
     </url>
     <url>
-        <loc>/tags/php/</loc>
+        <loc>https://blog.srikavin.me/tags/php/</loc>
     </url>
     <url>
-        <loc>/tags/picoctf18/</loc>
+        <loc>https://blog.srikavin.me/tags/picoctf18/</loc>
     </url>
     <url>
-        <loc>/tags/picoctf19/</loc>
+        <loc>https://blog.srikavin.me/tags/picoctf19/</loc>
     </url>
     <url>
-        <loc>/tags/pwnable-kr/</loc>
+        <loc>https://blog.srikavin.me/tags/pwnable-kr/</loc>
     </url>
     <url>
-        <loc>/tags/pwnable-tw/</loc>
+        <loc>https://blog.srikavin.me/tags/pwnable-tw/</loc>
     </url>
     <url>
-        <loc>/tags/pwntools/</loc>
+        <loc>https://blog.srikavin.me/tags/pwntools/</loc>
     </url>
     <url>
-        <loc>/tags/python/</loc>
+        <loc>https://blog.srikavin.me/tags/python/</loc>
     </url>
     <url>
-        <loc>/tags/rce/</loc>
+        <loc>https://blog.srikavin.me/tags/rce/</loc>
     </url>
     <url>
-        <loc>/tags/redpwnctf20/</loc>
+        <loc>https://blog.srikavin.me/tags/redpwnctf20/</loc>
     </url>
     <url>
-        <loc>/tags/return-oriented-programming/</loc>
+        <loc>https://blog.srikavin.me/tags/return-oriented-programming/</loc>
     </url>
     <url>
-        <loc>/tags/reversing/</loc>
+        <loc>https://blog.srikavin.me/tags/reversing/</loc>
     </url>
     <url>
-        <loc>/tags/shellcode/</loc>
+        <loc>https://blog.srikavin.me/tags/shellcode/</loc>
     </url>
     <url>
-        <loc>/tags/steganography/</loc>
+        <loc>https://blog.srikavin.me/tags/steganography/</loc>
     </url>
     <url>
-        <loc>/tags/uiuctf20/</loc>
+        <loc>https://blog.srikavin.me/tags/uiuctf20/</loc>
     </url>
     <url>
-        <loc>/tags/use-after-free/</loc>
+        <loc>https://blog.srikavin.me/tags/use-after-free/</loc>
     </url>
     <url>
-        <loc>/tags/web/</loc>
+        <loc>https://blog.srikavin.me/tags/web/</loc>
     </url>
     <url>
-        <loc>/tags/wireshark/</loc>
+        <loc>https://blog.srikavin.me/tags/wireshark/</loc>
     </url>
     <url>
-        <loc>/tags/z3/</loc>
+        <loc>https://blog.srikavin.me/tags/z3/</loc>
     </url>
 </urlset>

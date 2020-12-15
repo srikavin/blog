@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 	<title> - return-oriented-programming</title>
-	<link href="/tags/return-oriented-programming/atom.xml" rel="self" type="application/atom+xml"/>
-  <link href="/"/>
+	<link href="https://blog.srikavin.me/tags/return-oriented-programming/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2020-02-04T19:12:43.206+00:00</updated>
-	<id>/tags/return-oriented-programming/atom.xml</id>
+	<id>https://blog.srikavin.me/tags/return-oriented-programming/atom.xml</id>
 	<entry xml:lang="en">
 		<title>pwnable.tw - silver bullet</title>
 		<published>2020-02-01T22:31:07.835+00:00</published>
 		<updated>2020-02-04T19:12:43.206+00:00</updated>
-		<link href="/posts/pwnable-tw-silver-bullet/" type="text/html"/>
-		<id>/posts/pwnable-tw-silver-bullet/</id>
+		<link href="https://blog.srikavin.me/posts/pwnable-tw-silver-bullet/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/pwnable-tw-silver-bullet/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Please kill the werewolf with silver bullet!&lt;&#x2F;p&gt;
@@ -20,7 +20,7 @@
 &lt;p&gt;We are also provided a binary and the libc used on the server.&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;solution&quot;&gt;Solution&lt;&#x2F;h1&gt;
 &lt;p&gt;When running the binary, we can see that we have four options:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-silver-bullet&#x2F;5d0810548487900bf40e47d5.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-silver-bullet&#x2F;5d0810548487900bf40e47d5.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;The provided binary was not stripped, so reversing was easy with Ghidra.&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
 &lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;create_bullet&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(bullet &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;bullet)
@@ -167,15 +167,15 @@ beat()
 
 r.interactive()
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-silver-bullet&#x2F;5d08149a8487900bf40e47d7.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-silver-bullet&#x2F;5d08149a8487900bf40e47d7.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="en">
 		<title>nactf 2019 - Loopy #0</title>
 		<published>2019-09-22T20:39:04.285+00:00</published>
 		<updated>2019-11-24T03:53:01.555+00:00</updated>
-		<link href="/posts/nactf-2019-loopy-0/" type="text/html"/>
-		<id>/posts/nactf-2019-loopy-0/</id>
+		<link href="https://blog.srikavin.me/posts/nactf-2019-loopy-0/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/nactf-2019-loopy-0/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;This program is quite short, but has got &lt;code&gt;printf&lt;&#x2F;code&gt; and &lt;code&gt;gets&lt;&#x2F;code&gt; in it! This shouldn&#x27;t be too hard, right?&lt;&#x2F;p&gt;
@@ -209,7 +209,7 @@ this, we need to leak the base address that &lt;code&gt;libc&lt;&#x2F;code&gt; i
 &lt;h2 id=&quot;leaking-libc&quot;&gt;Leaking libc&lt;&#x2F;h2&gt;
 &lt;p&gt;To leak &lt;code&gt;libc&lt;&#x2F;code&gt;, we can use the format string vulnerability to read from the GOT. By trial and error, we see that the 
 stack offset to &lt;code&gt;buf&lt;&#x2F;code&gt; with &lt;code&gt;printf&lt;&#x2F;code&gt; is 4: &lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;nactf-2019-loopy-0&#x2F;5d87da366e58ed23d8620866.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;nactf-2019-loopy-0&#x2F;5d87da366e58ed23d8620866.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;So, we can use &lt;code&gt;%4$s&lt;&#x2F;code&gt; to read the fourth value on the stack as a string. Since we control this value, we can read 
 arbitrary addresses.&lt;&#x2F;p&gt;
 &lt;p&gt;To read the value of &lt;code&gt;puts&lt;&#x2F;code&gt; in the GOT (address is &lt;code&gt;0x804c010&lt;&#x2F;code&gt;), we can do the following:&lt;&#x2F;p&gt;

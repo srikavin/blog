@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 	<title> - use-after-free</title>
-	<link href="/tags/use-after-free/atom.xml" rel="self" type="application/atom+xml"/>
-  <link href="/"/>
+	<link href="https://blog.srikavin.me/tags/use-after-free/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2020-03-23T05:57:18.669+00:00</updated>
-	<id>/tags/use-after-free/atom.xml</id>
+	<id>https://blog.srikavin.me/tags/use-after-free/atom.xml</id>
 	<entry xml:lang="en">
 		<title>pwnable.tw - hacknote</title>
 		<published>2020-01-12T19:40:43.176+00:00</published>
 		<updated>2020-03-23T05:57:18.669+00:00</updated>
-		<link href="/posts/pwnable-tw-hacknote/" type="text/html"/>
-		<id>/posts/pwnable-tw-hacknote/</id>
+		<link href="https://blog.srikavin.me/posts/pwnable-tw-hacknote/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/pwnable-tw-hacknote/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;A good Hacker should always take good notes!&lt;&#x2F;p&gt;
@@ -20,7 +20,7 @@
 &lt;p&gt;We are also provided a binary and the libc used on the server.&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;solution&quot;&gt;Solution&lt;&#x2F;h1&gt;
 &lt;p&gt;When running the binary, we can see four options:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-hacknote&#x2F;5d07df70508cb0091260f634.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-hacknote&#x2F;5d07df70508cb0091260f634.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;understanding-the-binary&quot;&gt;Understanding the binary&lt;&#x2F;h2&gt;
 &lt;p&gt;When reversing the binary, we can use the shown options to help identify functions used. I reversed the binary in Ghidra, 
 and the following are the cleaned up decompilation output from the binary.&lt;&#x2F;p&gt;
@@ -300,7 +300,7 @@ r.write(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;
 
 r.interactive()
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-hacknote&#x2F;5d07ec98508cb0091260f637.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-hacknote&#x2F;5d07ec98508cb0091260f637.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
 </feed>

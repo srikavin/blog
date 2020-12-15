@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 	<title> - z3</title>
-	<link href="/tags/z3/atom.xml" rel="self" type="application/atom+xml"/>
-  <link href="/"/>
+	<link href="https://blog.srikavin.me/tags/z3/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2019-09-22T22:03:40.121+00:00</updated>
-	<id>/tags/z3/atom.xml</id>
+	<id>https://blog.srikavin.me/tags/z3/atom.xml</id>
 	<entry xml:lang="en">
 		<title>nactf 2019 - Dr. J&#x27;s Group Test Randomizer #2: BBOB</title>
 		<published>2019-09-22T17:48:52.836+00:00</published>
 		<updated>2019-09-22T22:03:40.121+00:00</updated>
-		<link href="/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/" type="text/html"/>
-		<id>/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/</id>
+		<link href="https://blog.srikavin.me/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;This is it. The last group test of the year. Dr. J patched his prng again so numbers won&#x27;t repeat, so I guess 
@@ -211,8 +211,8 @@ generated &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;
 		<title>picoCTF 2018 - circuit123</title>
 		<published>2018-10-17T02:23:29.709+00:00</published>
 		<updated>2018-10-17T02:29:08.242+00:00</updated>
-		<link href="/posts/picoctf-2018-circuit123/" type="text/html"/>
-		<id>/posts/picoctf-2018-circuit123/</id>
+		<link href="https://blog.srikavin.me/posts/picoctf-2018-circuit123/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/picoctf-2018-circuit123/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Can you crack the key to &lt;a href=&quot;https:&#x2F;&#x2F;2018shell2.picoctf.com&#x2F;static&#x2F;27ebc8a7ba2202cfcba1471080e05e2c&#x2F;decrypt.py&quot;&gt;decrypt&lt;&#x2F;a&gt; 

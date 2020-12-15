@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 	<title> - picoctf18</title>
-	<link href="/tags/picoctf18/atom.xml" rel="self" type="application/atom+xml"/>
-  <link href="/"/>
+	<link href="https://blog.srikavin.me/tags/picoctf18/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2019-02-09T07:15:03.393+00:00</updated>
-	<id>/tags/picoctf18/atom.xml</id>
+	<id>https://blog.srikavin.me/tags/picoctf18/atom.xml</id>
 	<entry xml:lang="en">
 		<title>picoCTF 2018 - Lambdash</title>
 		<published>2018-10-18T14:08:16.365+00:00</published>
 		<updated>2019-02-09T07:15:03.393+00:00</updated>
-		<link href="/posts/picoctf-2018-lambdash/" type="text/html"/>
-		<id>/posts/picoctf-2018-lambdash/</id>
+		<link href="https://blog.srikavin.me/posts/picoctf-2018-lambdash/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/picoctf-2018-lambdash/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;C? Who uses that anymore. If we really want to be secure, we should all start learning lambda calculus. http:&#x2F;&#x2F;2018shell2.picoctf.com:41367&lt;&#x2F;p&gt;
@@ -42,8 +42,8 @@ gives us the flag: &lt;code&gt;picoCTF{1_white_lie_and_your_proto_gets_pwnd_4679
 		<title>picoCTF 2018 - circuit123</title>
 		<published>2018-10-17T02:23:29.709+00:00</published>
 		<updated>2018-10-17T02:29:08.242+00:00</updated>
-		<link href="/posts/picoctf-2018-circuit123/" type="text/html"/>
-		<id>/posts/picoctf-2018-circuit123/</id>
+		<link href="https://blog.srikavin.me/posts/picoctf-2018-circuit123/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/picoctf-2018-circuit123/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Can you crack the key to &lt;a href=&quot;https:&#x2F;&#x2F;2018shell2.picoctf.com&#x2F;static&#x2F;27ebc8a7ba2202cfcba1471080e05e2c&#x2F;decrypt.py&quot;&gt;decrypt&lt;&#x2F;a&gt; 
@@ -66,8 +66,8 @@ length of the bit vector, I used a conservative estimate of &lt;code&gt;128&lt;&
 		<title>picoCTF 2018 - be-quick-or-be-dead-3</title>
 		<published>2018-10-16T13:53:29.636+00:00</published>
 		<updated>2018-10-19T00:42:37.752+00:00</updated>
-		<link href="/posts/picoctf-2018-be-quick-or-be-dead-3/" type="text/html"/>
-		<id>/posts/picoctf-2018-be-quick-or-be-dead-3/</id>
+		<link href="https://blog.srikavin.me/posts/picoctf-2018-be-quick-or-be-dead-3/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/picoctf-2018-be-quick-or-be-dead-3/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;As the &lt;a href=&quot;https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v=CTt1vk9nM9c&quot;&gt;song&lt;&#x2F;a&gt; draws closer to the end, another executable 
@@ -182,8 +182,8 @@ picoCTF{dynamic_pr0gramming_ftw_1ffc009d}
 		<title>picoCTF 2018 - Dog or Frog</title>
 		<published>2018-10-14T03:51:44.809+00:00</published>
 		<updated>2018-10-14T06:43:05.105+00:00</updated>
-		<link href="/posts/picoctf-2018-dog-or-frog/" type="text/html"/>
-		<id>/posts/picoctf-2018-dog-or-frog/</id>
+		<link href="https://blog.srikavin.me/posts/picoctf-2018-dog-or-frog/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/picoctf-2018-dog-or-frog/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Dressing up dogs are kinda the new thing, see if you can get this lovely girl ready for her costume party. 
@@ -193,7 +193,7 @@ picoCTF{dynamic_pr0gramming_ftw_1ffc009d}
 &lt;p&gt;When we visit the page, we are greeted with a submission form. The instructions tell us that this is a machine learning 
 problem and to not approach it as a web-exploitation problem. The goal is to submit an image that is similar (on a 
 byte-by-byte basis) that is similar to the dog, but is recognized as a tree frog.&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-dog-or-frog&#x2F;5bc2bb38da39a06603ce0d43.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-dog-or-frog&#x2F;5bc2bb38da39a06603ce0d43.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
 &lt;p&gt;This type of problem is known as adversarial machine learning. After stumbling around some papers, I found 
 &lt;a href=&quot;https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;1610.00768&quot;&gt;this one&lt;&#x2F;a&gt;, which provided a library suitable for adversarial learning: 
@@ -201,8 +201,8 @@ byte-by-byte basis) that is similar to the dog, but is recognized as a tree frog
 &lt;h2 id=&quot;full-script&quot;&gt;Full Script&lt;&#x2F;h2&gt;
 &lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;mybinder.org&#x2F;v2&#x2F;gh&#x2F;srikavin&#x2F;ctf-writeups&#x2F;master?filepath=picoctf2018%2Fdog-or-frog%2FMain.ipynb&quot;&gt;Jupyter Binder&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;final-image&quot;&gt;Final Image&lt;&#x2F;h2&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-dog-or-frog&#x2F;5bc2bc9eda39a06603ce0d48.png&quot; alt=&quot;&quot; &#x2F;&gt;
-&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-dog-or-frog&#x2F;5bc2c258da39a06603ce0d4c.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-dog-or-frog&#x2F;5bc2bc9eda39a06603ce0d48.png&quot; alt=&quot;&quot; &#x2F;&gt;
+&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-dog-or-frog&#x2F;5bc2c258da39a06603ce0d4c.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;The final image (left) looks visually similar to the original (right), but has added noise. When submitted to the 
 challenge site, we receive the flag: &lt;code&gt;picoCTF{n0w_th4t3_4_g00d_girl_647b3719}&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
 </content>
@@ -211,8 +211,8 @@ challenge site, we receive the flag: &lt;code&gt;picoCTF{n0w_th4t3_4_g00d_girl_6
 		<title>picoCTF 2018 - eleCTRic</title>
 		<published>2018-10-13T02:36:19.176+00:00</published>
 		<updated>2018-12-28T23:10:12.884+00:00</updated>
-		<link href="/posts/picoctf-2018-electric/" type="text/html"/>
-		<id>/posts/picoctf-2018-electric/</id>
+		<link href="https://blog.srikavin.me/posts/picoctf-2018-electric/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/picoctf-2018-electric/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&amp;quot;You came across a custom server that Dr Xernon&#x27;s company eleCTRic Ltd uses. It seems to be storing some encrypted files. Connect with &lt;code&gt;nc 2018shell2.picoctf.com 15037&lt;&#x2F;code&gt;. Can you get us the flag?&amp;quot; &lt;a href=&quot;https:&#x2F;&#x2F;2018shell2.picoctf.com&#x2F;static&#x2F;61d78e61c2bd099775499bba7edc1d62&#x2F;eleCTRic.py&quot;&gt;Source&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
@@ -234,7 +234,7 @@ This breaks the encryption used and we are able to reveal the keystream and encr
         cipher &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;AES.new(self.key, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;AES&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;MODE_CTR&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, counter&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=lambda&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;: self.ctr)
         &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;cipher.encrypt(raw).encode(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;base64&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;).replace(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-electric&#x2F;5bc12eb5b7c5001b74f57e49.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-electric&#x2F;5bc12eb5b7c5001b74f57e49.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;AES-CTR simply XORS the plaintext with the keystream (a value derived from the key and the counter).&lt;&#x2F;p&gt;
 &lt;p&gt;To understand the exploit, it is important to know the following XOR rules (where ⊕ indicates XOR):
 $$
@@ -303,8 +303,8 @@ flag_file &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;
 		<title>picoCTF 2018 - Flaskcards and Freedom</title>
 		<published>2018-10-12T21:02:44.420+00:00</published>
 		<updated>2018-10-12T22:55:27.216+00:00</updated>
-		<link href="/posts/picoctf-2018-flaskcards-and-freedom/" type="text/html"/>
-		<id>/posts/picoctf-2018-flaskcards-and-freedom/</id>
+		<link href="https://blog.srikavin.me/posts/picoctf-2018-flaskcards-and-freedom/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/picoctf-2018-flaskcards-and-freedom/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&amp;quot;There seem to be a few more files stored on the flash card server but we can&#x27;t login. Can you?&amp;quot;&lt;&#x2F;p&gt;
@@ -312,19 +312,19 @@ flag_file &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;
 &lt;h1 id=&quot;solution&quot;&gt;Solution&lt;&#x2F;h1&gt;
 &lt;p&gt;The site appears to be the same as the previous flaskcard challenges &lt;code&gt;Flaskcards Skeleton Key&lt;&#x2F;code&gt; and  &lt;code&gt;Flaskcards.&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;When we create an account, we are presented with the following screen:
-&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc10c83f1882e545d7f430a.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc10c83f1882e545d7f430a.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;We can try server side injection. If we type in &lt;code&gt;{{1+1}}&lt;&#x2F;code&gt;, the webpage displays &lt;code&gt;2&lt;&#x2F;code&gt;.  Any values in double brackets is being executed on the server. After trying to find hidden variables, such as &lt;code&gt;config&lt;&#x2F;code&gt;, &lt;code&gt;flag&lt;&#x2F;code&gt;, etc; I decided to look for a remote code execution vulnerability. &lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc114c3b7c5001b74f57e35.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc114c3b7c5001b74f57e35.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;We can list all of the loaded classes by calling &lt;code&gt;__subclasses__&lt;&#x2F;code&gt; on the base object class. To do this, I used the &lt;code&gt;mro&lt;&#x2F;code&gt; method, which lists all of the superclasses, including &lt;code&gt;object&lt;&#x2F;code&gt;. Calling this on a string gives easy access to the base object class.&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc114f6b7c5001b74f57e37.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc114f6b7c5001b74f57e37.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;The object class is index &lt;code&gt;1&lt;&#x2F;code&gt; when calling &lt;code&gt;&#x27;&#x27;.__class__.mro()&lt;&#x2F;code&gt;. So we can access the subclasses of object by injecting &lt;code&gt;&#x27;&#x27;.__class__.mro()[1].__subclasses__()&lt;&#x2F;code&gt;. This results in a lot of output.&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc11620b7c5001b74f57e39.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc11620b7c5001b74f57e39.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;After cleaning up the output, I found that &lt;code&gt;&amp;lt;class &#x27;subprocess.Popen&#x27;&amp;gt;&lt;&#x2F;code&gt; was index 48.&lt;&#x2F;p&gt;
 &lt;p&gt;From there it is possible to run &lt;code&gt;ls&lt;&#x2F;code&gt; with &lt;code&gt;{{&#x27;&#x27;.__class__.mro()[1].__subclasses__()[48]([&#x27;ls&#x27;], stdout=-1).communicate()}}&lt;&#x2F;code&gt;. Running with &lt;code&gt;-1&lt;&#x2F;code&gt; results in the output being returned as a tuple:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc11752b7c5001b74f57e3c.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc11752b7c5001b74f57e3c.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;Calling &lt;code&gt;ls&lt;&#x2F;code&gt; lists the files in the directory. All that&#x27;s left is to call &lt;code&gt;cat flag&lt;&#x2F;code&gt; with &lt;code&gt;{{&#x27;&#x27;.__class__.mro()[1].__subclasses__()[380]([&#x27;cat&#x27;, &#x27;flag&#x27;], stdout=-1).communicate()}}&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc117aab7c5001b74f57e3e.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-flaskcards-and-freedom&#x2F;5bc117aab7c5001b74f57e3e.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
 </feed>

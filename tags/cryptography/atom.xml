@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 	<title> - cryptography</title>
-	<link href="/tags/cryptography/atom.xml" rel="self" type="application/atom+xml"/>
-  <link href="/"/>
+	<link href="https://blog.srikavin.me/tags/cryptography/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2019-09-22T22:03:40.121+00:00</updated>
-	<id>/tags/cryptography/atom.xml</id>
+	<id>https://blog.srikavin.me/tags/cryptography/atom.xml</id>
 	<entry xml:lang="en">
 		<title>nactf 2019 - Dr. J&#x27;s Group Test Randomizer #2: BBOB</title>
 		<published>2019-09-22T17:48:52.836+00:00</published>
 		<updated>2019-09-22T22:03:40.121+00:00</updated>
-		<link href="/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/" type="text/html"/>
-		<id>/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/</id>
+		<link href="https://blog.srikavin.me/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;This is it. The last group test of the year. Dr. J patched his prng again so numbers won&#x27;t repeat, so I guess 
@@ -211,8 +211,8 @@ generated &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;
 		<title>picoCTF 2018 - eleCTRic</title>
 		<published>2018-10-13T02:36:19.176+00:00</published>
 		<updated>2018-12-28T23:10:12.884+00:00</updated>
-		<link href="/posts/picoctf-2018-electric/" type="text/html"/>
-		<id>/posts/picoctf-2018-electric/</id>
+		<link href="https://blog.srikavin.me/posts/picoctf-2018-electric/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/picoctf-2018-electric/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&amp;quot;You came across a custom server that Dr Xernon&#x27;s company eleCTRic Ltd uses. It seems to be storing some encrypted files. Connect with &lt;code&gt;nc 2018shell2.picoctf.com 15037&lt;&#x2F;code&gt;. Can you get us the flag?&amp;quot; &lt;a href=&quot;https:&#x2F;&#x2F;2018shell2.picoctf.com&#x2F;static&#x2F;61d78e61c2bd099775499bba7edc1d62&#x2F;eleCTRic.py&quot;&gt;Source&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
@@ -234,7 +234,7 @@ This breaks the encryption used and we are able to reveal the keystream and encr
         cipher &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;AES.new(self.key, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;AES&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;MODE_CTR&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, counter&lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;=lambda&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;: self.ctr)
         &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;cipher.encrypt(raw).encode(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;base64&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;).replace(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#0086b3;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;picoctf-2018-electric&#x2F;5bc12eb5b7c5001b74f57e49.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;picoctf-2018-electric&#x2F;5bc12eb5b7c5001b74f57e49.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;AES-CTR simply XORS the plaintext with the keystream (a value derived from the key and the counter).&lt;&#x2F;p&gt;
 &lt;p&gt;To understand the exploit, it is important to know the following XOR rules (where ⊕ indicates XOR):
 $$

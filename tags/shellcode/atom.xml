@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 	<title> - shellcode</title>
-	<link href="/tags/shellcode/atom.xml" rel="self" type="application/atom+xml"/>
-  <link href="/"/>
+	<link href="https://blog.srikavin.me/tags/shellcode/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2019-11-23T19:32:29.189+00:00</updated>
-	<id>/tags/shellcode/atom.xml</id>
+	<id>https://blog.srikavin.me/tags/shellcode/atom.xml</id>
 	<entry xml:lang="en">
 		<title>pwnable.tw - start</title>
 		<published>2019-11-22T18:30:01.515+00:00</published>
 		<updated>2019-11-23T19:32:29.189+00:00</updated>
-		<link href="/posts/pwnable-tw-start/" type="text/html"/>
-		<id>/posts/pwnable-tw-start/</id>
+		<link href="https://blog.srikavin.me/posts/pwnable-tw-start/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/pwnable-tw-start/</id>
 		<content type="html">&lt;p&gt;We are given a linux binary. To start off, lets run &lt;code&gt;checksec&lt;&#x2F;code&gt; on it:&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
 &lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;Arch:     i386-32-little
@@ -23,7 +23,7 @@ PIE:      No PIE (0x8048000)
 &lt;p&gt;It looks like NX is disabled, so if needed, we can place and execute shell code from the stack. To understand how this 
 binary works, I opened it with &lt;code&gt;Ghidra&lt;&#x2F;code&gt;. There are only two functions, &lt;code&gt;_entry&lt;&#x2F;code&gt; and &lt;code&gt;_exit&lt;&#x2F;code&gt;. Let&#x27;s look at &lt;code&gt;_entry&lt;&#x2F;code&gt; first. 
 Although the decompilation is mostly useless, the disassembly is more than enough.&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-start&#x2F;5cff109009821b08235e212a.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-start&#x2F;5cff109009821b08235e212a.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;We can see two &lt;code&gt;int 0x80&lt;&#x2F;code&gt;s that are syscalls. Looking at the value of &lt;code&gt;eax&lt;&#x2F;code&gt; and by referencing a 
 &lt;a href=&quot;https:&#x2F;&#x2F;www.informatik.htw-dresden.de&#x2F;%7Ebeck&#x2F;ASM&#x2F;syscall_list.html&quot;&gt;32-bit syscall table&lt;&#x2F;a&gt;, we can identify them. The 
 reversed syscalls are shown in comments in the above screenshot. It&#x27;s also clear that we control &lt;code&gt;EIP&lt;&#x2F;code&gt; due to the large 
@@ -32,7 +32,7 @@ reversed syscalls are shown in comments in the above screenshot. It&#x27;s also 
 to identify where to jump to. Using &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;pwndbg&#x2F;pwndbg&quot;&gt;pwndbg&lt;&#x2F;a&gt;, it&#x27;s easy to watch the stack during 
 execution.&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-start&#x2F;5cff13e309821b08235e212c.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-start&#x2F;5cff13e309821b08235e212c.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;The first value that is pushed onto the stack is &lt;code&gt;ESP&lt;&#x2F;code&gt; (&lt;code&gt;0x8048060&lt;&#x2F;code&gt;). If we were to read past the values pushed onto the 
 stack, we&#x27;ll be able to leak a stack address. What happens if we return to &lt;code&gt;0x8048087&lt;&#x2F;code&gt;? Since the &lt;code&gt;ADD ESP, 0x14&lt;&#x2F;code&gt; before 
 the &lt;code&gt;RET&lt;&#x2F;code&gt; will clear the stack, the &lt;code&gt;write&lt;&#x2F;code&gt; syscall will print out a stack address. After leaking the stack address, we 
@@ -81,8 +81,8 @@ r.interactive()
 		<title>pwnable.tw - orw</title>
 		<published>2019-06-11T19:45:48.202+00:00</published>
 		<updated>2019-09-15T19:37:08.225+00:00</updated>
-		<link href="/posts/pwnable-tw-orw/" type="text/html"/>
-		<id>/posts/pwnable-tw-orw/</id>
+		<link href="https://blog.srikavin.me/posts/pwnable-tw-orw/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/pwnable-tw-orw/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Read the flag from &lt;code&gt;&#x2F;home&#x2F;orw&#x2F;flag&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;

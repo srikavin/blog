@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 	<title> - double-free</title>
-	<link href="/tags/double-free/atom.xml" rel="self" type="application/atom+xml"/>
-  <link href="/"/>
+	<link href="https://blog.srikavin.me/tags/double-free/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2020-03-02T18:52:31.838+00:00</updated>
-	<id>/tags/double-free/atom.xml</id>
+	<id>https://blog.srikavin.me/tags/double-free/atom.xml</id>
 	<entry xml:lang="en">
 		<title>pwnable.tw - Tcache Tear</title>
 		<published>2020-02-23T07:19:49.665+00:00</published>
 		<updated>2020-03-02T18:52:31.838+00:00</updated>
-		<link href="/posts/pwnable-tw-tcache-tear/" type="text/html"/>
-		<id>/posts/pwnable-tw-tcache-tear/</id>
+		<link href="https://blog.srikavin.me/posts/pwnable-tw-tcache-tear/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/pwnable-tw-tcache-tear/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Make tcache great again !&lt;&#x2F;p&gt;
@@ -103,7 +103,7 @@ LAB_00400c75:
 }
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;The binary reads &lt;code&gt;0x20&lt;&#x2F;code&gt; bytes into a global buffer. Then, it displays a menu:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-tcache-tear&#x2F;5d99297adf0cde08ea5c061d.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-tcache-tear&#x2F;5d99297adf0cde08ea5c061d.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;We are able to &lt;code&gt;malloc&lt;&#x2F;code&gt; arbitrary sizes (under 0x100) and &lt;code&gt;free&lt;&#x2F;code&gt; the last allocated chunk (up to 8 times).&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;attacks&quot;&gt;Attacks&lt;&#x2F;h1&gt;
 &lt;h2 id=&quot;circular-list&quot;&gt;Circular List&lt;&#x2F;h2&gt;

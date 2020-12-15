@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 	<title> - neural-networks</title>
-	<link href="/tags/neural-networks/atom.xml" rel="self" type="application/atom+xml"/>
-  <link href="/"/>
+	<link href="https://blog.srikavin.me/tags/neural-networks/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2020-11-09T00:00:00+00:00</updated>
-	<id>/tags/neural-networks/atom.xml</id>
+	<id>https://blog.srikavin.me/tags/neural-networks/atom.xml</id>
 	<entry xml:lang="en">
 		<title>Solving Minecraft Captchas with Neural Networks</title>
 		<published>2020-07-25T00:00:00+00:00</published>
 		<updated>2020-11-09T00:00:00+00:00</updated>
-		<link href="/posts/uiuctf20-solving-minecraft-captchas/" type="text/html"/>
-		<id>/posts/uiuctf20-solving-minecraft-captchas/</id>
+		<link href="https://blog.srikavin.me/posts/uiuctf20-solving-minecraft-captchas/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/uiuctf20-solving-minecraft-captchas/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;When on website: +1 spam resistance +10 user annoyance&lt;&#x2F;p&gt;
@@ -22,7 +22,7 @@
 input field, our input is displayed in the &lt;a href=&quot;https:&#x2F;&#x2F;minecraft.gamepedia.com&#x2F;Enchanting_Table#Standard_Galactic_Alphabet&quot;&gt;Standard Galactic Alphabet&lt;&#x2F;a&gt;. 
 The challenge description tells us that we need to solve 500 of these captchas in 10 minutes. Even if I were fluent in 
 this language, it would be difficult to solve 50 of these in a minute.&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;uiuctf20-solving-minecraft-captchas&#x2F;page-screenshot.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;uiuctf20-solving-minecraft-captchas&#x2F;page-screenshot.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h1 id=&quot;initial-steps&quot;&gt;Initial Steps&lt;&#x2F;h1&gt;
 &lt;p&gt;As with all web challenges, the first thing to do is to view the source code:&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
@@ -36,7 +36,7 @@ this language, it would be difficult to solve 50 of these in a minute.&lt;&#x2F;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;dataset&quot;&gt;Dataset&lt;&#x2F;h2&gt;
 &lt;p&gt;Navigating to &lt;code&gt;&#x2F;captchas.zip&lt;&#x2F;code&gt; gives us a nearly 1 GB archive of captcha images with the corresponding labels. The comment 
 suggests that these captchas are dynamically generated and aren&#x27;t in this dataset. &lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;uiuctf20-solving-minecraft-captchas&#x2F;image-files.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;uiuctf20-solving-minecraft-captchas&#x2F;image-files.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;But, because we have access to a massive data set, we can train a machine learning model (such as a neural network) to 
 predict labels for these generated captchas.&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;network-architecture&quot;&gt;Network Architecture&lt;&#x2F;h2&gt;
@@ -46,7 +46,7 @@ I decided to use the built-in ResNet-18 model [1].&lt;&#x2F;p&gt;
 &lt;h3 id=&quot;why-resnet&quot;&gt;Why ResNet?&lt;&#x2F;h3&gt;
 &lt;p&gt;ResNet models have skip connections that smoothen the loss landscape, which allows for faster learning, and overall 
 better performance [2].&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;uiuctf20-solving-minecraft-captchas&#x2F;resnet-skip-connections.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;uiuctf20-solving-minecraft-captchas&#x2F;resnet-skip-connections.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h3 id=&quot;modifying-the-resnet-architecture&quot;&gt;Modifying the ResNet Architecture&lt;&#x2F;h3&gt;
 &lt;p&gt;Typically, when predicting a single label, the output is a &lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;One-hot&quot;&gt;one-hot encoded vector&lt;&#x2F;a&gt;. 
 But here, we have five labels that need to be predicted, so the output will be the concactenation of 5 one-hot encoded 
@@ -2649,7 +2649,7 @@ s &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&g
 
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;We can run this script, and after 3-4 minutes, we get the flag:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;uiuctf20-solving-minecraft-captchas&#x2F;flag.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;uiuctf20-solving-minecraft-captchas&#x2F;flag.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;complete-source-code-and-trained-models&quot;&gt;Complete Source Code and Trained Models&lt;&#x2F;h1&gt;
 &lt;p&gt;Available &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;srikavin&#x2F;ctf-writeups&#x2F;tree&#x2F;master&#x2F;uiuctf2020&#x2F;Bot%20Protection%20IV&quot;&gt;here&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;references&quot;&gt;References&lt;&#x2F;h1&gt;

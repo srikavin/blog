@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 	<title> - pwnable.tw</title>
-	<link href="/tags/pwnable-tw/atom.xml" rel="self" type="application/atom+xml"/>
-  <link href="/"/>
+	<link href="https://blog.srikavin.me/tags/pwnable-tw/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
 	<updated>2020-11-06T00:00:00+00:00</updated>
-	<id>/tags/pwnable-tw/atom.xml</id>
+	<id>https://blog.srikavin.me/tags/pwnable-tw/atom.xml</id>
 	<entry xml:lang="en">
 		<title>pwnable.tw - applestore</title>
 		<published>2020-08-27T00:00:00+00:00</published>
 		<updated>2020-11-06T00:00:00+00:00</updated>
-		<link href="/posts/pwnable-tw-applestore/" type="text/html"/>
-		<id>/posts/pwnable-tw-applestore/</id>
+		<link href="https://blog.srikavin.me/posts/pwnable-tw-applestore/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/pwnable-tw-applestore/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;tomcr00se rooted the galaxy S5, but we need you to jailbreak the iPhone8!&lt;&#x2F;p&gt;
@@ -23,7 +23,7 @@
 &lt;p&gt;When reversing binaries, I usually run the binary and compare its execution alongside the disassemby+pseudocode. 
 When we run the given binary, we&#x27;re greeted by a menu with 6 options:&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-applestore&#x2F;5f4789fe5f6cee02e28f044e.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-applestore&#x2F;5f4789fe5f6cee02e28f044e.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;Going through and reversing each function isn&#x27;t too difficult. The application allows us to view products, 
 add, remove, and list items in our cart, and checkout.&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;input-handler&quot;&gt;Input Handler&lt;&#x2F;h2&gt;
@@ -87,7 +87,7 @@ to handle input:&lt;&#x2F;p&gt;
 remove an item. The &lt;code&gt;delete&lt;&#x2F;code&gt; function allows us to specify the index to delete, while &lt;code&gt;add&lt;&#x2F;code&gt; inserts a new item at the end of the linked list.&lt;&#x2F;p&gt;
 &lt;p&gt;The head node of the list is stored in a global variable named &lt;code&gt;myCart&lt;&#x2F;code&gt;. I defined the following struct to represent 
 each node in the list:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-applestore&#x2F;5f478a235f6cee02e28f0450.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-applestore&#x2F;5f478a235f6cee02e28f0450.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;checkout&quot;&gt;Checkout&lt;&#x2F;h2&gt;
 &lt;p&gt;The checkout function is interesting and contains a clear vulnerability:&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
@@ -276,7 +276,7 @@ includes &lt;code&gt;;&#x2F;bin&#x2F;sh;&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
 
 r.interactive()
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-applestore&#x2F;5f478a755f6cee02e28f0458.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-applestore&#x2F;5f478a755f6cee02e28f0458.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;full-script&quot;&gt;Full script&lt;&#x2F;h1&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
 &lt;code&gt;&lt;span style=&quot;font-style:italic;color:#969896;&quot;&gt;#!&#x2F;usr&#x2F;bin&#x2F;env python3
@@ -366,8 +366,8 @@ r.interactive()
 		<title>pwnable.tw - seethefile</title>
 		<published>2020-03-29T01:23:36.608+00:00</published>
 		<updated>2020-03-30T08:23:31.139+00:00</updated>
-		<link href="/posts/pwnable-tw-seethefile/" type="text/html"/>
-		<id>/posts/pwnable-tw-seethefile/</id>
+		<link href="https://blog.srikavin.me/posts/pwnable-tw-seethefile/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/pwnable-tw-seethefile/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Can you see anything?&lt;&#x2F;p&gt;
@@ -513,7 +513,7 @@ fake &lt;code&gt;FILE&lt;&#x2F;code&gt; struct:&lt;&#x2F;p&gt;
 }
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;Running this test program gives us a shell and then segfaults:
-&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-seethefile&#x2F;5e80319b0f5e61083b61b4a9.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-seethefile&#x2F;5e80319b0f5e61083b61b4a9.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;reversing&quot;&gt;Reversing&lt;&#x2F;h1&gt;
 &lt;p&gt;Reversing the program is made easy by cross-referencing the program&#x27;s behavior with Ghidra.&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;main&quot;&gt;main&lt;&#x2F;h2&gt;
@@ -699,7 +699,7 @@ gdb.attach(r)
 &lt;p&gt;If we want to get a shell, we need to know the address of &lt;code&gt;system&lt;&#x2F;code&gt; in memory. We can use the psuedo-file &lt;code&gt;&#x2F;proc&#x2F;self&#x2F;maps&lt;&#x2F;code&gt;
 which contains a list of loaded memory regions of the reading process. On the remote service, we need to call &lt;code&gt;readfile&lt;&#x2F;code&gt;
 twice because libc&#x27;s entry appears in the second set of 400 characters:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-seethefile&#x2F;5e8193f54304800866d69179.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-seethefile&#x2F;5e8193f54304800866d69179.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;This would translate to the following in the exploit script:&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
 &lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;openfile(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;&#x2F;proc&#x2F;self&#x2F;maps&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;)
@@ -848,7 +848,7 @@ file &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot
 r.interactive()
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;Running this gives us a shell on the remote server:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-seethefile&#x2F;5e81ac654304800866d6917d.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-seethefile&#x2F;5e81ac654304800866d6917d.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;further-reading&quot;&gt;Further Reading&lt;&#x2F;h1&gt;
 &lt;p&gt;These are some resources I found helpful while solving this challenge.&lt;&#x2F;p&gt;
 &lt;ol&gt;
@@ -862,8 +862,8 @@ r.interactive()
 		<title>pwnable.tw - Tcache Tear</title>
 		<published>2020-02-23T07:19:49.665+00:00</published>
 		<updated>2020-03-02T18:52:31.838+00:00</updated>
-		<link href="/posts/pwnable-tw-tcache-tear/" type="text/html"/>
-		<id>/posts/pwnable-tw-tcache-tear/</id>
+		<link href="https://blog.srikavin.me/posts/pwnable-tw-tcache-tear/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/pwnable-tw-tcache-tear/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Make tcache great again !&lt;&#x2F;p&gt;
@@ -955,7 +955,7 @@ LAB_00400c75:
 }
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;The binary reads &lt;code&gt;0x20&lt;&#x2F;code&gt; bytes into a global buffer. Then, it displays a menu:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-tcache-tear&#x2F;5d99297adf0cde08ea5c061d.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-tcache-tear&#x2F;5d99297adf0cde08ea5c061d.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;We are able to &lt;code&gt;malloc&lt;&#x2F;code&gt; arbitrary sizes (under 0x100) and &lt;code&gt;free&lt;&#x2F;code&gt; the last allocated chunk (up to 8 times).&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;attacks&quot;&gt;Attacks&lt;&#x2F;h1&gt;
 &lt;h2 id=&quot;circular-list&quot;&gt;Circular List&lt;&#x2F;h2&gt;
@@ -1119,8 +1119,8 @@ r.interactive()
 		<title>pwnable.tw - silver bullet</title>
 		<published>2020-02-01T22:31:07.835+00:00</published>
 		<updated>2020-02-04T19:12:43.206+00:00</updated>
-		<link href="/posts/pwnable-tw-silver-bullet/" type="text/html"/>
-		<id>/posts/pwnable-tw-silver-bullet/</id>
+		<link href="https://blog.srikavin.me/posts/pwnable-tw-silver-bullet/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/pwnable-tw-silver-bullet/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Please kill the werewolf with silver bullet!&lt;&#x2F;p&gt;
@@ -1129,7 +1129,7 @@ r.interactive()
 &lt;p&gt;We are also provided a binary and the libc used on the server.&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;solution&quot;&gt;Solution&lt;&#x2F;h1&gt;
 &lt;p&gt;When running the binary, we can see that we have four options:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-silver-bullet&#x2F;5d0810548487900bf40e47d5.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-silver-bullet&#x2F;5d0810548487900bf40e47d5.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;The provided binary was not stripped, so reversing was easy with Ghidra.&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
 &lt;code&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#795da3;&quot;&gt;create_bullet&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;(bullet &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#323232;&quot;&gt;bullet)
@@ -1276,15 +1276,15 @@ beat()
 
 r.interactive()
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-silver-bullet&#x2F;5d08149a8487900bf40e47d7.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-silver-bullet&#x2F;5d08149a8487900bf40e47d7.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="en">
 		<title>pwnable.tw - hacknote</title>
 		<published>2020-01-12T19:40:43.176+00:00</published>
 		<updated>2020-03-23T05:57:18.669+00:00</updated>
-		<link href="/posts/pwnable-tw-hacknote/" type="text/html"/>
-		<id>/posts/pwnable-tw-hacknote/</id>
+		<link href="https://blog.srikavin.me/posts/pwnable-tw-hacknote/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/pwnable-tw-hacknote/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;A good Hacker should always take good notes!&lt;&#x2F;p&gt;
@@ -1293,7 +1293,7 @@ r.interactive()
 &lt;p&gt;We are also provided a binary and the libc used on the server.&lt;&#x2F;p&gt;
 &lt;h1 id=&quot;solution&quot;&gt;Solution&lt;&#x2F;h1&gt;
 &lt;p&gt;When running the binary, we can see four options:&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-hacknote&#x2F;5d07df70508cb0091260f634.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-hacknote&#x2F;5d07df70508cb0091260f634.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;understanding-the-binary&quot;&gt;Understanding the binary&lt;&#x2F;h2&gt;
 &lt;p&gt;When reversing the binary, we can use the shown options to help identify functions used. I reversed the binary in Ghidra, 
 and the following are the cleaned up decompilation output from the binary.&lt;&#x2F;p&gt;
@@ -1573,15 +1573,15 @@ r.write(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#183691;&quot;&gt;&amp;#39;
 
 r.interactive()
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-hacknote&#x2F;5d07ec98508cb0091260f637.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-hacknote&#x2F;5d07ec98508cb0091260f637.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="en">
 		<title>pwnable.tw - start</title>
 		<published>2019-11-22T18:30:01.515+00:00</published>
 		<updated>2019-11-23T19:32:29.189+00:00</updated>
-		<link href="/posts/pwnable-tw-start/" type="text/html"/>
-		<id>/posts/pwnable-tw-start/</id>
+		<link href="https://blog.srikavin.me/posts/pwnable-tw-start/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/pwnable-tw-start/</id>
 		<content type="html">&lt;p&gt;We are given a linux binary. To start off, lets run &lt;code&gt;checksec&lt;&#x2F;code&gt; on it:&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
 &lt;code&gt;&lt;span style=&quot;color:#323232;&quot;&gt;Arch:     i386-32-little
@@ -1593,7 +1593,7 @@ PIE:      No PIE (0x8048000)
 &lt;p&gt;It looks like NX is disabled, so if needed, we can place and execute shell code from the stack. To understand how this 
 binary works, I opened it with &lt;code&gt;Ghidra&lt;&#x2F;code&gt;. There are only two functions, &lt;code&gt;_entry&lt;&#x2F;code&gt; and &lt;code&gt;_exit&lt;&#x2F;code&gt;. Let&#x27;s look at &lt;code&gt;_entry&lt;&#x2F;code&gt; first. 
 Although the decompilation is mostly useless, the disassembly is more than enough.&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-start&#x2F;5cff109009821b08235e212a.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-start&#x2F;5cff109009821b08235e212a.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;We can see two &lt;code&gt;int 0x80&lt;&#x2F;code&gt;s that are syscalls. Looking at the value of &lt;code&gt;eax&lt;&#x2F;code&gt; and by referencing a 
 &lt;a href=&quot;https:&#x2F;&#x2F;www.informatik.htw-dresden.de&#x2F;%7Ebeck&#x2F;ASM&#x2F;syscall_list.html&quot;&gt;32-bit syscall table&lt;&#x2F;a&gt;, we can identify them. The 
 reversed syscalls are shown in comments in the above screenshot. It&#x27;s also clear that we control &lt;code&gt;EIP&lt;&#x2F;code&gt; due to the large 
@@ -1602,7 +1602,7 @@ reversed syscalls are shown in comments in the above screenshot. It&#x27;s also 
 to identify where to jump to. Using &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;pwndbg&#x2F;pwndbg&quot;&gt;pwndbg&lt;&#x2F;a&gt;, it&#x27;s easy to watch the stack during 
 execution.&lt;&#x2F;p&gt;
 &lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;
-&lt;p&gt;&lt;img src=&quot;&#x2F;posts&#x2F;pwnable-tw-start&#x2F;5cff13e309821b08235e212c.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;blog.srikavin.me&#x2F;posts&#x2F;pwnable-tw-start&#x2F;5cff13e309821b08235e212c.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;The first value that is pushed onto the stack is &lt;code&gt;ESP&lt;&#x2F;code&gt; (&lt;code&gt;0x8048060&lt;&#x2F;code&gt;). If we were to read past the values pushed onto the 
 stack, we&#x27;ll be able to leak a stack address. What happens if we return to &lt;code&gt;0x8048087&lt;&#x2F;code&gt;? Since the &lt;code&gt;ADD ESP, 0x14&lt;&#x2F;code&gt; before 
 the &lt;code&gt;RET&lt;&#x2F;code&gt; will clear the stack, the &lt;code&gt;write&lt;&#x2F;code&gt; syscall will print out a stack address. After leaking the stack address, we 
@@ -1651,8 +1651,8 @@ r.interactive()
 		<title>pwnable.tw - orw</title>
 		<published>2019-06-11T19:45:48.202+00:00</published>
 		<updated>2019-09-15T19:37:08.225+00:00</updated>
-		<link href="/posts/pwnable-tw-orw/" type="text/html"/>
-		<id>/posts/pwnable-tw-orw/</id>
+		<link href="https://blog.srikavin.me/posts/pwnable-tw-orw/" type="text/html"/>
+		<id>https://blog.srikavin.me/posts/pwnable-tw-orw/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Read the flag from &lt;code&gt;&#x2F;home&#x2F;orw&#x2F;flag&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
