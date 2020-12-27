@@ -11,16 +11,18 @@
 {% if page.updated -%}
 <meta content="{{page.updated}}" property="og:modified_time"/>
 {% endif -%}
-<meta content="Srikavin Ramkumar" property="og:author"/>
+<meta content="Srikavin Ramkumar" property="og:author" name="author"/>
 {% if page.description -%}
-<meta content="{{page.description}}" property="og:description"/>
+<meta content="{{page.description}}" property="og:description" name="description"/>
 {% endif -%}
 {% if page.taxonomies["categories"] | length > 0 -%}
 <meta content="{{page.taxonomies['categories'] | first}}" property="og:section"/>
 {% endif -%}
+
 {% for tag in page.taxonomies["tags"] -%}
 <meta content="{{tag}}" property="og:tag"/>
 {% endfor -%}
+<meta content="{{page.taxonomies['tags'] | join(sep=', ')}}" property="keywords"/>
 <meta content="{{page.permalink | safe}}" property="og:url"/>
 {% endblock %}
 
