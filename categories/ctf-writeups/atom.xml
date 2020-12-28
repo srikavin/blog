@@ -4,12 +4,12 @@
 	<link href="https://blog.srikavin.me/categories/ctf-writeups/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
-	<updated>2020-12-13T00:00:00+00:00</updated>
+	<updated>2020-12-27T00:00:00+00:00</updated>
 	<id>https://blog.srikavin.me/categories/ctf-writeups/atom.xml</id>
 	<entry xml:lang="en">
 		<title>Abusing PHP Constants, Temporary Uploads, and FastCGI to Bypass Restrictions</title>
 		<published>2020-12-13T00:00:00+00:00</published>
-		<updated>2020-12-13T00:00:00+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -234,7 +234,7 @@ just have to send the FastCGI request as the POST body, and we will get the flag
 	<entry xml:lang="en">
 		<title>pwnable.tw - applestore</title>
 		<published>2020-08-27T00:00:00+00:00</published>
-		<updated>2020-11-06T00:00:00+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/pwnable-tw-applestore/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/pwnable-tw-applestore/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -584,7 +584,7 @@ r.interactive()
 	<entry xml:lang="en">
 		<title>Solving Minecraft Captchas with Neural Networks</title>
 		<published>2020-07-25T00:00:00+00:00</published>
-		<updated>2020-11-09T00:00:00+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/uiuctf20-solving-minecraft-captchas/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/uiuctf20-solving-minecraft-captchas/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -843,7 +843,7 @@ s &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&quot;&g
 	<entry xml:lang="en">
 		<title>redpwnCTF - aall</title>
 		<published>2020-06-25T00:00:00+00:00</published>
-		<updated>2020-06-25T00:00:00+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/redpwnctf20-aall/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/redpwnctf20-aall/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -975,7 +975,7 @@ payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&q
 	<entry xml:lang="en">
 		<title>redpwnCTF - tux fanpage</title>
 		<published>2020-06-25T00:00:00+00:00</published>
-		<updated>2020-06-25T00:00:00+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/redpwnctf20-tux-fanpage/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/redpwnctf20-tux-fanpage/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -1037,7 +1037,7 @@ payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&q
 	<entry xml:lang="en">
 		<title>pwnable.kr - Toddler&#x27;s Bottle</title>
 		<published>2020-04-27T12:59:37.396+00:00</published>
-		<updated>2020-04-27T13:02:48.347+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/pwnable-kr-toddler-s-bottle/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/pwnable-kr-toddler-s-bottle/</id>
 		<content type="html">&lt;h1 id=&quot;fd-1pt&quot;&gt;fd - 1pt&lt;&#x2F;h1&gt;
@@ -1128,7 +1128,7 @@ payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&q
 	<entry xml:lang="en">
 		<title>pwnable.tw - seethefile</title>
 		<published>2020-03-29T01:23:36.608+00:00</published>
-		<updated>2020-03-30T08:23:31.139+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/pwnable-tw-seethefile/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/pwnable-tw-seethefile/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -1622,7 +1622,7 @@ r.interactive()
 	<entry xml:lang="en">
 		<title>ångstromCTF - LeetTube</title>
 		<published>2020-03-18T23:36:12.437+00:00</published>
-		<updated>2020-03-29T02:10:25.394+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/angstromctf-leettube/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/angstromctf-leettube/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -1748,7 +1748,7 @@ search for these characters and extract the file. We get a video with the flag:&
 	<entry xml:lang="en">
 		<title>pwnable.tw - Tcache Tear</title>
 		<published>2020-02-23T07:19:49.665+00:00</published>
-		<updated>2020-03-02T18:52:31.838+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/pwnable-tw-tcache-tear/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/pwnable-tw-tcache-tear/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -1995,7 +1995,7 @@ r.interactive()
 	<entry xml:lang="en">
 		<title>pwnable.tw - silver bullet</title>
 		<published>2020-02-01T22:31:07.835+00:00</published>
-		<updated>2020-02-04T19:12:43.206+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/pwnable-tw-silver-bullet/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/pwnable-tw-silver-bullet/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -2159,7 +2159,7 @@ r.interactive()
 	<entry xml:lang="en">
 		<title>pwnable.tw - hacknote</title>
 		<published>2020-01-12T19:40:43.176+00:00</published>
-		<updated>2020-03-23T05:57:18.669+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/pwnable-tw-hacknote/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/pwnable-tw-hacknote/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -2456,7 +2456,7 @@ r.interactive()
 	<entry xml:lang="en">
 		<title>GCI - Fedora Project - Exploiting a Buffer Overflow Vulnerability</title>
 		<published>2019-12-15T00:00:00+00:00</published>
-		<updated>2019-12-15T00:00:00+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/gci-exploiting-a-buffer-overflow-vulnerability/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/gci-exploiting-a-buffer-overflow-vulnerability/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -2530,7 +2530,7 @@ End of assembler dump.
 	<entry xml:lang="en">
 		<title>pwnable.tw - start</title>
 		<published>2019-11-22T18:30:01.515+00:00</published>
-		<updated>2019-11-23T19:32:29.189+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/pwnable-tw-start/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/pwnable-tw-start/</id>
 		<content type="html">&lt;p&gt;We are given a linux binary. To start off, lets run &lt;code&gt;checksec&lt;&#x2F;code&gt; on it:&lt;&#x2F;p&gt;
@@ -2601,7 +2601,7 @@ r.interactive()
 	<entry xml:lang="en">
 		<title>picoCTF 2019 - Java Script Kiddie 2</title>
 		<published>2019-10-12T22:48:41.356+00:00</published>
-		<updated>2019-11-14T04:43:58.202+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/picoctf-2019-java-script-kiddie-2/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/picoctf-2019-java-script-kiddie-2/</id>
 		<content type="html">&lt;p&gt;We are given a website, that is nearly identical to Java Script Kiddie 1. The &lt;code&gt;assemble_png&lt;&#x2F;code&gt; function takes in a key of 
@@ -2708,7 +2708,7 @@ character for every two input digits, this occasionally requires manual interven
 	<entry xml:lang="en">
 		<title>picoCTF 2019 - shark on wire 2</title>
 		<published>2019-10-09T20:23:07.387+00:00</published>
-		<updated>2019-11-14T04:07:08.987+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/picoctf-2019-shark-on-wire-2/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/picoctf-2019-shark-on-wire-2/</id>
 		<content type="html">&lt;p&gt;We are given a packet capture with little description of what to look for. While looking through the UDP streams, I came
@@ -2736,7 +2736,7 @@ following numbers:&lt;&#x2F;p&gt;
 	<entry xml:lang="en">
 		<title>nactf 2019 - Loopy #0</title>
 		<published>2019-09-22T20:39:04.285+00:00</published>
-		<updated>2019-11-24T03:53:01.555+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/nactf-2019-loopy-0/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/nactf-2019-loopy-0/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -2874,7 +2874,7 @@ r.interactive()
 	<entry xml:lang="en">
 		<title>nactf 2019 - Dr. J&#x27;s Group Test Randomizer #2: BBOB</title>
 		<published>2019-09-22T17:48:52.836+00:00</published>
-		<updated>2019-09-22T22:03:40.121+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -3075,7 +3075,7 @@ generated &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;
 	<entry xml:lang="en">
 		<title>overthewire - bandit</title>
 		<published>2019-06-20T17:35:22.906+00:00</published>
-		<updated>2019-09-22T19:49:29.442+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/overthewire-bandit/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/overthewire-bandit/</id>
 		<content type="html">&lt;h1 id=&quot;level-0&quot;&gt;Level 0&lt;&#x2F;h1&gt;
@@ -3173,7 +3173,7 @@ DXjZPULLxYr17uwoI01bNLQbtFemEgo7
 	<entry xml:lang="en">
 		<title>pwnable.tw - orw</title>
 		<published>2019-06-11T19:45:48.202+00:00</published>
-		<updated>2019-09-15T19:37:08.225+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/pwnable-tw-orw/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/pwnable-tw-orw/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -3247,7 +3247,7 @@ to &lt;code&gt;stdout&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
 	<entry xml:lang="en">
 		<title>picoCTF 2018 - Lambdash</title>
 		<published>2018-10-18T14:08:16.365+00:00</published>
-		<updated>2019-02-09T07:15:03.393+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/picoctf-2018-lambdash/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/picoctf-2018-lambdash/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
@@ -3279,7 +3279,7 @@ gives us the flag: &lt;code&gt;picoCTF{1_white_lie_and_your_proto_gets_pwnd_4679
 	<entry xml:lang="en">
 		<title>picoCTF 2018 - circuit123</title>
 		<published>2018-10-17T02:23:29.709+00:00</published>
-		<updated>2018-10-17T02:29:08.242+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/picoctf-2018-circuit123/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/picoctf-2018-circuit123/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
@@ -3303,7 +3303,7 @@ length of the bit vector, I used a conservative estimate of &lt;code&gt;128&lt;&
 	<entry xml:lang="en">
 		<title>picoCTF 2018 - be-quick-or-be-dead-3</title>
 		<published>2018-10-16T13:53:29.636+00:00</published>
-		<updated>2018-10-19T00:42:37.752+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/picoctf-2018-be-quick-or-be-dead-3/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/picoctf-2018-be-quick-or-be-dead-3/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
@@ -3419,7 +3419,7 @@ picoCTF{dynamic_pr0gramming_ftw_1ffc009d}
 	<entry xml:lang="en">
 		<title>picoCTF 2018 - Dog or Frog</title>
 		<published>2018-10-14T03:51:44.809+00:00</published>
-		<updated>2018-10-14T06:43:05.105+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/picoctf-2018-dog-or-frog/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/picoctf-2018-dog-or-frog/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
@@ -3448,7 +3448,7 @@ challenge site, we receive the flag: &lt;code&gt;picoCTF{n0w_th4t3_4_g00d_girl_6
 	<entry xml:lang="en">
 		<title>picoCTF 2018 - eleCTRic</title>
 		<published>2018-10-13T02:36:19.176+00:00</published>
-		<updated>2018-12-28T23:10:12.884+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/picoctf-2018-electric/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/picoctf-2018-electric/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
@@ -3540,7 +3540,7 @@ flag_file &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;
 	<entry xml:lang="en">
 		<title>picoCTF 2018 - Flaskcards and Freedom</title>
 		<published>2018-10-12T21:02:44.420+00:00</published>
-		<updated>2018-10-12T22:55:27.216+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/picoctf-2018-flaskcards-and-freedom/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/picoctf-2018-flaskcards-and-freedom/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;

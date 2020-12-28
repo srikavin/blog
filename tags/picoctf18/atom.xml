@@ -4,12 +4,12 @@
 	<link href="https://blog.srikavin.me/tags/picoctf18/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
-	<updated>2019-02-09T07:15:03.393+00:00</updated>
+	<updated>2020-12-27T00:00:00+00:00</updated>
 	<id>https://blog.srikavin.me/tags/picoctf18/atom.xml</id>
 	<entry xml:lang="en">
 		<title>picoCTF 2018 - Lambdash</title>
 		<published>2018-10-18T14:08:16.365+00:00</published>
-		<updated>2019-02-09T07:15:03.393+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/picoctf-2018-lambdash/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/picoctf-2018-lambdash/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
@@ -41,7 +41,7 @@ gives us the flag: &lt;code&gt;picoCTF{1_white_lie_and_your_proto_gets_pwnd_4679
 	<entry xml:lang="en">
 		<title>picoCTF 2018 - circuit123</title>
 		<published>2018-10-17T02:23:29.709+00:00</published>
-		<updated>2018-10-17T02:29:08.242+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/picoctf-2018-circuit123/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/picoctf-2018-circuit123/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
@@ -65,7 +65,7 @@ length of the bit vector, I used a conservative estimate of &lt;code&gt;128&lt;&
 	<entry xml:lang="en">
 		<title>picoCTF 2018 - be-quick-or-be-dead-3</title>
 		<published>2018-10-16T13:53:29.636+00:00</published>
-		<updated>2018-10-19T00:42:37.752+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/picoctf-2018-be-quick-or-be-dead-3/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/picoctf-2018-be-quick-or-be-dead-3/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
@@ -181,7 +181,7 @@ picoCTF{dynamic_pr0gramming_ftw_1ffc009d}
 	<entry xml:lang="en">
 		<title>picoCTF 2018 - Dog or Frog</title>
 		<published>2018-10-14T03:51:44.809+00:00</published>
-		<updated>2018-10-14T06:43:05.105+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/picoctf-2018-dog-or-frog/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/picoctf-2018-dog-or-frog/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
@@ -210,7 +210,7 @@ challenge site, we receive the flag: &lt;code&gt;picoCTF{n0w_th4t3_4_g00d_girl_6
 	<entry xml:lang="en">
 		<title>picoCTF 2018 - eleCTRic</title>
 		<published>2018-10-13T02:36:19.176+00:00</published>
-		<updated>2018-12-28T23:10:12.884+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/picoctf-2018-electric/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/picoctf-2018-electric/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
@@ -302,7 +302,7 @@ flag_file &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;
 	<entry xml:lang="en">
 		<title>picoCTF 2018 - Flaskcards and Freedom</title>
 		<published>2018-10-12T21:02:44.420+00:00</published>
-		<updated>2018-10-12T22:55:27.216+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/picoctf-2018-flaskcards-and-freedom/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/picoctf-2018-flaskcards-and-freedom/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;

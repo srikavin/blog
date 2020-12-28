@@ -4,12 +4,12 @@
 	<link href="https://blog.srikavin.me/tags/asisctf-finals2020/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
-	<updated>2020-12-13T00:00:00+00:00</updated>
+	<updated>2020-12-27T00:00:00+00:00</updated>
 	<id>https://blog.srikavin.me/tags/asisctf-finals2020/atom.xml</id>
 	<entry xml:lang="en">
 		<title>Abusing PHP Constants, Temporary Uploads, and FastCGI to Bypass Restrictions</title>
 		<published>2020-12-13T00:00:00+00:00</published>
-		<updated>2020-12-13T00:00:00+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;

@@ -4,12 +4,12 @@
 	<link href="https://blog.srikavin.me/tags/uiuctf20/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
-	<updated>2020-11-09T00:00:00+00:00</updated>
+	<updated>2020-12-27T00:00:00+00:00</updated>
 	<id>https://blog.srikavin.me/tags/uiuctf20/atom.xml</id>
 	<entry xml:lang="en">
 		<title>Solving Minecraft Captchas with Neural Networks</title>
 		<published>2020-07-25T00:00:00+00:00</published>
-		<updated>2020-11-09T00:00:00+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/uiuctf20-solving-minecraft-captchas/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/uiuctf20-solving-minecraft-captchas/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;

@@ -4,12 +4,12 @@
 	<link href="https://blog.srikavin.me/tags/redpwnctf20/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
-	<updated>2020-06-25T00:00:00+00:00</updated>
+	<updated>2020-12-27T00:00:00+00:00</updated>
 	<id>https://blog.srikavin.me/tags/redpwnctf20/atom.xml</id>
 	<entry xml:lang="en">
 		<title>redpwnCTF - aall</title>
 		<published>2020-06-25T00:00:00+00:00</published>
-		<updated>2020-06-25T00:00:00+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/redpwnctf20-aall/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/redpwnctf20-aall/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -141,7 +141,7 @@ payload &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;&q
 	<entry xml:lang="en">
 		<title>redpwnCTF - tux fanpage</title>
 		<published>2020-06-25T00:00:00+00:00</published>
-		<updated>2020-06-25T00:00:00+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/redpwnctf20-tux-fanpage/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/redpwnctf20-tux-fanpage/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;

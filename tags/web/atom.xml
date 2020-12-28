@@ -4,12 +4,12 @@
 	<link href="https://blog.srikavin.me/tags/web/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
-	<updated>2020-12-13T00:00:00+00:00</updated>
+	<updated>2020-12-27T00:00:00+00:00</updated>
 	<id>https://blog.srikavin.me/tags/web/atom.xml</id>
 	<entry xml:lang="en">
 		<title>Abusing PHP Constants, Temporary Uploads, and FastCGI to Bypass Restrictions</title>
 		<published>2020-12-13T00:00:00+00:00</published>
-		<updated>2020-12-13T00:00:00+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/asisctf20-abusing-php-constants-to-bypass-eval-filters/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -234,7 +234,7 @@ just have to send the FastCGI request as the POST body, and we will get the flag
 	<entry xml:lang="en">
 		<title>redpwnCTF - tux fanpage</title>
 		<published>2020-06-25T00:00:00+00:00</published>
-		<updated>2020-06-25T00:00:00+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/redpwnctf20-tux-fanpage/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/redpwnctf20-tux-fanpage/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -296,7 +296,7 @@ just have to send the FastCGI request as the POST body, and we will get the flag
 	<entry xml:lang="en">
 		<title>ångstromCTF - LeetTube</title>
 		<published>2020-03-18T23:36:12.437+00:00</published>
-		<updated>2020-03-29T02:10:25.394+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/angstromctf-leettube/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/angstromctf-leettube/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -422,7 +422,7 @@ search for these characters and extract the file. We get a video with the flag:&
 	<entry xml:lang="en">
 		<title>picoCTF 2019 - Java Script Kiddie 2</title>
 		<published>2019-10-12T22:48:41.356+00:00</published>
-		<updated>2019-11-14T04:43:58.202+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/picoctf-2019-java-script-kiddie-2/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/picoctf-2019-java-script-kiddie-2/</id>
 		<content type="html">&lt;p&gt;We are given a website, that is nearly identical to Java Script Kiddie 1. The &lt;code&gt;assemble_png&lt;&#x2F;code&gt; function takes in a key of 
@@ -529,7 +529,7 @@ character for every two input digits, this occasionally requires manual interven
 	<entry xml:lang="en">
 		<title>picoCTF 2018 - Lambdash</title>
 		<published>2018-10-18T14:08:16.365+00:00</published>
-		<updated>2019-02-09T07:15:03.393+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/picoctf-2018-lambdash/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/picoctf-2018-lambdash/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
@@ -561,7 +561,7 @@ gives us the flag: &lt;code&gt;picoCTF{1_white_lie_and_your_proto_gets_pwnd_4679
 	<entry xml:lang="en">
 		<title>picoCTF 2018 - Flaskcards and Freedom</title>
 		<published>2018-10-12T21:02:44.420+00:00</published>
-		<updated>2018-10-12T22:55:27.216+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/picoctf-2018-flaskcards-and-freedom/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/picoctf-2018-flaskcards-and-freedom/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;

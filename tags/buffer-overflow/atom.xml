@@ -4,12 +4,12 @@
 	<link href="https://blog.srikavin.me/tags/buffer-overflow/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
-	<updated>2020-04-27T13:02:48.347+00:00</updated>
+	<updated>2020-12-27T00:00:00+00:00</updated>
 	<id>https://blog.srikavin.me/tags/buffer-overflow/atom.xml</id>
 	<entry xml:lang="en">
 		<title>pwnable.kr - Toddler&#x27;s Bottle</title>
 		<published>2020-04-27T12:59:37.396+00:00</published>
-		<updated>2020-04-27T13:02:48.347+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/pwnable-kr-toddler-s-bottle/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/pwnable-kr-toddler-s-bottle/</id>
 		<content type="html">&lt;h1 id=&quot;fd-1pt&quot;&gt;fd - 1pt&lt;&#x2F;h1&gt;
@@ -100,7 +100,7 @@
 	<entry xml:lang="en">
 		<title>GCI - Fedora Project - Exploiting a Buffer Overflow Vulnerability</title>
 		<published>2019-12-15T00:00:00+00:00</published>
-		<updated>2019-12-15T00:00:00+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/gci-exploiting-a-buffer-overflow-vulnerability/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/gci-exploiting-a-buffer-overflow-vulnerability/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;

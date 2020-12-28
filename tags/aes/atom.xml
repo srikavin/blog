@@ -4,12 +4,12 @@
 	<link href="https://blog.srikavin.me/tags/aes/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
-	<updated>2018-12-28T23:10:12.884+00:00</updated>
+	<updated>2020-12-27T00:00:00+00:00</updated>
 	<id>https://blog.srikavin.me/tags/aes/atom.xml</id>
 	<entry xml:lang="en">
 		<title>picoCTF 2018 - eleCTRic</title>
 		<published>2018-10-13T02:36:19.176+00:00</published>
-		<updated>2018-12-28T23:10:12.884+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/picoctf-2018-electric/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/picoctf-2018-electric/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;

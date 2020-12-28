@@ -4,12 +4,12 @@
 	<link href="https://blog.srikavin.me/tags/wireshark/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
-	<updated>2019-11-14T04:07:08.987+00:00</updated>
+	<updated>2020-12-27T00:00:00+00:00</updated>
 	<id>https://blog.srikavin.me/tags/wireshark/atom.xml</id>
 	<entry xml:lang="en">
 		<title>picoCTF 2019 - shark on wire 2</title>
 		<published>2019-10-09T20:23:07.387+00:00</published>
-		<updated>2019-11-14T04:07:08.987+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/picoctf-2019-shark-on-wire-2/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/picoctf-2019-shark-on-wire-2/</id>
 		<content type="html">&lt;p&gt;We are given a packet capture with little description of what to look for. While looking through the UDP streams, I came

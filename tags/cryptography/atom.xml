@@ -4,12 +4,12 @@
 	<link href="https://blog.srikavin.me/tags/cryptography/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
-	<updated>2019-09-22T22:03:40.121+00:00</updated>
+	<updated>2020-12-27T00:00:00+00:00</updated>
 	<id>https://blog.srikavin.me/tags/cryptography/atom.xml</id>
 	<entry xml:lang="en">
 		<title>nactf 2019 - Dr. J&#x27;s Group Test Randomizer #2: BBOB</title>
 		<published>2019-09-22T17:48:52.836+00:00</published>
-		<updated>2019-09-22T22:03:40.121+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/nactf-2019-dr-j-s-group-test-randomizer-2-bbob/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -210,7 +210,7 @@ generated &lt;&#x2F;span&gt;&lt;span style=&quot;font-weight:bold;color:#a71d5d;
 	<entry xml:lang="en">
 		<title>picoCTF 2018 - eleCTRic</title>
 		<published>2018-10-13T02:36:19.176+00:00</published>
-		<updated>2018-12-28T23:10:12.884+00:00</updated>
+		<updated>2020-12-27T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/picoctf-2018-electric/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/picoctf-2018-electric/</id>
 		<content type="html">&lt;h1 id=&quot;problem&quot;&gt;Problem&lt;&#x2F;h1&gt;
