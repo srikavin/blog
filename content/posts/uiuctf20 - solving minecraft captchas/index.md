@@ -5,7 +5,7 @@ Writeup of UIUCTF 2020's 'Bot Protection IV' challenge. We train a neural networ
 to solve 500 minecraft-based captchas in 10 minutes. \
 """
 date = 2020-07-25
-updated = 2020-11-09
+updated = 2020-12-27
 aliases = ["/posts/5f1c3dfcd7e47a02e27842ca-solving-minecraft-captchas-with-neural-networks"]
 [taxonomies]
 tags = ["uiuctf20", "machine-learning", "neural-networks"]

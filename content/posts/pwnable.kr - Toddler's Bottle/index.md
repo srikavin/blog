@@ -1,7 +1,7 @@
 +++
 title = "pwnable.kr - Toddler's Bottle"
 date = 2020-04-27T12:59:37.396Z
-updated = 2020-04-27T13:02:48.347Z
+updated = 2020-12-27
 aliases = ["/posts/5ea6d739cea15a083827d57f-pwnablekr-toddlers-bottle"]
 [taxonomies]
 tags = ['pwnable.kr', 'binary-exploitation', 'buffer-overflow', 'pwntools']

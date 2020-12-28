@@ -1,7 +1,7 @@
 +++
 title = "overthewire - bandit"
 date = 2019-06-20T17:35:22.906Z
-updated = 2019-09-22T19:49:29.442Z
+updated = 2020-12-27
 aliases = ["/posts/5d0bc3da25fe1409b2e399be-overthewire-bandit"]
 [taxonomies]
 tags = ['overthewire']

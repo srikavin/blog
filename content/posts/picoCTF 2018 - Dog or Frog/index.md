@@ -1,7 +1,7 @@
 +++
 title = "picoCTF 2018 - Dog or Frog"
 date = 2018-10-14T03:51:44.809Z
-updated = 2018-10-14T06:43:05.105Z
+updated = 2020-12-27
 aliases = ["/posts/5bc2bd50da39a06603ce0d4b-picoctf-2018-dog-or-frog"]
 [taxonomies]
 tags = ['picoctf18', 'machine-learning', 'adversarial-learning']

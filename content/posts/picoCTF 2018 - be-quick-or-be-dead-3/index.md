@@ -1,7 +1,7 @@
 +++
 title = "picoCTF 2018 - be-quick-or-be-dead-3"
 date = 2018-10-16T13:53:29.636Z
-updated = 2018-10-19T00:42:37.752Z
+updated = 2020-12-27
 aliases = ["/posts/5bc5ed59649fac2c45799185-picoctf-2018-be-quick-or-be-dead-3"]
 [taxonomies]
 tags = ['picoctf18', 'binary-exploitation', 'reversing']

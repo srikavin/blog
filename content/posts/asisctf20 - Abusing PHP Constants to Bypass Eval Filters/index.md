@@ -6,6 +6,7 @@ Writeup of ASISCTF 2020 Finals 'More Secure Secrets' challenge. We bypass an 'op
 using a TCP socket. \
 """
 date = 2020-12-13
+updated = 2020-12-27
 [taxonomies]
 tags = ["asisctf-finals2020", "web", "php", "rce"]
 categories = ["ctf-writeups"]

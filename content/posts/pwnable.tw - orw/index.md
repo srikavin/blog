@@ -1,7 +1,7 @@
 +++
 title = "pwnable.tw - orw"
 date = 2019-06-11T19:45:48.202Z
-updated = 2019-09-15T19:37:08.225Z
+updated = 2020-12-27
 aliases = ["/posts/5d0004ec2569df08a43d04cf-pwnabletw-orw"]
 [taxonomies]
 tags = ['pwnable.tw', 'binary-exploitation', 'pwntools', 'assembly', 'shellcode']

@@ -1,7 +1,7 @@
 +++
 title = "picoCTF 2018 - eleCTRic"
 date = 2018-10-13T02:36:19.176Z
-updated = 2018-12-28T23:10:12.884Z
+updated = 2020-12-27
 aliases = ["/posts/5bc15a23b7c5001b74f57e51-picoctf-2018-electric"]
 [taxonomies]
 tags = ['picoctf18', 'cryptography', 'aes-ctr', 'aes']

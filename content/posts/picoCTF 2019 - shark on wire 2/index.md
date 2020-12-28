@@ -1,7 +1,7 @@
 +++
 title = "picoCTF 2019 - shark on wire 2"
 date = 2019-10-09T20:23:07.387Z
-updated = 2019-11-14T04:07:08.987Z
+updated = 2020-12-27
 aliases = ["/posts/5d9e41ab6bac7409ac9e735e-picoctf-2019-shark-on-wire-2"]
 [taxonomies]
 tags = ['picoctf19', 'steganography', 'wireshark']

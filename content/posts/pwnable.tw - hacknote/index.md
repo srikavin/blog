@@ -1,7 +1,7 @@
 +++
 title = "pwnable.tw - hacknote"
 date = 2020-01-12T19:40:43.176Z
-updated = 2020-03-23T05:57:18.669Z
+updated = 2020-12-27
 aliases = ["/posts/5d07ecbb508cb0091260f639-pwnabletw-hacknote"]
 [taxonomies]
 tags = ['pwnable.tw', 'binary-exploitation', 'heap-exploitation', 'use-after-free', 'pwntools']

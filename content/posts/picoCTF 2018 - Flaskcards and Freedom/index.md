@@ -1,7 +1,7 @@
 +++
 title = "picoCTF 2018 - Flaskcards and Freedom"
 date = 2018-10-12T21:02:44.420Z
-updated = 2018-10-12T22:55:27.216Z
+updated = 2020-12-27
 aliases = ["/posts/5bc10bf4f1882e545d7f4309-picoctf-2018-flaskcards-and-freedom"]
 [taxonomies]
 tags = ['picoctf18', 'web', 'python', 'rce']

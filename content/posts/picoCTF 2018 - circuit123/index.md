@@ -1,7 +1,7 @@
 +++
 title = "picoCTF 2018 - circuit123"
 date = 2018-10-17T02:23:29.709Z
-updated = 2018-10-17T02:29:08.242Z
+updated = 2020-12-27
 aliases = ["/posts/5bc69d21649fac2c4579918a-picoctf-2018-circuit123"]
 [taxonomies]
 tags = ['picoctf18', 'python', 'z3', 'reversing']

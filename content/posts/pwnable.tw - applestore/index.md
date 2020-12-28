@@ -5,7 +5,7 @@ Writeup of pwnable.tw's 'applestore' challenge. We abuse a stack-based buffer ov
 execution by overlaying the stack frame on top of the Global Offset Table. \
 """
 date = 2020-08-27
-updated = 2020-11-06
+updated = 2020-12-27
 aliases = ["/posts/5f478a835f6cee02e28f045a-pwnabletw-applestore"]
 [taxonomies]
 tags = ["pwnable.tw", "binary-exploitation", "pwntools", "rce"]

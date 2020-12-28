@@ -5,6 +5,7 @@ Writeup of redpwnCTF 2020's 'tux fanpage' challenge. We abuse Express's default 
 to bypass checks and trigger a path traversal vulnerability. \
 """
 date = 2020-06-25
+updated = 2020-12-27
 aliases = ["/posts/5ef4cb041d3e7302fc8a3416-redpwnctf-tux-fanpage"]
 [taxonomies]
 tags = ["redpwnctf20", "web", "local-file-inclusion"]

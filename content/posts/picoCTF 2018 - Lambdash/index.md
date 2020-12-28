@@ -1,7 +1,7 @@
 +++
 title = "picoCTF 2018 - Lambdash"
 date = 2018-10-18T14:08:16.365Z
-updated = 2019-02-09T07:15:03.393Z
+updated = 2020-12-27
 aliases = ["/posts/5bc893d0649fac2c4579918b-picoctf-2018-lambdash"]
 [taxonomies]
 tags = ['picoctf18', 'web']

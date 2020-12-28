@@ -1,7 +1,7 @@
 +++
 title = "nactf 2019 - Dr. J's Group Test Randomizer #2: BBOB"
 date = 2019-09-22T17:48:52.836Z
-updated = 2019-09-22T22:03:40.121Z
+updated = 2020-12-27
 aliases = ["/posts/5d87b40492b65c0964fe369c-nactf-2019-dr-js-group-test-randomizer-2-bbob"]
 [taxonomies]
 tags = ['nactf2019', 'cryptography', 'z3']

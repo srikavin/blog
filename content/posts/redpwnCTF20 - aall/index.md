@@ -5,6 +5,7 @@ Writeup of redpwnCTF 2020's 'aall' challenge. We reverse a virtual machine with 
 written in Python and create a payload that runs in the VM to spawn a shell. \
 """
 date = 2020-06-25
+updated = 2020-12-27
 aliases = ["/posts/5ef4d50d1d3e7302fc8a3418-redpwnctf-aall"]
 [taxonomies]
 tags = ["redpwnctf20", "reversing", "python"]

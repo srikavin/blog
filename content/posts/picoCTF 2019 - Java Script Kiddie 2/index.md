@@ -1,7 +1,7 @@
 +++
 title = "picoCTF 2019 - Java Script Kiddie 2"
 date = 2019-10-12T22:48:41.356Z
-updated = 2019-11-14T04:43:58.202Z
+updated = 2020-12-27
 aliases = ["/posts/5da258490ac7cd093dc392d7-picoctf-2019-java-script-kiddie-2"]
 [taxonomies]
 tags = ['picoctf19', 'web', 'reversing', 'javascript']

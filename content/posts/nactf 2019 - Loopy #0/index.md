@@ -1,7 +1,7 @@
 +++
 title = "nactf 2019 - Loopy #0"
 date = 2019-09-22T20:39:04.285Z
-updated = 2019-11-24T03:53:01.555Z
+updated = 2020-12-27
 aliases = ["/posts/5d87dbe86e58ed23d8620868-nactf-2019-loopy-0-1"]
 [taxonomies]
 tags = ['nactf2019', 'binary-exploitation', 'pwntools', 'format-string', 'return-oriented-programming']

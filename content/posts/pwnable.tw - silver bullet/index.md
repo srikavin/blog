@@ -1,7 +1,7 @@
 +++
 title = "pwnable.tw - silver bullet"
 date = 2020-02-01T22:31:07.835Z
-updated = 2020-02-04T19:12:43.206Z
+updated = 2020-12-27
 aliases = ["/posts/5d0814ab8487900bf40e47d9-pwnabletw-silver-bullet"]
 [taxonomies]
 tags = ['pwnable.tw', 'binary-exploitation', 'return-oriented-programming', 'pwntools']

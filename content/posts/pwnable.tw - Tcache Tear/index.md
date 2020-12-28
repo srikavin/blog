@@ -1,7 +1,7 @@
 +++
 title = "pwnable.tw - Tcache Tear"
 date = 2020-02-23T07:19:49.665Z
-updated = 2020-03-02T18:52:31.838Z
+updated = 2020-12-27
 aliases = ["/posts/5e52279566a2e1088c0a3b1d-pwnabletw-tcache-tear"]
 [taxonomies]
 tags = ['pwnable.tw', 'binary-exploitation', 'heap-exploitation', 'pwntools', 'double-free']

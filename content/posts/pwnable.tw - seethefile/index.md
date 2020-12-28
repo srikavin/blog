@@ -1,7 +1,7 @@
 +++
 title = "pwnable.tw - seethefile"
 date = 2020-03-29T01:23:36.608Z
-updated = 2020-03-30T08:23:31.139Z
+updated = 2020-12-27
 aliases = ["/posts/5e7ff898af423b07a78b1283-pwnabletw-seethefile"]
 [taxonomies]
 tags = ['pwnable.tw', 'binary-exploitation', 'file-stream-oriented-programming', 'pwntools']
