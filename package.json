@@ -8,7 +8,7 @@
     "@blueprintjs/icons": "^3.12.0",
     "@blueprintjs/select": "^3.11.2",
     "@ibrahima/remark-math": "^1.1.0-alpha.2",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "classnames": "^2.2.6",
     "dayjs": "^1.8.17",
     "draft-js": "^0.11.3",
