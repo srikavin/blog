@@ -17,6 +17,10 @@
     color: inherit;
     opacity: 0.5;
 
+    a, a:visited {
+      color: var(--text-color);
+    }
+
     .value {
       padding-left: 4px;
       display: block;

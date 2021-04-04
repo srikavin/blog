@@ -9,7 +9,7 @@
 
     <title>{% block title %} {% endblock %} - srikavin.me</title>
 
-    <link href="/favicon.png" rel="icon">
+    <link href="/assets/favicon.png" rel="icon">
     <link rel="stylesheet" href="/bundle.css">
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -24,6 +24,10 @@
 </head>
 
 <body>
+<script>
+    const theme = localStorage.getItem("theme");
+    document.body.className = theme || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+</script>
 <nav>
     <div class="nav-left">
         <span>
@@ -38,7 +42,7 @@
     </div>
     <div class="nav-right">
         <a href="https://github.com/srikavin">
-            <img src="/gh-logo.png" alt="Github" width="24px" height="24px"/>
+            <img src="/assets/gh-logo.png" alt="Github" width="24px" height="24px"/>
         </a>
     </div>
 </nav>
@@ -48,7 +52,32 @@
     </div>
 </section>
 
-<script src="/bundle.js"></script>
+<div id="theme-selector" class="disabled">
+    <div id="dark-icon">
+        <img src="/assets/dark-icon.svg" alt="Switch to Dark Mode"/>
+        <div>Dark</div>
+    </div>
+    <div id="light-icon">
+        <img src="/assets/light-icon.svg" alt="Switch to Light Mode"/>
+        <div>Light</div>
+    </div>
+</div>
+
+<script>
+    const ts = document.getElementById("theme-selector");
+    ts.classList.remove("disabled");
+    ts.onclick = () => {
+        if (document.body.classList.contains("dark")) {
+            document.body.classList.remove("dark");
+            document.body.classList.add("light");
+        } else {
+            document.body.classList.remove("light");
+            document.body.classList.add("dark");
+        }
+        localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+    };
+</script>
+<script src="/bundle.js" defer></script>
 {% block scripts %} {% endblock %}
 
 </body>

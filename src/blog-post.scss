@@ -27,28 +27,26 @@
   border-radius: 3px;
   min-height: 18px;
   white-space: nowrap;
+  background: var(--tag-bg);
+  color: var(--tag-text-color);
 }
 
-.tag.dark {
-  background: #e5edfa;
-  color: black;
+.tag.minimal {
+  background: transparent;
+  border: 1px solid var(--tag-bg);
+  color: var(--tag-bg);
 }
 
-.tag.minimal.dark {
-  border: 1px solid #e5e5f1;
-  color: #e5e5f1;
+.tag.minimal.interactive:hover {
+  color: var(--tag-text-color);
 }
 
-.tag.minimal.interactive.dark:hover {
-  color: black;
+.tag.interactive:hover {
+  background: var(--tag-bg-hover);
 }
 
 .tag.interactive {
   cursor: pointer;
-}
-
-.tag.interactive.dark:hover {
-  background: #c6d0d9;
 }
 
 .blog-content {
@@ -83,17 +81,21 @@
   padding: 1px 4px;
 }
 
-.blog-content.light blockquote {
-  border-left-width: 2px;
-  border-left-style: solid;
-}
-
 .blog-content blockquote {
   padding: 10px;
   margin: 0 0 1em;
   overflow: auto;
+  border-left-width: 2px;
+  border-left-style: solid;
+  border-left-color: var(--blockquote-left);
+  background: var(--blockquote-bg);
 }
 
 .blog-content > pre {
   padding: 8px;
+  border-color: var(--code-border-color);
+}
+
+.blog-content :not(pre) > code {
+  border-color: var(--code-border-color);
 }

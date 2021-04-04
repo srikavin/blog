@@ -1,0 +1,102 @@
+body {
+  transition-property: background-color, color, border-color, filter, font-size;
+  transition-duration: 0.5s;
+}
+
+body.light {
+  --bg-color: white;
+  --text-color: black;
+  --link-color: #0000EE;
+
+  --blockquote-bg: #fcf5d9;
+  --blockquote-left: #fce88c;
+
+  --code-border-color: #ccc;
+
+  --tag-bg: #5b6e7e;
+  --tag-bg-hover: #5b6e7e;
+  --tag-text-color: white;
+}
+
+body.dark {
+  --bg-color: #292a2d;
+  --text-color: #e5e5f1;
+  --link-color: #ababf6;
+
+  --blockquote-bg: #30312c;
+  --blockquote-left: #154c6f;
+
+  --code-border-color: #ccc;
+
+  --tag-bg: #e5e5f1;
+  --tag-bg-hover: #c6d0d9;
+  --tag-text-color: black;
+}
+
+.dark nav img {
+  filter: invert(1);
+}
+
+.dark img {
+  filter: brightness(.8) contrast(1.2);
+}
+
+.dark .blog-content > pre {
+  filter: invert(1);
+  font-size: 1.1em;
+  background-color: rgb(235, 235, 235) !important
+}
+
+#theme-selector.disabled {
+  display: none;
+}
+
+#theme-selector {
+  font-size: 2rem;
+  color: #636363;
+  filter: drop-shadow(0 0 1rem #121212);
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  opacity: 0.2;
+  transition: opacity 500ms;
+
+  img {
+    height: 32px;
+    width: 32px;
+  }
+
+  > div div {
+    font-size: 16px;
+  }
+}
+
+#theme-selector:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+
+#light-icon {
+  display: none;
+}
+
+.dark {
+  #theme-selector {
+    font-size: 2rem;
+    color: #eee;
+    filter: drop-shadow(0 0 1rem #eee);
+  }
+
+  #dark-icon {
+    display: none;
+  }
+
+  #light-icon {
+    display: block;
+
+    img {
+      filter: invert(.85);
+    }
+  }
+}
+
