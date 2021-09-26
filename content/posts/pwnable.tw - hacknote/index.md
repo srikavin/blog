@@ -1,7 +1,7 @@
 +++
 title = "pwnable.tw - hacknote"
 date = 2020-01-12T19:40:43.176Z
-updated = 2020-12-27
+updated = 2021-09-25
 aliases = ["/posts/5d07ecbb508cb0091260f639-pwnabletw-hacknote"]
 [taxonomies]
 tags = ['pwnable.tw', 'binary-exploitation', 'heap-exploitation', 'use-after-free', 'pwntools']
@@ -181,7 +181,7 @@ note->contents = *0x804a024;    // Address of GOT entry for puts
 `malloc` returns the first available memory region, and generally reuses previously `free`ed regions. However, it has 
 bins of specific sizes that generally are not moved. To demonstrate this, I made a small [test program](https://repl.it/repls/PaltryTrustyBrace):
 
-{{ replit(id="PaltryTrustyBrace") }}
+{{ replit(id="@infuzion/pwnable-tw-hacknote-test-program") }}
 
 The `note` struct malloc 8 bytes for the struct, and n bytes for the contents. If we allocate 2 notes with 8 bytes of 
 contents each, and then free them, we can gain a pointer to the `note` struct. 
