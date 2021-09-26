@@ -4,7 +4,7 @@
 	<link href="https://blog.srikavin.me/tags/pwnable-tw/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://blog.srikavin.me/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
-	<updated>2020-12-27T00:00:00+00:00</updated>
+	<updated>2021-09-25T00:00:00+00:00</updated>
 	<id>https://blog.srikavin.me/tags/pwnable-tw/atom.xml</id>
 	<entry xml:lang="en">
 		<title>pwnable.tw - applestore</title>
@@ -1264,7 +1264,7 @@ r.interactive()
 	<entry xml:lang="en">
 		<title>pwnable.tw - hacknote</title>
 		<published>2020-01-12T19:40:43.176+00:00</published>
-		<updated>2020-12-27T00:00:00+00:00</updated>
+		<updated>2021-09-25T00:00:00+00:00</updated>
 		<link href="https://blog.srikavin.me/posts/pwnable-tw-hacknote/" type="text/html"/>
 		<id>https://blog.srikavin.me/posts/pwnable-tw-hacknote/</id>
 		<content type="html">&lt;h1 id=&quot;challenge&quot;&gt;Challenge&lt;&#x2F;h1&gt;
@@ -1417,9 +1417,9 @@ struct look like the following:&lt;&#x2F;p&gt;
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;&lt;code&gt;malloc&lt;&#x2F;code&gt; returns the first available memory region, and generally reuses previously &lt;code&gt;free&lt;&#x2F;code&gt;ed regions. However, it has 
 bins of specific sizes that generally are not moved. To demonstrate this, I made a small &lt;a href=&quot;https:&#x2F;&#x2F;repl.it&#x2F;repls&#x2F;PaltryTrustyBrace&quot;&gt;test program&lt;&#x2F;a&gt;:&lt;&#x2F;p&gt;
-&lt;iframe allowfullscreen=&quot;true&quot; allowtransparency=&quot;true&quot; frameborder=&quot;no&quot; height=&quot;800px&quot;
+&lt;iframe allowfullscreen=&quot;true&quot; allowtransparency=&quot;true&quot; frameborder=&quot;no&quot; height=&quot;400px&quot;
         sandbox=&quot;allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-modals&quot;
-        scrolling=&quot;no&quot; src=&quot;https:&#x2F;&#x2F;repl.it&#x2F;repls&#x2F;PaltryTrustyBrace?lite=true&quot; width=&quot;100%&quot;&gt;&lt;&#x2F;iframe&gt;
+        scrolling=&quot;no&quot; src=&quot;https:&#x2F;&#x2F;replit.com&#x2F;@infuzion&amp;#x2F;pwnable-tw-hacknote-test-program?lite=true&amp;outputonly=true&quot; width=&quot;100%&quot;&gt;&lt;&#x2F;iframe&gt;
 &lt;p&gt;The &lt;code&gt;note&lt;&#x2F;code&gt; struct malloc 8 bytes for the struct, and n bytes for the contents. If we allocate 2 notes with 8 bytes of 
 contents each, and then free them, we can gain a pointer to the &lt;code&gt;note&lt;&#x2F;code&gt; struct. &lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#ffffff;&quot;&gt;
