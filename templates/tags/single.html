@@ -9,7 +9,7 @@
 {% block content %}
 
 <div class="page-container tags-content">
-    <h1>Posts tagged with <span class="tag minimal">{{term.name}}</span></h1>
+    <h1>{{term.pages | length}} Posts tagged with <span class="tag minimal">{{term.name}}</span></h1>
     {{ posts::list(pages=term.pages) }}
 </div>
 

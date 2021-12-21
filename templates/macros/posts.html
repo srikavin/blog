@@ -82,8 +82,11 @@
 {% macro list(pages) %}
 <div class="blog-preview-list">
     {% for page in pages %}
+    <a href="{{ page.permalink | safe }}">
     <div class="blog-preview">
-        {{ self::post_preview(page=page, link=true) }}
+        <object>
+            {{ self::post_preview(page=page, link=false) }}
+        </object>
         <a class="blog-preview-continue-reading" href="{{ page.permalink | safe }}">Continue Reading</a>
     </div>
     {% endfor %}

@@ -1,5 +1,6 @@
 .blog-header {
   text-align: center;
+  color: var(--text-color);
 
   .title {
     font-family: "Segoe UI", "Calibri", "Droid Sans", sans-serif;
@@ -52,6 +53,7 @@
 .blog-content {
   line-height: 1.6;
   word-wrap: break-word;
+  color: var(--text-color);
 }
 
 .blog-content img, .blog-content object[type="image/svg+xml"] {
@@ -60,6 +62,10 @@
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
+}
+
+.blog-content object[type="image/svg+xml"] {
+  background-color: white;
 }
 
 .blog-content > pre {

@@ -1,3 +1,11 @@
+html {
+  scroll-behavior: smooth;
+
+  @media screen and (prefers-reduced-motion: reduce) {
+      scroll-behavior: auto;
+  }
+}
+
 .blog-scrollspy:hover {
   z-index: 100;
   overflow-y: auto;

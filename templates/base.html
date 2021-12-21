@@ -26,7 +26,7 @@
 <body>
 <script>
     const theme = localStorage.getItem("theme");
-    document.body.className = "light"; // theme || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.body.className = theme || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
 </script>
 <nav>
     <div class="nav-left">
@@ -65,7 +65,7 @@
 
 <script>
     const ts = document.getElementById("theme-selector");
-    // ts.classList.remove("disabled");
+    ts.classList.remove("disabled");
     ts.onclick = () => {
         if (document.body.classList.contains("dark")) {
             document.body.classList.remove("dark");
