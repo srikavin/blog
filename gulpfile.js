@@ -5,7 +5,7 @@ import postcss from "rollup-plugin-postcss";
 import {terser} from "rollup-plugin-terser";
 
 import gulp from 'gulp';
-import imagemin from "gulp-imagemin";
+import squoosh from 'gulp-libsquoosh';
 import htmlmin from 'gulp-html-minifier-terser';
 
 import {runZola} from "./bin/zola.js";
@@ -52,8 +52,9 @@ export const postProcessHtml = () => {
 }
 
 export const postProcessImages = () => {
-    return gulp.src(['public/posts/**/*.png', 'public/posts/**/*.jpg', 'public/posts/**/*.gif', /*gu'public/posts/!**!/!*.svg'*/])
-        .pipe(imagemin([]))
+    return gulp.src(['public/posts/**/*.png', 'public/posts/**/*.jpg', 'public/posts/**/*.gif'])
+        // .on("data", console.log)
+        .pipe(squoosh())
         .pipe(gulp.dest('public/posts/'))
 }
 

@@ -1,4 +1,4 @@
-import renderMathInElement from 'katex/contrib/auto-render/auto-render'
+import renderMathInElement from 'katex/dist/contrib/auto-render.min.js'
 import 'katex/dist/katex.css'
 import 'normalize.css/normalize.css'
 import "./main.scss"
